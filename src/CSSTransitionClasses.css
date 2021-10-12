@@ -1,0 +1,37 @@
+.menu-expander-enter {
+  opacity: 0;
+  transform: scale(0);
+}
+.menu-expander-enter-active {
+  opacity: 1;
+  transform: scale(1);
+  transition-delay: 110ms;
+  transition: opacity 290ms linear, transform 290ms linear;
+}
+.menu-expander-exit {
+  opacity: 1;
+  transform: scale(1);
+}
+.menu-expander-exit-active {
+  opacity: 0;
+  transform: scale(0);
+}
+
+.menu-slide-enter {
+  opacity: 0;
+  transform: translateX(15%);
+}
+.menu-slide-enter-active {
+  opacity: 1;
+  transform: translateX(0%);
+  transition: opacity 400ms linear, transform 400ms ease-out;
+}
+.menu-slide-exit {
+  opacity: 1;
+  transform: translateX(0%);
+}
+.menu-slide-exit-active {
+  opacity: 0;
+  transform: translateX(15%);
+  transition: opacity 100ms linear, transform 100ms ease-in;
+}
