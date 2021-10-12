@@ -5,7 +5,7 @@ import FunctionalitiesMenu from '../functionalitiesMenu';
 import { useSwipeable } from 'react-swipeable';
 import formatDate from '../uniformDate';
 import { useDispatch, useSelector } from 'react-redux';
-import { databaseActions, databaseSelectors } from 'rdx/database';
+import { databaseSelectors } from 'rdx/database';
 import { expendituresSelectors } from 'rdx/expenditures';
 import LoadingImg from 'components/LoadingImg';
 import { categoryApi, expenditureApi } from 'api';

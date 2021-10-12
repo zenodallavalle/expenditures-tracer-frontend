@@ -10,21 +10,12 @@ import Prospect from './components/mainViewComponents/prospect';
 import CategoriesView from './components/mainViewComponents/expenditures';
 import Months from './components/mainViewComponents/months';
 import AddEditExpenditureOffcanvas from './components/addEditExpenditureOffcanvas';
-import ActualMoneyOrIncomeOffcanvas from './components/actualMoneyOrIncomeOffcanvas';
 import LoadingImg from 'components/LoadingImg';
 import { useDispatch, useSelector } from 'react-redux';
 import { userSelectors } from 'rdx/user';
 import { databaseApi, userApi } from 'api';
-import { localInfoActions, localInfoSelectors } from 'rdx/localInfo';
+import { localInfoSelectors } from 'rdx/localInfo';
 import { databaseSelectors } from 'rdx/database';
-
-const getCurrentMonth = () => {
-  const d = new Date();
-  const month = d.getMonth() + 1;
-  const year = d.getFullYear();
-  const currentMonth = (month < 10 ? '0' + month : '' + month) + '-' + year;
-  return currentMonth;
-};
 
 const App = (props) => {
   const dispatch = useDispatch();
@@ -117,7 +108,6 @@ const App = (props) => {
       if (dbId) {
         const fullDB = await fetch(dbId);
         if (fullDB) {
-          console.log(fullDB);
           localStorage.setItem('workingDBId', fullDB.id);
           dispatch({ type: 'localInfo/panelChanged', payload: 'prospect' });
         }

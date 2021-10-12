@@ -1,4 +1,4 @@
-import React from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { InlineIcon } from '@iconify/react';
 import pencil16 from '@iconify/icons-octicon/pencil-16';
 import check16 from '@iconify/icons-octicon/check-16';
@@ -21,38 +21,44 @@ const getPropsForElement = (props) => ({
 
 const Button = (props) => <button {...getPropsForElement(props)} />;
 
-const FunctionalitiesMenu = (props) => {
-  const { available, confirmDeleteTimeout } = props;
-  const onShowControlsChanged = props.onShowControlsChanged || (() => {});
-  const onEdit = props.onEdit || (() => {});
-  const onEditFinished = props.onEditFinished;
-  const onDeleteClicked = props.onDeleteClicked || (() => {});
-  const onDeleteTimedOut = props.onDeleteTimedOut || (() => {});
-  const onDeleteConfirmed = props.onDeleteConfirmed || (() => {});
+const FunctionalitiesMenu = ({
+  available,
+  confirmDeleteTimeout,
+  showExpander = true,
+  showControls: _showControls = false,
+  onShowControlsChanged: _onShowControlsChanged = () => {},
+  onEdit = () => {},
+  onEditFinished = () => {},
+  onDeleteClicked = () => {},
+  onDeleteTimedOut = () => {},
+  onDeleteConfirmed = () => {},
+  ...props
+}) => {
+  const [showControls, setShowControls] = useState(_showControls);
 
-  const [showExpander] = React.useState(
-    props.showExpander === undefined ? true : props.showExpander
-  );
-  const [showControls, setShowControls] = React.useState(
-    props.showControls === undefined ? false : props.showControls
-  );
-  React.useEffect(() => {
-    setShowControls(props.showControls);
-  }, [props.showControls]);
-  React.useEffect(() => {
+  useEffect(() => {
+    if (showControls !== _showControls) setShowControls(_showControls);
+  }, [showControls, _showControls]);
+
+  const onShowControlsChanged = useCallback(_onShowControlsChanged, [
+    _onShowControlsChanged,
+  ]);
+
+  useEffect(() => {
     onShowControlsChanged(showControls);
-  }, [showControls]);
+  }, [onShowControlsChanged, showControls]);
 
-  const [isEditing, setIsEditing] = React.useState(false);
-  const [deleteConfirmed, setDeleteConfirmed] = React.useState(false);
-  const [detonateDeleteTimeout, setDetonateDeleteTimeout] =
-    React.useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [deleteConfirmed, setDeleteConfirmed] = useState(false);
+  const [detonateDeleteTimeout, setDetonateDeleteTimeout] = useState(null);
+
   const toggleControls = () => {
     if (showControls) {
       setIsEditing(false);
     }
     setShowControls(!showControls);
   };
+
   const onEditBtnClicked = (event) => {
     if (!onEditFinished) {
       //onEditFinished not passed, so handle only onEdit

@@ -1,131 +1,81 @@
-import RequestRejected from './RequestRejected';
+import { RejectedRequest, tryCatchWrapper } from './utils';
 const apiPoint = process.env.REACT_APP_API_ROOT;
 
-const createSetWorkingDB =
-  (getAuthToken) =>
-  async ({ id, workingMonth, ...props }) => {
-    try {
-      const url = new URL(apiPoint + `dbs/${id}/`);
-      workingMonth && url.searchParams.append('month', workingMonth);
-      const response = await fetch(url, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Token ${getAuthToken()}`,
-        },
-      });
-      const json = await response.json();
-      if (response.ok) {
-        return json;
-      } else {
-        throw new RequestRejected(
-          true,
-          response.status,
-          json,
-          response.status === 400
-        );
-      }
-    } catch (e) {
-      console.error(e);
-      // ERROR
-      throw new RequestRejected();
-    }
-  };
+const setWorkingDB = async (getAuthToken, { id, workingMonth, ...props }) => {
+  const url = new URL(apiPoint + `dbs/${id}/`);
+  if (workingMonth) {
+    url.searchParams.append('month', workingMonth);
+  }
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Token ${getAuthToken()}`,
+    },
+  });
+  const json = await response.json();
+  if (response.ok) {
+    return json;
+  } else {
+    throw new RejectedRequest(response, json);
+  }
+};
 
-const createCreateDB =
-  (getAuthToken) =>
-  async ({ payload, ...props }) => {
-    try {
-      const response = await fetch(apiPoint + `dbs/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Token ${getAuthToken()}`,
-        },
-        body: JSON.stringify(payload),
-      });
-      const json = await response.json();
-      if (response.ok) {
-        return json;
-      } else {
-        throw new RequestRejected(
-          true,
-          response.status,
-          json,
-          response.status === 400
-        );
-      }
-    } catch (e) {
-      console.error(e);
-      // ERROR
-      throw new RequestRejected();
-    }
-  };
+const createDB = async (getAuthToken, { payload, ...props }) => {
+  const response = await fetch(apiPoint + `dbs/`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Token ${getAuthToken()}`,
+    },
+    body: JSON.stringify(payload),
+  });
+  const json = await response.json();
+  if (response.ok) {
+    return json;
+  } else {
+    throw new RejectedRequest(response, json);
+  }
+};
 
-const createEditDB =
-  (getAuthToken) =>
-  async ({ id, payload, ...props }) => {
-    try {
-      const response = await fetch(apiPoint + `dbs/${id}/`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Token ${getAuthToken()}`,
-        },
-        body: JSON.stringify(payload),
-      });
-      const json = await response.json();
-      if (response.ok) {
-        return json;
-      } else {
-        throw new RequestRejected(
-          true,
-          response.status,
-          json,
-          response.status === 400
-        );
-      }
-    } catch (e) {
-      console.error(e);
-      // ERROR
-      throw new RequestRejected();
-    }
-  };
+const editDB = async (getAuthToken, { id, payload, ...props }) => {
+  const response = await fetch(apiPoint + `dbs/${id}/`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Token ${getAuthToken()}`,
+    },
+    body: JSON.stringify(payload),
+  });
+  const json = await response.json();
+  if (response.ok) {
+    return json;
+  } else {
+    throw new RejectedRequest(response, json);
+  }
+};
 
-const createDeleteDB =
-  (getAuthToken) =>
-  async ({ id, ...props }) => {
-    try {
-      const response = await fetch(apiPoint + `dbs/${id}/`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Token ${getAuthToken()}`,
-        },
-      });
-      if (response.ok) {
-        return;
-      } else {
-        const json = await response.json();
-        throw new RequestRejected(
-          true,
-          response.status,
-          json,
-          response.status === 400
-        );
-      }
-    } catch (e) {
-      console.error(e);
-      // ERROR
-      throw new RequestRejected();
-    }
-  };
+const deleteDB = async (getAuthToken, { id, ...props }) => {
+  const response = await fetch(apiPoint + `dbs/${id}/`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Token ${getAuthToken()}`,
+    },
+  });
+  if (response.ok) {
+    return;
+  } else {
+    const json = await response.json();
+    throw new RejectedRequest(response, json);
+  }
+};
 
 const databaseApiInitializer = (getAuthToken) => ({
-  setWorkingDB: createSetWorkingDB(getAuthToken),
-  createDB: createCreateDB(getAuthToken),
-  editDB: createEditDB(getAuthToken),
-  deleteDB: createDeleteDB(getAuthToken),
+  setWorkingDB: tryCatchWrapper(getAuthToken)(setWorkingDB),
+  createDB: tryCatchWrapper(getAuthToken)(createDB),
+  editDB: tryCatchWrapper(getAuthToken)(editDB),
+  deleteDB: tryCatchWrapper(getAuthToken)(deleteDB),
 });
 
 export default databaseApiInitializer;
