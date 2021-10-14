@@ -1,14 +1,11 @@
-import { RejectedRequest, tryCatchWrapper } from './utils';
+import { getAuthToken, getWorkingMonth, tryCatchWrapper } from './src/utils';
+import RejectedRequest from './src/RejectedRequest';
+
 const apiPoint = process.env.REACT_APP_API_ROOT;
 
-const createCategory = async (
-  getAuthToken,
-  { payload, workingMonth, ...props }
-) => {
+const createCategory = async ({ payload, ...props }) => {
   const url = new URL(apiPoint + `categories/`);
-  if (workingMonth) {
-    url.searchParams.append('month', workingMonth);
-  }
+  url.searchParams.append('month', getWorkingMonth());
   const response = await fetch(url, {
     method: 'POST',
     headers: {
@@ -25,14 +22,9 @@ const createCategory = async (
   }
 };
 
-const editCategory = async (
-  getAuthToken,
-  { id, payload, workingMonth, ...props }
-) => {
+const editCategory = async ({ id, payload, ...props }) => {
   const url = new URL(apiPoint + `categories/${id}/`);
-  if (workingMonth) {
-    url.searchParams.append('month', workingMonth);
-  }
+  url.searchParams.append('month', getWorkingMonth());
   const response = await fetch(url, {
     method: 'PATCH',
     headers: {
@@ -49,11 +41,9 @@ const editCategory = async (
   }
 };
 
-const deleteCategory = async (getAuthToken, { id, workingMonth, ...props }) => {
+const deleteCategory = async ({ id, ...props }) => {
   const url = new URL(apiPoint + `categories/${id}/`);
-  if (workingMonth) {
-    url.searchParams.append('month', workingMonth);
-  }
+  url.searchParams.append('month', getWorkingMonth());
   const response = await fetch(url, {
     method: 'DELETE',
     headers: {
@@ -69,10 +59,10 @@ const deleteCategory = async (getAuthToken, { id, workingMonth, ...props }) => {
   }
 };
 
-const categoryApiInitializer = (getAuthToken) => ({
-  createCategory: tryCatchWrapper(getAuthToken)(createCategory),
-  editCategory: tryCatchWrapper(getAuthToken)(editCategory),
-  deleteCategory: tryCatchWrapper(getAuthToken)(deleteCategory),
-});
+const categoryApi = {
+  createCategory: tryCatchWrapper(createCategory),
+  editCategory: tryCatchWrapper(editCategory),
+  deleteCategory: tryCatchWrapper(deleteCategory),
+};
 
-export default categoryApiInitializer;
+export default categoryApi;

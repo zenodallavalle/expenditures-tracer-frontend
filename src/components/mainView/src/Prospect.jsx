@@ -34,8 +34,6 @@ const Prospect = ({ ...priops }) => {
   const expendituresAreLoading = useSelector(expendituresSelectors.isLoading());
   const dbOrExpisLoading = databaseIsLoading || expendituresAreLoading;
 
-  console.log(prospect);
-
   return (
     <div>
       <Table borderless size='sm'>

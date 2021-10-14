@@ -13,7 +13,6 @@ export const AddIncome = ({ ...props }) => {
   const dispatch = useDispatch();
   const isLoading = useSelector(databaseSelectors.isLoading());
   const workingDB = useSelector(databaseSelectors.getWorkingDB());
-  const workingMonth = useSelector(databaseSelectors.getWorkingMonth());
 
   const [instance, setInstance] = useState(emptyCash);
   const [messages, setMessages] = useState({});
@@ -74,7 +73,7 @@ export const AddIncome = ({ ...props }) => {
           db: workingDB.id,
           income: true,
         };
-        const fullDB = await cashApi.createCash({ payload, workingMonth });
+        const fullDB = await cashApi.createCash({ payload });
         dispatch({ type: 'database/dataUpdated', payload: fullDB });
         setMessages({});
         setInstance(emptyCash);
@@ -166,7 +165,6 @@ export const AddIncome = ({ ...props }) => {
 const Income = ({ id, ...props }) => {
   const dispatch = useDispatch();
   const isLoading = useSelector(databaseSelectors.isLoading());
-  const workingMonth = useSelector(databaseSelectors.getWorkingMonth());
   const income = useSelector(databaseSelectors.getIncomeById(id));
 
   const [instance, setInstance] = useState({});
@@ -180,15 +178,12 @@ const Income = ({ id, ...props }) => {
 
   const onChange = (e) => {
     const updatedInstance = { ...instance };
-    const floated = parseFloat(e.target.value);
-    if (!e.target.name === 'value' || !isNaN(floated)) {
-      const value = e.target.name === 'value' ? floated : e.target.value;
-      if (income[e.target.name] === value) {
-        delete updatedInstance[e.target.name];
-      } else {
-        updatedInstance[e.target.name] = value;
-      }
+    if (income[e.target.name] === e.target.value) {
+      delete updatedInstance[e.target.name];
+    } else {
+      updatedInstance[e.target.name] = e.target.value;
     }
+
     setInstance(updatedInstance);
   };
 
@@ -231,14 +226,17 @@ const Income = ({ id, ...props }) => {
     return isValid;
   };
 
-  const onEdited = async (e, onSuccess, onFail) => {
+  const onEdited = async (e, onSuccess = () => {}, onFail = () => {}) => {
     if (validate()) {
       dispatch({ type: 'database/isLoading' });
       try {
         const payload = {
           ...instance,
         };
-        const fullDB = await cashApi.editCash({ id, payload, workingMonth });
+        if (instance.value) {
+          payload.value = parseFloat(parseFloat(instance.value).toFixed(2));
+        }
+        const fullDB = await cashApi.editCash({ id, payload });
         dispatch({ type: 'database/dataUpdated', payload: fullDB });
         setMessages({});
         setInstance({});
@@ -250,7 +248,6 @@ const Income = ({ id, ...props }) => {
       setIsEditing(false);
     } else {
       const instanceEntries = Object.entries(instance);
-
       if (instanceEntries.length === 0) {
         setIsEditing(false);
         onSuccess();
@@ -264,10 +261,10 @@ const Income = ({ id, ...props }) => {
     }
   }, [isEditing]);
 
-  const onDelete = async (e, onSuccess, onFail) => {
+  const onDelete = async (e, onSuccess = () => {}, onFail = () => {}) => {
     dispatch({ type: 'database/isLoading' });
     try {
-      const fullDB = await cashApi.deleteCash({ id, workingMonth });
+      const fullDB = await cashApi.deleteCash({ id });
       dispatch({ type: 'database/dataUpdated', payload: fullDB });
       onSuccess();
     } catch (e) {
@@ -342,7 +339,6 @@ export const AddIncomeCell = ({ ...props }) => {
   const dispatch = useDispatch();
   const [instance, setInstance] = useState(emptyCash);
   const workingDB = useSelector(databaseSelectors.getWorkingDB());
-  const workingMonth = useSelector(databaseSelectors.getWorkingMonth());
   const [isAdding, setIsAdding] = useState(false);
   const isLoading = useSelector(databaseSelectors.isLoading());
 
@@ -372,7 +368,7 @@ export const AddIncomeCell = ({ ...props }) => {
     dispatch({ type: 'database/isLoading' });
     try {
       const payload = { ...instance, db: workingDB.id, income: true };
-      const fullDB = await cashApi.createCash({ payload, workingMonth });
+      const fullDB = await cashApi.createCash({ payload });
       dispatch({ type: 'database/dataUpdated', payload: fullDB });
       setInstance(emptyCash);
     } catch (e) {

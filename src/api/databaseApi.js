@@ -1,11 +1,11 @@
-import { RejectedRequest, tryCatchWrapper } from './utils';
+import { getAuthToken, getWorkingMonth, tryCatchWrapper } from './src/utils';
+import RejectedRequest from './src/RejectedRequest';
+
 const apiPoint = process.env.REACT_APP_API_ROOT;
 
-const setWorkingDB = async (getAuthToken, { id, workingMonth, ...props }) => {
+const setWorkingDB = async ({ id, ...props }) => {
   const url = new URL(apiPoint + `dbs/${id}/`);
-  if (workingMonth) {
-    url.searchParams.append('month', workingMonth);
-  }
+  url.searchParams.append('month', getWorkingMonth());
   const response = await fetch(url, {
     method: 'GET',
     headers: {
@@ -21,7 +21,7 @@ const setWorkingDB = async (getAuthToken, { id, workingMonth, ...props }) => {
   }
 };
 
-const createDB = async (getAuthToken, { payload, ...props }) => {
+const createDB = async ({ payload, ...props }) => {
   const response = await fetch(apiPoint + `dbs/`, {
     method: 'POST',
     headers: {
@@ -38,7 +38,7 @@ const createDB = async (getAuthToken, { payload, ...props }) => {
   }
 };
 
-const editDB = async (getAuthToken, { id, payload, ...props }) => {
+const editDB = async ({ id, payload, ...props }) => {
   const response = await fetch(apiPoint + `dbs/${id}/`, {
     method: 'PATCH',
     headers: {
@@ -55,7 +55,7 @@ const editDB = async (getAuthToken, { id, payload, ...props }) => {
   }
 };
 
-const deleteDB = async (getAuthToken, { id, ...props }) => {
+const deleteDB = async ({ id, ...props }) => {
   const response = await fetch(apiPoint + `dbs/${id}/`, {
     method: 'DELETE',
     headers: {
@@ -71,11 +71,11 @@ const deleteDB = async (getAuthToken, { id, ...props }) => {
   }
 };
 
-const databaseApiInitializer = (getAuthToken) => ({
-  setWorkingDB: tryCatchWrapper(getAuthToken)(setWorkingDB),
-  createDB: tryCatchWrapper(getAuthToken)(createDB),
-  editDB: tryCatchWrapper(getAuthToken)(editDB),
-  deleteDB: tryCatchWrapper(getAuthToken)(deleteDB),
-});
+const databaseApi = {
+  setWorkingDB: tryCatchWrapper(setWorkingDB),
+  createDB: tryCatchWrapper(createDB),
+  editDB: tryCatchWrapper(editDB),
+  deleteDB: tryCatchWrapper(deleteDB),
+};
 
-export default databaseApiInitializer;
+export default databaseApi;

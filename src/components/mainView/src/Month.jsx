@@ -20,34 +20,29 @@ const Month = ({ month, ...props }) => {
   };
 
   return (
-    <div>
-      <div className='d-flex align-items-center'>
-        <div className='px-1'>
-          <Button
-            size='sm'
-            variant={isWorkingMonth ? 'success' : 'primary'}
-            className='px-2 py-1'
-            style={{ width: 80 }}
-            disabled={isLoading || isWorkingMonth}
-            onClick={() => onClick(name)}
-          >
-            {isWorkingMonth ? 'selected' : 'select'}
-          </Button>
-        </div>
-        <div className='flex-grow-1'>
-          <div className='d-flex align-items-center justify-content-between'>
-            <div className='px-auto'>{formatMonth(name)}</div>
-            <div className='px-auto'>{income}</div>
-            <div className='px-auto'>{current_money}</div>
-          </div>
-        </div>
-      </div>
+    <tr>
+      <td>
+        <Button
+          size='sm'
+          variant={isWorkingMonth ? 'success' : 'primary'}
+          className='px-2 py-1'
+          style={{ width: 80 }}
+          disabled={isLoading || isWorkingMonth}
+          onClick={() => onClick(name)}
+        >
+          {isWorkingMonth ? 'selected' : 'select'}
+        </Button>
+      </td>
+      <td>{formatMonth(name)}</td>
+      <td>{income}</td>
+      <td>{current_money}</td>
+
       {warn && (
         <Alert className='m-0 py-1 text-center ' variant='warning'>
           {warn}
         </Alert>
       )}
-    </div>
+    </tr>
   );
 };
 

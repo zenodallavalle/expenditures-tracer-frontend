@@ -20,4 +20,6 @@ const newStore = () =>
     composeWithDevTools(applyMiddleware(thunkMiddleware))
   );
 
-export default newStore;
+const store = newStore();
+
+export default store;

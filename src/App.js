@@ -4,6 +4,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import Container from 'react-bootstrap/Container';
+
 import { databaseApi, userApi } from 'api';
 import { userSelectors } from 'rdx/user';
 import { localInfoSelectors } from 'rdx/localInfo';
@@ -41,7 +43,6 @@ const App = (props) => {
       try {
         const fullDB = await databaseApi.setWorkingDB({
           id: dbId,
-          workingMonth,
         });
         dispatch({ type: 'expenditures/dataRetrieved', payload: fullDB });
         dispatch({ type: 'database/dataRetrieved', payload: fullDB });
@@ -55,7 +56,7 @@ const App = (props) => {
         // {detail:'Service unreachable'}
       }
     },
-    [dispatch, workingDB, workingMonth]
+    [dispatch, workingDB]
   );
 
   useEffect(() => {
@@ -107,9 +108,11 @@ const App = (props) => {
       <Alerts />
 
       <div className='safe-down'>
-        <div>
-          <MainView />
-        </div>
+        <Container fluid>
+          <div style={{ maxWidth: 720 }} className='mx-auto'>
+            <MainView />
+          </div>
+        </Container>
       </div>
 
       <ExpenditureOffcanvas

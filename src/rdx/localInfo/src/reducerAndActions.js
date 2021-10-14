@@ -1,8 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { getCurrentMonth } from 'utils';
+
+const currentMonth = getCurrentMonth();
 
 const initialState = {
   panel: { current: 'prospect', previous: null },
-  currentMonth: null,
+  workingMonth: currentMonth,
 };
 
 const slice = createSlice({

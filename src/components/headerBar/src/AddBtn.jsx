@@ -1,7 +1,7 @@
 import { InlineIcon } from '@iconify/react';
 import plusCircle16 from '@iconify/icons-octicon/plus-circle-16';
 import calendar16 from '@iconify/icons-octicon/calendar-16';
-import { AutoBlurButton } from 'utils';
+import { AutoBlurButton, getCurrentMonth } from 'utils';
 
 import { userSelectors } from 'rdx/user';
 
@@ -14,8 +14,12 @@ const UpperRightBtn = ({ onAdd = () => {}, props }) => {
   const isLoading = useSelector(mixinSelectors.isLoading());
   const currentPanel = useSelector(localInfoSelectors.getCurrentPanel());
   const isAuthenticated = useSelector(userSelectors.isAuthenticated());
+  const currentMonth = getCurrentMonth();
 
-  const resetWorkingMonth = () => dispatch({ type: 'workingMonth/reset' });
+  const resetWorkingMonth = () => {
+    dispatch({ type: 'localInfo/setWorkingMonth', payload: currentMonth });
+    dispatch({ type: 'localInfo/panelChanged', payload: 'prospect' });
+  };
 
   return (
     currentPanel !== 'user' && (

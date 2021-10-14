@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import FormControl from 'react-bootstrap/FormControl';
 
 import { categoryApi } from 'api';
-import { AutoBlurButton, FunctionalitiesMenu } from 'utils';
+import { AutoBlurButton, FunctionalitiesMenu, LoadingImg } from 'utils';
 import { databaseSelectors } from 'rdx/database';
 import { localInfoSelectors } from 'rdx/localInfo';
 
@@ -94,12 +94,32 @@ export const AddCategory = ({ ...props }) => {
                 disabled={isLoading}
               />
             </div>
+            {messages.name && (
+              <div className='text-danger'>{messages.name}</div>
+            )}
           </div>
 
-          <div>
-            <AutoBlurButton variant='danger' onClick={onCancel}>
-              Cancel
-            </AutoBlurButton>
+          <div className='d-flex align-items-baseline py-1'>
+            <div className='pe-1 flex-grow-1'>
+              <AutoBlurButton
+                variant='danger'
+                className='w-100'
+                onClick={onCancel}
+                disabled={isLoading}
+              >
+                Cancel
+              </AutoBlurButton>
+            </div>
+            <div className='ps-1 flex-grow-1'>
+              <AutoBlurButton
+                variant='success'
+                className='w-100'
+                onClick={onAdded}
+                disabled={isLoading}
+              >
+                {isLoading ? <LoadingImg maxWidth={25} /> : 'Save'}
+              </AutoBlurButton>
+            </div>
           </div>
         </div>
       ) : (

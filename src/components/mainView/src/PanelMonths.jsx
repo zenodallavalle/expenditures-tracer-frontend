@@ -1,7 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import ListGroup from 'react-bootstrap/ListGroup';
+import Table from 'react-bootstrap/Table';
+import { InlineIcon } from '@iconify/react';
+import calendar16 from '@iconify/icons-octicon/calendar-16';
+import package16 from '@iconify/icons-octicon/package-16';
+import packageDependencies16 from '@iconify/icons-octicon/package-dependencies-16';
 
 import { databaseSelectors } from 'rdx/database';
 
@@ -20,13 +24,27 @@ const Months = ({ ...props }) => {
   return (
     <div>
       {months.length > 0 && (
-        <ListGroup variant='flush'>
-          {months.map((month) => (
-            <ListGroup.Item key={`month_${month.month}`}>
-              <Month month={month} />
-            </ListGroup.Item>
-          ))}
-        </ListGroup>
+        <Table className='text-center'>
+          <thead>
+            <tr>
+              <th></th>
+              <th>
+                <InlineIcon icon={calendar16} />
+              </th>
+              <th>
+                <InlineIcon icon={packageDependencies16} />
+              </th>
+              <th>
+                <InlineIcon icon={package16} />
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {months.map((month) => (
+              <Month month={month} key={`month_${month.month}`} />
+            ))}
+          </tbody>
+        </Table>
       )}
 
       <div className='text-center'>

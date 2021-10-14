@@ -1,4 +1,4 @@
-import { LoadingImg, AutoBlurButton } from 'utils';
+import { AutoBlurButton } from 'utils';
 import { databaseSelectors } from 'rdx/database';
 import { useState } from 'react';
 import Alert from 'react-bootstrap/Alert';
@@ -35,6 +35,7 @@ const PanelProspect = (props) => {
               <AutoBlurButton
                 onClick={() => setShowEditMoneyIncomeOffcavas(true)}
                 className='py-0'
+                disabled={isLoading}
               >
                 <InlineIcon icon={pencil16} />
               </AutoBlurButton>
@@ -90,152 +91,6 @@ const PanelProspect = (props) => {
           ))
         )}
       </div>
-
-      <MoneyIncomeOffcanvas
-        show={showEditMoneyIncomeOffcavas}
-        onHide={() => setShowEditMoneyIncomeOffcavas(false)}
-      />
-    </div>
-  );
-  return (
-    <div>
-      <div className='border rounded border-primary p-1 mt-1 mb-3'>
-        <div className='pb-1'>
-          <div className='d-flex rounded bg-primary text-light'>
-            <div className='flex-grow-1 px-1'>Overall prosepct</div>
-            <div>
-              <AutoBlurButton
-                onClick={() => setShowEditMoneyIncomeOffcavas(true)}
-                className='py-0'
-              >
-                <InlineIcon icon={pencil16} />
-              </AutoBlurButton>
-            </div>
-          </div>
-        </div>
-
-        <div className='p-1'>
-          <div className='d-flex flex-row justify-content-between'>
-            <div className='flex-grow-1'>
-              <div className='d-flex flex-column text-start'>
-                <div className='fst-italic fw-light small'>Income</div>
-                <div>{prospect.income}</div>
-              </div>
-            </div>
-            <div className='flex-grow-1'>
-              <div className='d-flex flex-column text-end'>
-                <div className='fst-italic fw-light small'>Current money</div>
-                <div>{prospect.actual_money}</div>
-              </div>
-            </div>
-          </div>
-
-          <div className='d-flex flex-row justify-content-between'>
-            <div className='flex-grow-1'>
-              <div className='d-flex flex-column  text-start'>
-                <div className='fst-italic fw-light small'>
-                  Expected expenditure
-                </div>
-                <div>{prospect.expected_expenditure}</div>
-              </div>
-            </div>
-            <div className='flex-grow-1'>
-              <div className='d-flex flex-column text-center'>
-                <div className='fst-italic fw-light small'>Delta</div>
-                <div className={retrieveClassForDeltaDiv(prospect.delta)}>
-                  {prospect.delta}
-                </div>
-              </div>
-            </div>
-            <div className='flex-grow-1'>
-              <div className='d-flex flex-column text-end'>
-                <div className='fst-italic fw-light small'>
-                  Actual expenditure
-                </div>
-                <div>{prospect.actual_expenditure}</div>
-              </div>
-            </div>
-          </div>
-
-          <div className='d-flex flex-row justify-content-between'>
-            <div className='flex-grow-1'>
-              <div className='d-flex flex-column text-start'>
-                <div className='fst-italic fw-light small'>Expected saving</div>
-                <div>{prospect.expected_saving}</div>
-              </div>
-            </div>
-            <div className='flex-grow-1'>
-              <div className='d-flex flex-column text-center'>
-                <div className='fst-italic fw-light small'>Delta</div>
-                <div
-                  className={retrieveClassForDeltaDiv(prospect.delta_saving)}
-                >
-                  {prospect.delta_saving}
-                </div>
-              </div>
-            </div>
-            <div className='flex-grow-1'>
-              <div className='d-flex flex-column text-end'>
-                <div className='fst-italic fw-light small'>Actual saving</div>
-                <div>{prospect.actual_saving}</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {prospect.warn && (
-          <Alert variant='warning' className='mb-0 p-1 text-center small'>
-            {prospect.warn}
-          </Alert>
-        )}
-      </div>
-
-      {isLoading ? (
-        <div className='text-center'>
-          <LoadingImg />
-        </div>
-      ) : (
-        <div>
-          {!categories ? (
-            <p className='text-center'>
-              <em>
-                No categories created yet.
-                <br />
-                Please, go to actual or expected expenditure panel and create
-                one.
-              </em>
-            </p>
-          ) : (
-            categories.map(({ id, prospect }) => (
-              <Category
-                id={id}
-                key={'category_prospect' + id}
-                readOnly
-                hideProspect
-              >
-                <div className='d-flex justify-content-between p-1'>
-                  <div className='d-flex flex-column text-center'>
-                    <div className='fst-italic fw-light small'>Expected</div>
-                    <div>{prospect.expected_expenditure}</div>
-                  </div>
-
-                  <div className='d-flex flex-column text-center'>
-                    <div className='fst-italic fw-light small'>Delta</div>
-                    <div className={retrieveClassForDeltaDiv(prospect.delta)}>
-                      {prospect.delta}
-                    </div>
-                  </div>
-
-                  <div className='d-flex flex-column text-center'>
-                    <div className='fst-italic fw-light small'>Actual</div>
-                    <div>{prospect.actual_expenditure}</div>
-                  </div>
-                </div>
-              </Category>
-            ))
-          )}
-        </div>
-      )}
 
       <MoneyIncomeOffcanvas
         show={showEditMoneyIncomeOffcavas}

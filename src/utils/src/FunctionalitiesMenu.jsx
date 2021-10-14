@@ -16,23 +16,20 @@ const FunctionalitiesMenu = ({
   autocollapseTimeout,
   clickable = true,
   hideExpander = false,
+  hideCollapser = false,
   onEdit,
   isEditing = false,
   onEdited,
-  onDelete = () => {},
+  onDelete,
   askDeleteConfirm = true,
   deleteConfirmTimeout = 3000,
   ...props
 }) => {
   const [_isExtended, _setIsExtended] = useState(false);
   const isExtended =
-    passedIsExtended === undefined || passedSetIsExtended === undefined
-      ? _isExtended
-      : passedIsExtended;
+    passedIsExtended === undefined ? _isExtended : passedIsExtended;
   const setIsExtended =
-    passedIsExtended === undefined || passedSetIsExtended === undefined
-      ? _setIsExtended
-      : passedSetIsExtended;
+    passedSetIsExtended === undefined ? _setIsExtended : passedSetIsExtended;
   const [showExpander, setShowExpander] = useState(true);
 
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -177,14 +174,16 @@ const FunctionalitiesMenu = ({
       >
         <div>
           <div className='d-flex flex-row'>
-            <div>
-              <AutoBlurTransparentButton
-                onClick={toggleExpand}
-                disabled={!clickable || isEditing}
-              >
-                <InlineIcon icon={chevronRight16} />
-              </AutoBlurTransparentButton>
-            </div>
+            {!hideCollapser && (
+              <div>
+                <AutoBlurTransparentButton
+                  onClick={toggleExpand}
+                  disabled={!clickable || isEditing}
+                >
+                  <InlineIcon icon={chevronRight16} />
+                </AutoBlurTransparentButton>
+              </div>
+            )}
             {(isEditing ? onEdited : onEdit) && (
               <div>
                 <AutoBlurTransparentButton

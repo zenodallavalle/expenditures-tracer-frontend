@@ -1,14 +1,11 @@
-import { RejectedRequest, tryCatchWrapper } from './utils';
+import { getAuthToken, getWorkingMonth, tryCatchWrapper } from './src/utils';
+import RejectedRequest from './src/RejectedRequest';
+
 const apiPoint = process.env.REACT_APP_API_ROOT;
 
-const createCash = async (
-  getAuthToken,
-  { payload, workingMonth, ...props }
-) => {
-  const url = new URL(apiPoint + `cash/`);
-  if (workingMonth) {
-    url.searchParams.append('month', workingMonth);
-  }
+const createExpenditure = async ({ payload, ...props }) => {
+  const url = new URL(apiPoint + `expenditures/`);
+  url.searchParams.append('month', getWorkingMonth());
   const response = await fetch(url, {
     method: 'POST',
     headers: {
@@ -25,14 +22,9 @@ const createCash = async (
   }
 };
 
-const editCash = async (
-  getAuthToken,
-  { id, payload, workingMonth, ...props }
-) => {
-  const url = new URL(apiPoint + `cash/${id}/`);
-  if (workingMonth) {
-    url.searchParams.append('month', workingMonth);
-  }
+const editExpenditure = async ({ id, payload, ...props }) => {
+  const url = new URL(apiPoint + `expenditures/${id}/`);
+  url.searchParams.append('month', getWorkingMonth());
   const response = await fetch(url, {
     method: 'PATCH',
     headers: {
@@ -49,11 +41,9 @@ const editCash = async (
   }
 };
 
-const deleteCash = async (getAuthToken, { id, workingMonth, ...props }) => {
-  const url = new URL(apiPoint + `cash/${id}/`);
-  if (workingMonth) {
-    url.searchParams.append('month', workingMonth);
-  }
+const deleteExpenditure = async ({ id, ...props }) => {
+  const url = new URL(apiPoint + `expenditures/${id}/`);
+  url.searchParams.append('month', getWorkingMonth());
   const response = await fetch(url, {
     method: 'DELETE',
     headers: {
@@ -69,10 +59,10 @@ const deleteCash = async (getAuthToken, { id, workingMonth, ...props }) => {
   }
 };
 
-const cashApiInitializer = (getAuthToken) => ({
-  createCash: tryCatchWrapper(getAuthToken)(createCash),
-  editCash: tryCatchWrapper(getAuthToken)(editCash),
-  deleteCash: tryCatchWrapper(getAuthToken)(deleteCash),
-});
+const expenditureApi = {
+  createExpenditure: tryCatchWrapper(createExpenditure),
+  editExpenditure: tryCatchWrapper(editExpenditure),
+  deleteExpenditure: tryCatchWrapper(deleteExpenditure),
+};
 
-export default cashApiInitializer;
+export default expenditureApi;
