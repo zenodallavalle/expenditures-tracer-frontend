@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  panel: { current: 'loading', previous: null },
+  panel: { current: 'prospect', previous: null },
   currentMonth: null,
 };
 

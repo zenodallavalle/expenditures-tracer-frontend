@@ -1,8 +1,6 @@
-import { alertsSelectors } from 'rdx/alerts';
 import { useEffect, useRef } from 'react';
 import { default as RBAlert } from 'react-bootstrap/Alert';
 import { useDispatch } from 'react-redux';
-import { useSelector } from 'react-redux';
 
 const Alert = ({ alert, ...props }) => {
   const timeoutRef = useRef();
@@ -33,12 +31,4 @@ const Alert = ({ alert, ...props }) => {
   );
 };
 
-const Alerts = (props) => {
-  const alerts = useSelector(alertsSelectors.getAll());
-
-  return alerts.length === 0
-    ? null
-    : alerts.map((alert) => <Alert key={`alert_${alert.id}`} alert={alert} />);
-};
-
-export default Alerts;
+export default Alert;

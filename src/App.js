@@ -1,21 +1,19 @@
-import { useCallback, useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './CSSTransitionClasses.css';
-import './App.css';
-import Alerts from './components/alerts';
-import UpperBar from './components/upperBar';
-import BottomBar from './components/bottomBar';
-import User from './components/user';
-import Prospect from './components/mainViewComponents/prospect';
-import CategoriesView from './components/mainViewComponents/expenditures';
-import Months from './components/mainViewComponents/months';
-import AddEditExpenditureOffcanvas from './components/addEditExpenditureOffcanvas';
-import LoadingImg from 'components/LoadingImg';
+// import './App.css';
+
+import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { userSelectors } from 'rdx/user';
+
 import { databaseApi, userApi } from 'api';
+import { userSelectors } from 'rdx/user';
 import { localInfoSelectors } from 'rdx/localInfo';
 import { databaseSelectors } from 'rdx/database';
+
+import Alerts from 'components/alerts/';
+import HeaderBar from 'components/headerBar';
+import MainView from 'components/mainView';
+import BottomBar from 'components/bottomBar';
+import ExpenditureOffcanvas from 'components/expenditureEditor';
 
 const App = (props) => {
   const dispatch = useDispatch();
@@ -35,29 +33,6 @@ const App = (props) => {
     addEditExpenditureOffcanvasCounter,
     setAddExpenditureOffcanvasCounter,
   ] = useState(1);
-
-  const currentPanel = useSelector(localInfoSelectors.getCurrentPanel());
-
-  const generateMainContent = () => {
-    switch (currentPanel) {
-      case 'user':
-        return <User />;
-      case 'prospect':
-        return <Prospect />;
-      case 'months':
-        return <Months />;
-      case 'actual_expenditures':
-        return <CategoriesView />;
-      case 'expected_expenditures':
-        return <CategoriesView />;
-      default:
-        return (
-          <div className='text-center'>
-            <LoadingImg />
-          </div>
-        );
-    }
-  };
 
   const fetch = useCallback(
     async (dbId = workingDB.id) => {
@@ -124,16 +99,20 @@ const App = (props) => {
   }, [isInitial, isAvailableForRequests, initialize]);
 
   return (
-    <div>
-      <UpperBar
+    <div className='py-1'>
+      <HeaderBar
         fetch={fetch}
         onAdd={() => setShowAddExpenditureOffcanvas(true)}
       />
       <Alerts />
 
-      <div className='safe-down'>{generateMainContent()}</div>
+      <div className='safe-down'>
+        <div>
+          <MainView />
+        </div>
+      </div>
 
-      <AddEditExpenditureOffcanvas
+      <ExpenditureOffcanvas
         key={`add_expenditure_offcanvas_${addEditExpenditureOffcanvasCounter}`}
         show={showAddExpenditureOffcanvas}
         clear={() => setAddExpenditureOffcanvasCounter((x) => x + 1)}

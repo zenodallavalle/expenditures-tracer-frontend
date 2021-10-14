@@ -1,12 +1,12 @@
 import { databaseSelectors } from 'rdx/database';
 import { userSelectors } from 'rdx/user';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import Button from 'react-bootstrap/Button';
 import Alert from 'react-bootstrap/Alert';
 import { useSelector, useDispatch } from 'react-redux';
 import { databaseApi, userApi } from 'api';
-import FunctionalitiesMenu from './functionalitiesMenu';
-import LoadingImg from './LoadingImg';
+import FunctionalitiesMenu from '../../../utils/src/FunctionalitiesMenu';
+import { LoadingImg } from 'utils';
 
 const DBCell = ({ id, ...props }) => {
   const dispatch = useDispatch();
@@ -15,13 +15,19 @@ const DBCell = ({ id, ...props }) => {
   const isWorkingDB = db?.id === workingDB?.id;
   const isLoading = useSelector(userSelectors.isLoading());
   const [instance, setInstance] = useState({ name: db.name });
+  const [isEditing, setIsEditing] = useState(false);
+
+  const ref = useRef();
+  const collapseFunctionalityMenuRef = useRef();
+
   useEffect(() => {
     setInstance({ name: db.name });
   }, [db]);
-  const [isEditing, setIsEditing] = useState(false);
 
-  const editStarted = () => {
+  const onEdit = (e, collapseFunctionalityMenu) => {
+    console.log(collapseFunctionalityMenu);
     setIsEditing(true);
+    collapseFunctionalityMenuRef.current = collapseFunctionalityMenu;
   };
 
   const onChange = (e) =>
@@ -29,6 +35,18 @@ const DBCell = ({ id, ...props }) => {
       ...instance,
       [e.target.name]: e.target.value,
     }));
+
+  const handleOk = (e) => {
+    if (e.key === 'Enter') {
+      onEdited();
+    }
+  };
+
+  useEffect(() => {
+    if (isEditing) {
+      ref.current?.focus();
+    }
+  }, [isEditing]);
 
   const onSetWorkingDB = async () => {
     dispatch({ type: 'database/isLoading' });
@@ -48,7 +66,7 @@ const DBCell = ({ id, ...props }) => {
     }
   };
 
-  const editEnded = async () => {
+  const onEdited = async (e) => {
     dispatch({ type: 'user/isLoading' });
     try {
       const fullDB = await databaseApi.editDB({ id: db.id, payload: instance });
@@ -68,6 +86,10 @@ const DBCell = ({ id, ...props }) => {
       setInstance(db);
     }
     setIsEditing(false);
+    if (collapseFunctionalityMenuRef.current) {
+      collapseFunctionalityMenuRef.current();
+      collapseFunctionalityMenuRef.current = null;
+    }
   };
 
   const onDelete = async () => {
@@ -105,6 +127,8 @@ const DBCell = ({ id, ...props }) => {
         <div className='flex-grow-1'>
           {isEditing ? (
             <input
+              onKeyPress={handleOk}
+              ref={ref}
               className='mx-3'
               type='text'
               name='name'
@@ -117,11 +141,11 @@ const DBCell = ({ id, ...props }) => {
         </div>
         <div>
           <FunctionalitiesMenu
-            available={!isLoading}
-            show={false}
-            onEdit={editStarted}
-            onEditFinished={editEnded}
-            onDeleteConfirmed={onDelete}
+            clickable={!isLoading}
+            autocollapseTimeout={4000}
+            onEdit={onEdit}
+            isEditing={isEditing}
+            onDelete={onDelete}
             confirmDeleteTimeout={4000}
           />
         </div>

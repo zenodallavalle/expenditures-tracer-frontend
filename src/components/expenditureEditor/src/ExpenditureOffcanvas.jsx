@@ -4,7 +4,7 @@ import Button from 'react-bootstrap/Button';
 import { useSelector } from 'react-redux';
 import { expendituresSelectors } from 'rdx/expenditures';
 import { databaseSelectors } from 'rdx/database';
-import LoadingImg from './LoadingImg';
+import { LoadingImg } from 'utils';
 import { expenditureApi } from 'api';
 import { useDispatch } from 'react-redux';
 
@@ -45,7 +45,7 @@ const dateToLocaleISOString = (date = new Date()) => {
   return localDate.toISOString().slice(0, -8);
 };
 
-const AddEditExpenditureOffcanvas = ({
+const ExpenditureOffcanvas = ({
   show = false,
   onHide = () => {},
   clear = () => {},
@@ -104,7 +104,6 @@ const AddEditExpenditureOffcanvas = ({
   const onSubmit = async (e) => {
     e.preventDefault();
     e.stopPropagation();
-    console.log('instance', instance);
     if (id) {
       let isValid = true;
       const msgs = {};
@@ -406,4 +405,4 @@ const AddEditExpenditureOffcanvas = ({
   );
 };
 
-export default AddEditExpenditureOffcanvas;
+export default ExpenditureOffcanvas;

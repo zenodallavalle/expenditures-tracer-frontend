@@ -1,22 +1,17 @@
 import { useCallback } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+
+import { AutoBlurButton } from 'utils';
 import { InlineIcon } from '@iconify/react';
 import sync16 from '@iconify/icons-octicon/sync-16';
-import Button from 'react-bootstrap/Button';
 
-import { userSelectors } from 'rdx/user';
-import { databaseSelectors, databaseActions } from 'rdx/database';
-import { expendituresSelectors, expendituresActions } from 'rdx/expenditures';
-
-import { useSelector, useDispatch } from 'react-redux';
+import { mixinSelectors } from 'rdx';
+import { databaseActions } from 'rdx/database';
+import { expendituresActions } from 'rdx/expenditures';
 
 const RefreshBtn = ({ fetch = () => {}, ...props }) => {
   const dispatch = useDispatch();
-  const isLoadingUser = useSelector(userSelectors.isLoading());
-  const isLoadingDatabase = useSelector(databaseSelectors.isLoading(false));
-  const isLoadingExpenditures = useSelector(
-    expendituresSelectors.isLoading(false)
-  );
-  const isLoading = isLoadingUser || isLoadingDatabase || isLoadingExpenditures;
+  const isLoading = useSelector(mixinSelectors.isLoading());
 
   const onRefresh = useCallback(async () => {
     const fullDB = await fetch();
@@ -27,14 +22,14 @@ const RefreshBtn = ({ fetch = () => {}, ...props }) => {
   }, [fetch, dispatch]);
 
   return (
-    <Button
+    <AutoBlurButton
       variant='outline-primary'
-      className='mirror mr-1'
+      className='mirror'
       onClick={onRefresh}
       disabled={isLoading}
     >
       <InlineIcon icon={sync16} className={isLoading ? 'spin' : ''} />
-    </Button>
+    </AutoBlurButton>
   );
 };
 export default RefreshBtn;

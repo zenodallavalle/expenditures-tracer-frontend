@@ -26,7 +26,8 @@ userApi.tryAuthToken = createAsyncThunk(
   'user/tryAuthLogin',
   async ({ ...props } = {}, thunkAPI) => {
     try {
-      const response = await fetch(apiPoint + 'api-token-auth/', {
+      const url = new URL(apiPoint + 'api-token-auth/');
+      const response = await fetch(url, {
         headers: { Authorization: `Token ${authToken}` },
       });
       if (!response.ok) {
@@ -56,7 +57,8 @@ userApi.login = createAsyncThunk(
   'user/login',
   async ({ username, password }, thunkAPI) => {
     try {
-      const response = await fetch(apiPoint + 'api-token-auth/', {
+      const url = new URL(apiPoint + 'api-token-auth/');
+      const response = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),
@@ -77,7 +79,7 @@ userApi.login = createAsyncThunk(
       }
     } catch (e) {
       console.error(e);
-      throw Error('serviceUnreachable');
+      throw Error('Service unreachable');
     }
   }
 );

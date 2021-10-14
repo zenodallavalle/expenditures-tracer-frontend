@@ -1,4 +1,5 @@
 import LoadingGif from 'media/img/loading256.gif';
+
 const getPositionClassName = (position) => ` text-${position}`;
 
 const LoadingImg = ({

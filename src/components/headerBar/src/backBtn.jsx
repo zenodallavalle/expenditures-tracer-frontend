@@ -27,7 +27,6 @@ const BackBtn = (props) => {
   return previousPanel && isAuthenticated && previousPanel !== 'loading' ? (
     <Button
       variant='outline-primary'
-      className='mr-1'
       onClick={onBack}
       disabled={
         isLoading ||

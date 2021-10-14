@@ -1,11 +1,10 @@
+import { useDispatch, useSelector } from 'react-redux';
+
+import { AutoBlurButton } from 'utils';
+
+import { mixinSelectors } from 'rdx';
 import { databaseSelectors } from 'rdx/database';
-import { expendituresSelectors } from 'rdx/expenditures';
 import { localInfoActions, localInfoSelectors } from 'rdx/localInfo';
-import { userSelectors } from 'rdx/user';
-import React from 'react';
-import Button from 'react-bootstrap/Button';
-import { useDispatch } from 'react-redux';
-import { useSelector } from 'react-redux';
 
 const buttons = [
   {
@@ -28,37 +27,30 @@ const buttons = [
 
 const BottomBar = (props) => {
   const dispatch = useDispatch();
-  const isLoadingUser = useSelector(userSelectors.isLoading());
-  const isLoadingDatabase = useSelector(databaseSelectors.isLoading());
-  const isLoadingExpenditures = useSelector(expendituresSelectors.isLoading());
-  const isLoading = isLoadingUser || isLoadingDatabase || isLoadingExpenditures;
+  const isLoading = useSelector(mixinSelectors.isLoading());
   const workingDB = useSelector(databaseSelectors.getWorkingDB());
   const currentPanel = useSelector(localInfoSelectors.getCurrentPanel());
-  const setPanel = (localInfo) =>
-    dispatch(localInfoActions.panelChanged(localInfo));
+
+  const setPanel = (to) => dispatch(localInfoActions.panelChanged(to));
 
   return (
     <footer className='footer fixed-bottom bg-white safe-fixed-x safe-fixed-bottom'>
-      <div className='row pt-1'>
-        <div className='col pr-0' style={{ maxWidth: 2 }}></div>
+      <div className='d-flex flex-row pt-1'>
         {buttons.map(({ name, displayedName }) => (
-          <div
-            key={`bottom_button_${name}`}
-            className='col text-center pl-0 pr-0'
-          >
-            <Button
+          <div key={`bottom_button_${name}`} className='flex-grow-1'>
+            <AutoBlurButton
               variant={
                 currentPanel === name ? 'secondary' : 'outline-secondary'
               }
-              className='btn-sm w-100 '
+              size='sm'
+              className='w-100'
               onClick={() => setPanel(name)}
               disabled={isLoading || !workingDB}
             >
               {displayedName}
-            </Button>
+            </AutoBlurButton>
           </div>
         ))}
-        <div className='col pl-0' style={{ maxWidth: 2 }}></div>
       </div>
     </footer>
   );
