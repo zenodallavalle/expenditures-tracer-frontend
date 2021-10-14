@@ -1,7 +1,6 @@
-import dateFormat from 'dateformat';
+import dateFormat from './dateFormatI18n';
 
 const formatDate = (date) => {
-  //console.log(date, typeof date);
   if (!date) return '';
   const d = new Date(date);
   const current_d = new Date();

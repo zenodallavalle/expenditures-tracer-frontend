@@ -18,16 +18,13 @@ const DBCell = ({ id, ...props }) => {
   const [isEditing, setIsEditing] = useState(false);
 
   const ref = useRef();
-  const collapseFunctionalityMenuRef = useRef();
 
   useEffect(() => {
     setInstance({ name: db.name });
   }, [db]);
 
-  const onEdit = (e, collapseFunctionalityMenu) => {
-    console.log(collapseFunctionalityMenu);
+  const onEdit = (e) => {
     setIsEditing(true);
-    collapseFunctionalityMenuRef.current = collapseFunctionalityMenu;
   };
 
   const onChange = (e) =>
@@ -66,7 +63,7 @@ const DBCell = ({ id, ...props }) => {
     }
   };
 
-  const onEdited = async (e) => {
+  const onEdited = async (e, onSuccess, onFail) => {
     dispatch({ type: 'user/isLoading' });
     try {
       const fullDB = await databaseApi.editDB({ id: db.id, payload: instance });
@@ -80,16 +77,14 @@ const DBCell = ({ id, ...props }) => {
         dispatch({ type: 'expenditures/dataUpdated', payload: fullDB });
         dispatch({ type: 'database/dataUpdated', payload: fullDB });
       }
+      onSuccess();
     } catch (e) {
       console.log('error', e);
       // handle error e, that is an instance of RequestRejected, defined in api module.
       setInstance(db);
+      onFail();
     }
     setIsEditing(false);
-    if (collapseFunctionalityMenuRef.current) {
-      collapseFunctionalityMenuRef.current();
-      collapseFunctionalityMenuRef.current = null;
-    }
   };
 
   const onDelete = async () => {

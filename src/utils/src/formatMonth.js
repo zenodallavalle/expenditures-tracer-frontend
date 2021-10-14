@@ -1,4 +1,4 @@
-import dateFormat from 'dateformat';
+import dateFormat from './dateFormatI18n';
 
 const formatMonth = (month) => {
   //console.log(month);
