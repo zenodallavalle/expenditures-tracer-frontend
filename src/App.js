@@ -46,10 +46,6 @@ const App = (props) => {
         });
         dispatch({ type: 'expenditures/dataRetrieved', payload: fullDB });
         dispatch({ type: 'database/dataRetrieved', payload: fullDB });
-        dispatch({
-          type: 'localInfo/setWorkingMonth',
-          payload: fullDB.months_list.find((m) => m.is_working)?.month,
-        });
         return fullDB;
       } catch (e) {
         // handle error e. Is an object that can be the json received from server or an object containing
@@ -86,11 +82,11 @@ const App = (props) => {
         if (fullDB) {
           localStorage.setItem('workingDBId', fullDB.id);
           dispatch({ type: 'localInfo/panelChanged', payload: 'prospect' });
+          return;
         }
       }
-    } else {
-      dispatch({ type: 'localInfo/panelChanged', payload: 'user' });
     }
+    dispatch({ type: 'localInfo/panelChanged', payload: 'user' });
   }, [fetch, dispatch, workingDB]);
 
   useEffect(() => {

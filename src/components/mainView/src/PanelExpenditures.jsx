@@ -16,7 +16,12 @@ const PanelExpenditures = (props) => {
       return <LoadingDiv className='text-center w-100' maxWidth={100} />;
     } else {
       return (
-        <div className='text-center fst-italic'>No categories created yet.</div>
+        <div>
+          <div className='text-center fst-italic mb-2'>
+            No categories created yet.
+          </div>
+          <AddCategory />
+        </div>
       );
     }
   } else {

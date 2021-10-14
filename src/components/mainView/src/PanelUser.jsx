@@ -7,6 +7,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { databaseApi, userApi } from 'api';
 import FunctionalitiesMenu from '../../../utils/src/FunctionalitiesMenu';
 import { LoadingImg } from 'utils';
+import Database from './Database';
+import { AddDatabase } from './Database';
 
 const DBCell = ({ id, ...props }) => {
   const dispatch = useDispatch();
@@ -53,10 +55,6 @@ const DBCell = ({ id, ...props }) => {
       dispatch({ type: 'database/dataRetrieved', payload: fullDB });
       localStorage.setItem('workingDBId', db.id);
       dispatch({ type: 'localInfo/panelChanged', payload: 'prospect' });
-      dispatch({
-        type: 'localInfo/setWorkingMonth',
-        payload: fullDB.months_list.find((m) => m.is_working).month,
-      });
     } catch (e) {
       // handle error e. Is an object that can be the json received from server or an object containing
       // {detail:'Service unreachable'}
@@ -180,10 +178,6 @@ const AddDBCell = ({ ...props }) => {
         dispatch({ type: 'database/dataRetrieved', payload: fullDB });
         localStorage.setItem('workingDBId', fullDB.id);
         dispatch({ type: 'localInfo/panelChanged', payload: 'prospect' });
-        dispatch({
-          type: 'localInfo/setWorkingMonth',
-          payload: fullDB.months_list.find((m) => m.is_working).month,
-        });
       }
     } catch (e) {
       console.log('error', e);
@@ -298,7 +292,7 @@ const User = ({ ...props }) => {
             {user.dbs.length > 0 && (
               <ul className='list-group'>
                 {user.dbs.map((db) => (
-                  <DBCell key={`db_${db.id}`} id={db.id} />
+                  <Database key={`db_${db.id}`} id={db.id} />
                 ))}
               </ul>
             )}
@@ -309,7 +303,7 @@ const User = ({ ...props }) => {
                 </p>
               </div>
             )}
-            <AddDBCell />
+            <AddDatabase />
           </div>
           <div className='text-center'>
             <Button

@@ -23,11 +23,23 @@ const UserBtn = (props) => {
     () => dispatch(localInfoActions.panelChanged('user')),
     [dispatch]
   );
+
+  const color =
+    !isAuthenticated && !workingDB
+      ? 'danger'
+      : isAuthenticated && !workingDB
+      ? 'warning'
+      : 'primary';
+  let btnVariant = '';
+  if (currentPanel !== 'user') {
+    btnVariant = btnVariant + 'outline-';
+  }
+
+  btnVariant = btnVariant + color;
+
   return (
     <AutoBlurButton
-      variant={
-        'outline-' + (isAuthenticated && workingDB ? 'primary' : 'danger')
-      }
+      variant={btnVariant}
       className='px-1 mx-1'
       onClick={onClick}
       disabled={isLoading || currentPanel === 'user'}

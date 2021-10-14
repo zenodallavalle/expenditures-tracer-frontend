@@ -111,7 +111,7 @@ const CurrentMoney = ({ ...props }) => {
               />
               {message && <div className='text-danger'>{message}</div>}
             </div>
-          ) : (
+          ) : currentMoney.value ? (
             <div>
               <div>
                 {formattedValue ? (
@@ -131,6 +131,8 @@ const CurrentMoney = ({ ...props }) => {
                 )}
               </div>
             </div>
+          ) : (
+            <div className='text-center'>Register current money now</div>
           )}
         </div>
 

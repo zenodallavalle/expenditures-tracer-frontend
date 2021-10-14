@@ -3,30 +3,35 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import FormControl from 'react-bootstrap/FormControl';
 
-import { cashApi } from 'api';
-import { LoadingImg, AutoBlurButton, FunctionalitiesMenu } from 'utils';
+import { databaseApi } from 'api';
+import {
+  LoadingImg,
+  AutoBlurButton,
+  FunctionalitiesMenu,
+  getCurrentMonth,
+} from 'utils';
+import { userSelectors } from 'rdx/user';
 import { databaseSelectors } from 'rdx/database';
 
-const emptyCash = { name: '', value: '' };
+const emptyDatabase = { name: '' };
 
-export const AddIncome = ({ ...props }) => {
+export const AddDatabase = ({ ...props }) => {
   const dispatch = useDispatch();
-  const isLoading = useSelector(databaseSelectors.isLoading());
-  const workingDB = useSelector(databaseSelectors.getWorkingDB());
+  const isLoading = useSelector(userSelectors.isLoading());
+  const dbsCount = useSelector(userSelectors.countDBS());
 
-  const [instance, setInstance] = useState(emptyCash);
+  const [instance, setInstance] = useState(emptyDatabase);
   const [messages, setMessages] = useState({});
   const [isAdding, setIsAdding] = useState(false);
 
   const refName = useRef();
-  const refValue = useRef();
 
   const onAdd = () => setIsAdding(true);
 
   const onCancel = () => {
     setIsAdding(false);
     setMessages({});
-    setInstance(emptyCash);
+    setInstance(emptyDatabase);
   };
 
   const onChange = (e) => {
@@ -38,23 +43,13 @@ export const AddIncome = ({ ...props }) => {
 
   const onKeyDown = (e) => {
     if (e.key === 'Enter') {
-      if (e.target.name === 'value') {
-        refName?.current.focus();
-      } else {
-        onAdded();
-      }
+      onAdded();
     }
   };
 
   const validate = () => {
     let isValid = true;
-    const floated = parseFloat(instance.value);
     const updatedMessages = {};
-    if (isNaN(floated) || floated <= 0) {
-      updatedMessages.value =
-        'Invalid value, must be a positive decimal number.';
-      isValid = false;
-    }
     if (!instance.name || !instance.name.trim()) {
       updatedMessages.name = 'Invalid name.';
       isValid = false;
@@ -65,20 +60,25 @@ export const AddIncome = ({ ...props }) => {
 
   const onAdded = async () => {
     if (validate()) {
-      dispatch({ type: 'database/isLoading' });
+      dispatch({ type: 'user/isLoading' });
       try {
-        const payload = {
-          ...instance,
-          value: parseFloat(instance.value),
-          db: workingDB.id,
-          income: true,
+        const fullDB = await databaseApi.createDB({ payload: instance });
+        const addedDB = {
+          id: fullDB.id,
+          name: fullDB.name,
+          users: fullDB.users,
         };
-        const fullDB = await cashApi.createCash({ payload });
-        dispatch({ type: 'database/dataUpdated', payload: fullDB });
+        dispatch({ type: 'user/dbAdded', payload: addedDB });
+        if (dbsCount === 0) {
+          dispatch({ type: 'expenditures/dataRetrieved', payload: fullDB });
+          dispatch({ type: 'database/dataRetrieved', payload: fullDB });
+          localStorage.setItem('workingDBId', fullDB.id);
+          dispatch({ type: 'localInfo/panelChanged', payload: 'prospect' });
+        }
         setMessages({});
-        setInstance(emptyCash);
+        setInstance(emptyDatabase);
       } catch (e) {
-        dispatch({ type: 'database/loaded' });
+        dispatch({ type: 'user/loaded' });
       }
       setIsAdding(false);
     }
@@ -86,7 +86,7 @@ export const AddIncome = ({ ...props }) => {
 
   useEffect(() => {
     if (isAdding) {
-      refValue.current?.focus();
+      refName.current?.focus();
     }
   }, [isAdding]);
 
@@ -94,24 +94,7 @@ export const AddIncome = ({ ...props }) => {
     <div>
       {isAdding ? (
         <div>
-          <h5 className='text-center'>Register new income</h5>
-
-          <div className='d-flex align-items-baseline py-1'>
-            <div style={{ width: 50 }}>Value</div>
-            <div className='flex-grow-1'>
-              <FormControl
-                name='value'
-                value={instance.value}
-                onChange={onChange}
-                onKeyDown={onKeyDown}
-                ref={refValue}
-                disabled={isLoading}
-              />
-            </div>
-          </div>
-          {messages?.value && (
-            <div className='text-danger'>{messages.value} </div>
-          )}
+          <h5 className='text-center'>Create new database</h5>
 
           <div className='d-flex align-items-baseline py-1'>
             <div style={{ width: 50 }}>Name</div>
@@ -155,51 +138,61 @@ export const AddIncome = ({ ...props }) => {
         </div>
       ) : (
         <AutoBlurButton className='w-100' onClick={onAdd} variant='success'>
-          Register new income
+          Create new database
         </AutoBlurButton>
       )}
     </div>
   );
 };
 
-const Income = ({ id, ...props }) => {
+const Database = ({ id, ...props }) => {
   const dispatch = useDispatch();
-  const isLoading = useSelector(databaseSelectors.isLoading());
-  const income = useSelector(databaseSelectors.getIncomeById(id));
+  const isLoading = useSelector(userSelectors.isLoading());
+  const database = useSelector(userSelectors.getDBById(id));
+  const workingDB = useSelector(databaseSelectors.getWorkingDB());
+  const isWorkingDB = database?.id === workingDB?.id;
 
   const [instance, setInstance] = useState({});
   const [messages, setMessages] = useState({});
   const [isEditing, setIsEditing] = useState(false);
 
   const refName = useRef();
-  const refValue = useRef();
+
+  const onSetWorkingDB = async () => {
+    dispatch({ type: 'localInfo/setWorkingMonth', payload: getCurrentMonth() });
+    dispatch({ type: 'database/isLoading' });
+    try {
+      const fullDB = await databaseApi.setWorkingDB({ id: database.id });
+      dispatch({ type: 'expenditures/dataRetrieved', payload: fullDB });
+      dispatch({ type: 'database/dataRetrieved', payload: fullDB });
+      localStorage.setItem('workingDBId', database.id);
+      dispatch({ type: 'localInfo/panelChanged', payload: 'prospect' });
+    } catch (e) {
+      // handle error e. Is an object that can be the json received from server or an object containing
+      // {detail:'Service unreachable'}
+    }
+  };
 
   const onEdit = () => setIsEditing(true);
 
   const onChange = (e) => {
     const updatedInstance = { ...instance };
-    if (income[e.target.name] === e.target.value) {
+    if (database[e.target.name] === e.target.value) {
       delete updatedInstance[e.target.name];
     } else {
       updatedInstance[e.target.name] = e.target.value;
     }
-
     setInstance(updatedInstance);
   };
 
   const onKeyDown = (e) => {
     if (e.key === 'Enter') {
-      if (e.target.name === 'value') {
-        refName?.current.focus();
-      } else {
-        onEdited();
-      }
+      onEdited();
     }
   };
 
   const validate = () => {
     let isValid = true;
-    const floated = parseFloat(instance?.value);
     const updatedMessages = {};
     const instanceEntries = Object.entries(instance);
 
@@ -207,42 +200,39 @@ const Income = ({ id, ...props }) => {
       isValid = false;
     } else {
       instanceEntries.forEach(([k, v]) => {
-        if (k === 'value') {
-          if (isNaN(floated) || floated <= 0) {
-            updatedMessages.value =
-              'Invalid value, must be a positive decimal number.';
-            isValid = false;
-          }
-        } else {
-          if (!v || !v.trim()) {
-            updatedMessages.name = 'Invalid name.';
-            isValid = false;
-          }
+        if (!v || !v.trim()) {
+          updatedMessages.name = 'Invalid name.';
+          isValid = false;
         }
       });
     }
-
     setMessages(updatedMessages);
     return isValid;
   };
 
   const onEdited = async (e, onSuccess = () => {}, onFail = () => {}) => {
     if (validate()) {
-      dispatch({ type: 'database/isLoading' });
+      dispatch({ type: 'user/isLoading' });
       try {
-        const payload = {
-          ...instance,
+        const fullDB = await databaseApi.editDB({
+          id: database.id,
+          payload: instance,
+        });
+        const editedDB = {
+          id: fullDB.id,
+          name: fullDB.name,
+          users: fullDB.users,
         };
-        if (instance.value) {
-          payload.value = parseFloat(parseFloat(instance.value).toFixed(2));
+        dispatch({ type: 'user/dbUpdated', payload: editedDB });
+        if (isWorkingDB) {
+          dispatch({ type: 'expenditures/dataUpdated', payload: fullDB });
+          dispatch({ type: 'database/dataUpdated', payload: fullDB });
         }
-        const fullDB = await cashApi.editCash({ id, payload });
-        dispatch({ type: 'database/dataUpdated', payload: fullDB });
         setMessages({});
         setInstance({});
         onSuccess();
       } catch (e) {
-        dispatch({ type: 'database/loaded' });
+        dispatch({ type: 'user/loaded' });
         onFail();
       }
       setIsEditing(false);
@@ -257,18 +247,26 @@ const Income = ({ id, ...props }) => {
 
   useEffect(() => {
     if (isEditing) {
-      refValue.current?.focus();
+      refName.current?.focus();
     }
   }, [isEditing]);
 
   const onDelete = async (e, onSuccess = () => {}, onFail = () => {}) => {
-    dispatch({ type: 'database/isLoading' });
+    dispatch({ type: 'user/isLoading' });
     try {
-      const fullDB = await cashApi.deleteCash({ id });
-      dispatch({ type: 'database/dataUpdated', payload: fullDB });
+      await databaseApi.deleteDB({ id: database.id });
+      dispatch({ type: 'user/dbDeleted', payload: { id: database.id } });
+      if (isWorkingDB) {
+        dispatch({ type: 'expenditures/dataErased' });
+        dispatch({ type: 'database/dataErased' });
+        dispatch({
+          type: 'localInfo/setWorkingMonth',
+          payload: getCurrentMonth(),
+        });
+      }
       onSuccess();
     } catch (e) {
-      dispatch({ type: 'database/loaded' });
+      dispatch({ type: 'user/loaded' });
       onFail();
     }
   };
@@ -279,28 +277,11 @@ const Income = ({ id, ...props }) => {
         {isEditing ? (
           <div>
             <div className='d-flex align-items-baseline py-1'>
-              <div style={{ width: 50 }}>Value</div>
-              <div className='flex-grow-1'>
-                <FormControl
-                  name='value'
-                  value={instance.value || income.value}
-                  onChange={onChange}
-                  onKeyDown={onKeyDown}
-                  ref={refValue}
-                  disabled={isLoading}
-                />
-              </div>
-            </div>
-            {messages?.value && (
-              <div className='text-danger'>{messages.value} </div>
-            )}
-
-            <div className='d-flex align-items-baseline py-1'>
               <div style={{ width: 50 }}>Name</div>
               <div className='flex-grow-1'>
                 <FormControl
                   name='name'
-                  value={instance.name || income.name}
+                  value={instance.name || database.name}
                   onChange={onChange}
                   onKeyDown={onKeyDown}
                   ref={refName}
@@ -313,12 +294,19 @@ const Income = ({ id, ...props }) => {
             )}
           </div>
         ) : (
-          <div>
+          <div className='d-flex'>
             <div>
-              <span>{income?.value}</span>
-              <span className='ms-1'>€</span>
+              <AutoBlurButton
+                style={{ width: 80 }}
+                variant={isWorkingDB ? 'primary' : 'success'}
+                size='sm'
+                disabled={isWorkingDB}
+                onClick={onSetWorkingDB}
+              >
+                {isWorkingDB ? 'selected' : 'select'}
+              </AutoBlurButton>
             </div>
-            <div className='text-muted fst-italic'>{income?.name}</div>
+            <div className='flex-grow-1'>{database?.name}</div>
           </div>
         )}
       </div>
@@ -335,4 +323,4 @@ const Income = ({ id, ...props }) => {
   );
 };
 
-export default Income;
+export default Database;

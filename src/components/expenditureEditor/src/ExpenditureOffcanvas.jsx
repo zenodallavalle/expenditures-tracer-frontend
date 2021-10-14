@@ -322,7 +322,7 @@ const ExpenditureOffcanvas = ({
                     <option key={'categorydefault0'} value={0}>
                       -----
                     </option>
-                    {categories.map((c) => (
+                    {categories?.map((c) => (
                       <option
                         key={`category_add_edit_modal_${c.id}`}
                         value={c.id}
@@ -370,7 +370,7 @@ const ExpenditureOffcanvas = ({
                       <option key={'expectedexpendituredefault0'} value={0}>
                         -----
                       </option>
-                      {expectedExpenditures.map((e) => (
+                      {expectedExpenditures?.map((e) => (
                         <option key={'expectedexpenditure' + e.id} value={e.id}>
                           {e.value.toString() + '€, ' + e.name}
                         </option>
