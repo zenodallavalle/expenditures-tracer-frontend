@@ -105,8 +105,11 @@ const ExpenditureOffcanvas = ({
   };
 
   const onKeyDown = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
     if (e.key === 'Enter') {
-      switch (e.target.name === 'name') {
+      switch (e.target.name) {
         case 'name':
           return refValue.current?.focus();
         case 'value':
@@ -115,6 +118,26 @@ const ExpenditureOffcanvas = ({
           return refCategory.current?.focus();
         case 'category':
           return isExpected ? refExpected.current?.focus() : onSave();
+        case 'expected_expenditure':
+          return onSave();
+        default:
+          return;
+      }
+    }
+    if (e.key === 'Tab') {
+      switch (e.target.name) {
+        case 'name':
+          return refValue.current?.focus();
+        case 'value':
+          return refDate.current?.focus();
+        case 'date':
+          return refCategory.current?.focus();
+        case 'category':
+          return isExpected
+            ? refExpected.current?.focus()
+            : refName.current?.focus();
+        case 'expected_expenditure':
+          return refName.current?.focus();
         default:
           return;
       }

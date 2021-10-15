@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 
 import FormControl from 'react-bootstrap/FormControl';
 
@@ -9,11 +10,9 @@ import {
   AutoBlurButton,
   FunctionalitiesMenu,
   getCurrentMonth,
-  getCurrentPanel,
 } from 'utils';
 import { userSelectors } from 'rdx/user';
 import { databaseSelectors } from 'rdx/database';
-import { useHistory, useParams } from 'react-router';
 
 const emptyDatabase = { name: '' };
 
@@ -154,7 +153,6 @@ export const AddDatabase = ({ ...props }) => {
 const Database = ({ id, ...props }) => {
   const dispatch = useDispatch();
   const history = useHistory();
-  const panel = getCurrentPanel();
   const isLoading = useSelector(userSelectors.isLoading());
   const database = useSelector(userSelectors.getDBById(id));
   const workingDB = useSelector(databaseSelectors.getWorkingDB());

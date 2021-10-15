@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from 'react';
-import { useParams, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
 import PanelUser from './PanelUser';
 import PanelProspect from './PanelProspect';
@@ -10,8 +10,6 @@ import { getCurrentPanel } from 'utils';
 const MainView = () => {
   const history = useHistory();
   const panel = getCurrentPanel();
-
-  console.log(panel);
 
   const checkInvalidPanel = useCallback(
     (panel) => {
@@ -33,7 +31,7 @@ const MainView = () => {
     [history]
   );
 
-  // useEffect(() => checkInvalidPanel());
+  useEffect(() => checkInvalidPanel(panel));
 
   switch (panel) {
     case 'user':

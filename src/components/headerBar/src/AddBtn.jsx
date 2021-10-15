@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import { useHistory, useParams } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { InlineIcon } from '@iconify/react';
 import plusCircle16 from '@iconify/icons-octicon/plus-circle-16';
 import calendar16 from '@iconify/icons-octicon/calendar-16';
