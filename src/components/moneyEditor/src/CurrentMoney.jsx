@@ -108,6 +108,8 @@ const CurrentMoney = ({ ...props }) => {
                 onKeyDown={onKeyDown}
                 ref={refValue}
                 disabled={isLoading}
+                type='number'
+                step={0.01}
               />
               {message && <div className='text-danger'>{message}</div>}
             </div>

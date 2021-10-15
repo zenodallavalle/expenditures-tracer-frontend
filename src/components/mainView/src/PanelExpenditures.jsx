@@ -1,17 +1,15 @@
 import { useSelector } from 'react-redux';
-import { databaseSelectors } from 'rdx/database';
+
 import { LoadingDiv } from 'utils';
-import { localInfoSelectors } from 'rdx/localInfo';
+import { databaseSelectors } from 'rdx/database';
 
-import Category from './Category';
+import Category, { AddCategory, CategoryProspect } from './Category';
 import Expenditures from './Expenditures';
-import { AddCategory } from './Category';
 
-const PanelExpenditures = (props) => {
+const PanelExpenditures = ({ expected, ...props }) => {
   const isLoading = useSelector(databaseSelectors.isLoading());
   const categoriesIds = useSelector(databaseSelectors.getCategoriesIds());
-  const currentPanel = useSelector(localInfoSelectors.getCurrentPanel());
-  if (categoriesIds.length === 0) {
+  if (!categoriesIds?.length) {
     if (isLoading) {
       return <LoadingDiv className='text-center w-100' maxWidth={100} />;
     } else {
@@ -28,8 +26,12 @@ const PanelExpenditures = (props) => {
     return (
       <div>
         {categoriesIds.map((id) => (
-          <Category id={id} key={`category_${currentPanel}_${id}`}>
-            <Expenditures categoryId={id} />
+          <Category
+            id={id}
+            key={`category_${expected ? 'expected' : 'actual'}_${id}`}
+          >
+            <Expenditures expected={expected} categoryId={id} />
+            <CategoryProspect expected={expected} id={id} />
           </Category>
         ))}
         <AddCategory />

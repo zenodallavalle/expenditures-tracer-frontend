@@ -1,29 +1,49 @@
-import { useSelector } from 'react-redux';
-
-import { localInfoSelectors } from 'rdx/localInfo';
-
-import { LoadingDiv } from 'utils';
+import { useCallback, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 
 import PanelUser from './PanelUser';
 import PanelProspect from './PanelProspect';
 import PanelExpenditures from './PanelExpenditures';
 import PanelMonths from './PanelMonths';
+import { getCurrentPanel } from 'utils';
 
 const MainView = () => {
-  const currentPanel = useSelector(localInfoSelectors.getCurrentPanel());
-  switch (currentPanel) {
+  const history = useHistory();
+  const panel = getCurrentPanel();
+
+  const checkInvalidPanel = useCallback(
+    (panel) => {
+      if (
+        !panel ||
+        ![
+          'user',
+          'months',
+          'actual_expenditures',
+          'expected_expenditures',
+          'prospect',
+        ].includes(panel)
+      ) {
+        const urlSearchParams = new URLSearchParams(window.location.search);
+        urlSearchParams.set('panel', 'prospect');
+        history.push(`/?${urlSearchParams.toString()}`);
+      }
+    },
+    [history]
+  );
+
+  useEffect(() => checkInvalidPanel(panel));
+
+  switch (panel) {
     case 'user':
       return <PanelUser />;
-    case 'prospect':
-      return <PanelProspect />;
     case 'months':
       return <PanelMonths />;
     case 'actual_expenditures':
-      return <PanelExpenditures />;
+      return <PanelExpenditures expected={false} />;
     case 'expected_expenditures':
-      return <PanelExpenditures />;
+      return <PanelExpenditures expected />;
     default:
-      return <LoadingDiv />;
+      return <PanelProspect />;
   }
 };
 

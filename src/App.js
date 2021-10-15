@@ -1,24 +1,27 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-// import './App.css';
+import './App.css';
 
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useParams, useHistory } from 'react-router-dom';
 
 import Container from 'react-bootstrap/Container';
 
 import { databaseApi, userApi } from 'api';
+import { getWorkingMonth } from 'utils';
 import { userSelectors } from 'rdx/user';
-import { localInfoSelectors } from 'rdx/localInfo';
 import { databaseSelectors } from 'rdx/database';
 
 import Alerts from 'components/alerts/';
 import HeaderBar from 'components/headerBar';
-import MainView from 'components/mainView';
 import BottomBar from 'components/bottomBar';
 import ExpenditureOffcanvas from 'components/expenditureEditor';
+import MainView from 'components/mainView';
 
 const App = (props) => {
   const dispatch = useDispatch();
+  const params = useParams();
+  const history = useHistory();
   const isInitial = useSelector(userSelectors.isInitial());
   const isAvailableForRequests = useSelector(
     userSelectors.isAvailableForRequests()
@@ -27,7 +30,6 @@ const App = (props) => {
   const workingDBWorkingMonth = useSelector(
     databaseSelectors.getWorkingMonth()
   );
-  const workingMonth = useSelector(localInfoSelectors.getWorkingMonth());
 
   const [showAddExpenditureOffcanvas, setShowAddExpenditureOffcanvas] =
     useState(false);
@@ -56,14 +58,11 @@ const App = (props) => {
   );
 
   useEffect(() => {
-    if (
-      workingMonth &&
-      workingDBWorkingMonth &&
-      workingMonth !== workingDBWorkingMonth
-    ) {
+    const workingMonth = getWorkingMonth();
+    if (workingDBWorkingMonth && workingMonth !== workingDBWorkingMonth) {
       fetch();
     }
-  }, [workingMonth, workingDBWorkingMonth, fetch]);
+  }, [workingDBWorkingMonth, fetch, params]);
 
   const initialize = useCallback(async () => {
     const workingDBId = localStorage.getItem('workingDBId');
@@ -81,13 +80,19 @@ const App = (props) => {
         const fullDB = await fetch(dbId);
         if (fullDB) {
           localStorage.setItem('workingDBId', fullDB.id);
-          dispatch({ type: 'localInfo/panelChanged', payload: 'prospect' });
+          const urlSearchParams = new URLSearchParams(window.location.search);
+          urlSearchParams.delete('month');
+          urlSearchParams.set('panel', 'prospect');
+          history.push(`/?${urlSearchParams.toString()}`);
           return;
         }
       }
     }
-    dispatch({ type: 'localInfo/panelChanged', payload: 'user' });
-  }, [fetch, dispatch, workingDB]);
+    const urlSearchParams = new URLSearchParams(window.location.search);
+    urlSearchParams.delete('month');
+    urlSearchParams.set('panel', 'user');
+    history.push(`/?${urlSearchParams.toString()}`);
+  }, [fetch, dispatch, workingDB, history]);
 
   useEffect(() => {
     if (isInitial && isAvailableForRequests) {
@@ -96,28 +101,27 @@ const App = (props) => {
   }, [isInitial, isAvailableForRequests, initialize]);
 
   return (
-    <div className='py-1'>
+    <div>
       <HeaderBar
         fetch={fetch}
         onAdd={() => setShowAddExpenditureOffcanvas(true)}
       />
       <Alerts />
-
-      <div className='safe-down'>
-        <Container fluid>
-          <div style={{ maxWidth: 720 }} className='mx-auto'>
-            <MainView />
-          </div>
-        </Container>
+      <div className='py-1'>
+        <div className='safe-down'>
+          <Container fluid>
+            <div style={{ maxWidth: 720 }} className='mx-auto'>
+              <MainView />
+            </div>
+          </Container>
+        </div>
       </div>
-
       <ExpenditureOffcanvas
         key={`add_expenditure_offcanvas_${addEditExpenditureOffcanvasCounter}`}
         show={showAddExpenditureOffcanvas}
         clear={() => setAddExpenditureOffcanvasCounter((x) => x + 1)}
         onHide={() => setShowAddExpenditureOffcanvas(false)}
       />
-
       <BottomBar />
     </div>
   );

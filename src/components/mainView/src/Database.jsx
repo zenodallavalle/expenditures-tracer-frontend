@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 
 import FormControl from 'react-bootstrap/FormControl';
 
@@ -17,6 +18,7 @@ const emptyDatabase = { name: '' };
 
 export const AddDatabase = ({ ...props }) => {
   const dispatch = useDispatch();
+  const history = useHistory();
   const isLoading = useSelector(userSelectors.isLoading());
   const dbsCount = useSelector(userSelectors.countDBS());
 
@@ -73,7 +75,10 @@ export const AddDatabase = ({ ...props }) => {
           dispatch({ type: 'expenditures/dataRetrieved', payload: fullDB });
           dispatch({ type: 'database/dataRetrieved', payload: fullDB });
           localStorage.setItem('workingDBId', fullDB.id);
-          dispatch({ type: 'localInfo/panelChanged', payload: 'prospect' });
+          const urlSearchParams = new URLSearchParams(window.location.search);
+          urlSearchParams.delete('month');
+          urlSearchParams.set('panel', 'prospect');
+          history.push(`/?${urlSearchParams.toString()}`);
         }
         setMessages({});
         setInstance(emptyDatabase);
@@ -147,6 +152,7 @@ export const AddDatabase = ({ ...props }) => {
 
 const Database = ({ id, ...props }) => {
   const dispatch = useDispatch();
+  const history = useHistory();
   const isLoading = useSelector(userSelectors.isLoading());
   const database = useSelector(userSelectors.getDBById(id));
   const workingDB = useSelector(databaseSelectors.getWorkingDB());
@@ -159,14 +165,22 @@ const Database = ({ id, ...props }) => {
   const refName = useRef();
 
   const onSetWorkingDB = async () => {
-    dispatch({ type: 'localInfo/setWorkingMonth', payload: getCurrentMonth() });
     dispatch({ type: 'database/isLoading' });
     try {
-      const fullDB = await databaseApi.setWorkingDB({ id: database.id });
+      //when a db is loaded we want to reset workingMonth to currentMonth, so we load with it and then
+      const fullDB = await databaseApi.setWorkingDB({
+        id: database.id,
+        workingMonth: getCurrentMonth(),
+      });
+      // we update url so we are sure that loading went well and we send user to prospect
+      const urlSearchParams = new URLSearchParams(window.location.search);
+      urlSearchParams.delete('month');
+      urlSearchParams.set('panel', 'prospect');
+      history.push(`/?${urlSearchParams.toString()}`);
+
       dispatch({ type: 'expenditures/dataRetrieved', payload: fullDB });
       dispatch({ type: 'database/dataRetrieved', payload: fullDB });
       localStorage.setItem('workingDBId', database.id);
-      dispatch({ type: 'localInfo/panelChanged', payload: 'prospect' });
     } catch (e) {
       // handle error e. Is an object that can be the json received from server or an object containing
       // {detail:'Service unreachable'}
@@ -259,10 +273,9 @@ const Database = ({ id, ...props }) => {
       if (isWorkingDB) {
         dispatch({ type: 'expenditures/dataErased' });
         dispatch({ type: 'database/dataErased' });
-        dispatch({
-          type: 'localInfo/setWorkingMonth',
-          payload: getCurrentMonth(),
-        });
+        const urlSearchParams = new URLSearchParams(window.location.search);
+        urlSearchParams.delete('month');
+        history.push(`/?${urlSearchParams}`);
       }
     } catch (e) {
       dispatch({ type: 'user/loaded' });

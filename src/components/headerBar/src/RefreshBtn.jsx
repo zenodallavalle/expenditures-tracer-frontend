@@ -5,13 +5,19 @@ import { AutoBlurButton } from 'utils';
 import { InlineIcon } from '@iconify/react';
 import sync16 from '@iconify/icons-octicon/sync-16';
 
-import { mixinSelectors } from 'rdx';
-import { databaseActions } from 'rdx/database';
-import { expendituresActions } from 'rdx/expenditures';
+import { databaseActions, databaseSelectors } from 'rdx/database';
+import { expendituresActions, expendituresSelectors } from 'rdx/expenditures';
+import { userSelectors } from 'rdx/user';
 
 const RefreshBtn = ({ fetch = () => {}, ...props }) => {
   const dispatch = useDispatch();
-  const isLoading = useSelector(mixinSelectors.isLoading());
+  const userIsLoading = useSelector(userSelectors.isLoading());
+  const isAuthenticated = useSelector(userSelectors.isAuthenticated());
+  const databaseIsLoading = useSelector(databaseSelectors.isLoading());
+  const expendituresAreLoading = useSelector(expendituresSelectors.isLoading());
+  const isLoading = isAuthenticated
+    ? userIsLoading || databaseIsLoading || expendituresAreLoading
+    : userIsLoading;
 
   const onRefresh = useCallback(async () => {
     const fullDB = await fetch();

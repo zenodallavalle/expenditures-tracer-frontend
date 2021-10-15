@@ -6,7 +6,6 @@ import FormControl from 'react-bootstrap/FormControl';
 import { categoryApi } from 'api';
 import { AutoBlurButton, FunctionalitiesMenu, LoadingImg } from 'utils';
 import { databaseSelectors } from 'rdx/database';
-import { localInfoSelectors } from 'rdx/localInfo';
 
 const emptyCategory = { name: '' };
 
@@ -131,17 +130,40 @@ export const AddCategory = ({ ...props }) => {
   );
 };
 
-const Category = ({
-  id,
-  children = null,
-  hideProspect = false,
-  readOnly = false,
-  ...props
-}) => {
+export const CategoryProspect = ({ id, expected, ...props }) => {
+  const category = useSelector(databaseSelectors.getCategoryById(id));
+  const numberOfExpenditures = expected
+    ? category?.expected_expenditures.length
+    : category?.actual_expenditures.length;
+
+  const totalCostOfExpenditures = expected
+    ? category?.prospect.expected_expenditure
+    : category?.prospect.actual_expenditure;
+
+  return (
+    <div>
+      {numberOfExpenditures ? (
+        <div className='d-flex p-1'>
+          <div className='flex-grow-1'>
+            <span>{numberOfExpenditures}</span>
+            <span className='ms-1'>
+              {numberOfExpenditures === 1 ? 'entry' : 'entries'}
+            </span>
+          </div>
+          <div>
+            <span>{totalCostOfExpenditures}</span>
+            <span className='ms-1'>€</span>
+          </div>
+        </div>
+      ) : null}
+    </div>
+  );
+};
+
+const Category = ({ id, children = null, readOnly = false, ...props }) => {
   const dispatch = useDispatch();
   const category = useSelector(databaseSelectors.getCategoryById(id));
   const isLoading = useSelector(databaseSelectors.isLoading());
-  const currentPanel = useSelector(localInfoSelectors.getCurrentPanel());
 
   const [instance, setInstance] = useState({});
   const [isEditing, setIsEditing] = useState(false);
@@ -170,7 +192,7 @@ const Category = ({
     }
   }, [isEditing]);
 
-  const onEdited = async (e, collapseFunctionalityMenu) => {
+  const onEdited = async (e, onSuccess = () => {}, onFail = () => {}) => {
     if (Object.keys(instance).length > 0) {
       dispatch({ type: 'database/isLoading' });
       try {
@@ -179,23 +201,29 @@ const Category = ({
           payload: instance,
         });
         dispatch({ type: 'database/dataUpdated', payload: fullDB });
+        setInstance({});
+        setIsEditing(false);
+        onSuccess();
       } catch {
         // error catched will be an instance of RequestRejected
+        dispatch({ type: 'database/loaded' });
+        onFail();
       }
+    } else {
+      onSuccess();
+      setIsEditing(false);
     }
-
-    setInstance({});
-    setIsEditing(false);
-    collapseFunctionalityMenu();
   };
 
-  const onDelete = async () => {
+  const onDelete = async (e, onSuccess = () => {}, onFail = () => {}) => {
     dispatch({ type: 'database/isLoading' });
     try {
       const fullDB = await categoryApi.deleteCategory({ id });
       dispatch({ type: 'database/dataUpdated', payload: fullDB });
+      onSuccess();
     } catch (e) {
       // error catched will be an instance of RequestRejected
+      onFail();
     }
   };
 
@@ -209,29 +237,6 @@ const Category = ({
       deleteConfirmTimeout={4000}
       autocollapseTimeout={4000}
     />
-  );
-
-  const numberOfExpenditures =
-    currentPanel === 'expected_expenditures'
-      ? category?.expected_expenditures.length
-      : category?.actual_expenditures.length;
-
-  const totalCostOfExpenditures =
-    currentPanel === 'expected_expenditures'
-      ? category?.prospect.expected_expenditure
-      : category?.prospect.actual_expenditure;
-
-  const prospectCompiled = (
-    <div className='d-flex p-1'>
-      <div className='flex-grow-1'>
-        <span>{numberOfExpenditures}</span>
-        <span className='ms-1'>entries</span>
-      </div>
-      <div>
-        <span>{totalCostOfExpenditures}</span>
-        <span className='ms-1'>€</span>
-      </div>
-    </div>
   );
 
   return (
@@ -255,7 +260,6 @@ const Category = ({
         {!readOnly && <div>{FunctionalitiesMenuCompiled}</div>}
       </div>
       {children}
-      {numberOfExpenditures && !hideProspect ? prospectCompiled : ''}
     </div>
   );
 };

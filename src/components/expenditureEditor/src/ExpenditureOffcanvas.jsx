@@ -106,7 +106,9 @@ const ExpenditureOffcanvas = ({
 
   const onKeyDown = (e) => {
     if (e.key === 'Enter') {
-      switch (e.target.name === 'name') {
+      e.preventDefault();
+      e.stopPropagation();
+      switch (e.target.name) {
         case 'name':
           return refValue.current?.focus();
         case 'value':
@@ -115,6 +117,28 @@ const ExpenditureOffcanvas = ({
           return refCategory.current?.focus();
         case 'category':
           return isExpected ? refExpected.current?.focus() : onSave();
+        case 'expected_expenditure':
+          return onSave();
+        default:
+          return;
+      }
+    }
+    if (e.key === 'Tab') {
+      e.preventDefault();
+      e.stopPropagation();
+      switch (e.target.name) {
+        case 'name':
+          return refValue.current?.focus();
+        case 'value':
+          return refDate.current?.focus();
+        case 'date':
+          return refCategory.current?.focus();
+        case 'category':
+          return isExpected
+            ? refExpected.current?.focus()
+            : refName.current?.focus();
+        case 'expected_expenditure':
+          return refName.current?.focus();
         default:
           return;
       }
@@ -227,7 +251,7 @@ const ExpenditureOffcanvas = ({
       show={show}
       onHide={onHide}
       placement='end'
-      style={{ width: '100%', maxWidth: 700 }}
+      style={{ width: '100%', maxWidth: 500 }}
     >
       <Offcanvas.Header closeButton>
         <Offcanvas.Title>{getTitle()}</Offcanvas.Title>
@@ -338,7 +362,7 @@ const ExpenditureOffcanvas = ({
             <div className='pe-2'>Category</div>
             <div className='flex-grow-1'>
               {databaseIsLoading ? (
-                <FormControl value='Loading...' />
+                <FormControl value='Loading...' readOnly />
               ) : (
                 <Form.Select
                   name='category'
@@ -382,7 +406,7 @@ const ExpenditureOffcanvas = ({
                 <div className='pe-2'>Expected expenditure</div>
                 <div className='flex-grow-1'>
                   {expendituresAreLoading ? (
-                    <FormControl value='Loading...' />
+                    <FormControl value='Loading...' readOnly />
                   ) : (
                     <Form.Select
                       name='expected_expenditure'
