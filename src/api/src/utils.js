@@ -1,24 +1,12 @@
-export class RejectedRequest extends Error {
-  constructor(response, json) {
-    super();
-    this.serviceUnreachable = !Boolean(response);
-    this._response = response;
-    this.statusCode = response?.status;
-    this.json = json;
-    if (json && !json.non_field_erros) {
-      this.hasFields = true;
-    } else {
-      this.hasFields = false;
-    }
-  }
-}
+import store from 'rdx/store';
+
+import RejectedRequest from './RejectedRequest';
 
 export const tryCatchWrapper =
-  (getAuthToken) =>
   (f) =>
   async ({ ...props } = {}) => {
     try {
-      return await f(getAuthToken, { ...props });
+      return await f({ ...props });
     } catch (e) {
       if (e instanceof RejectedRequest) throw e;
       else {
@@ -27,3 +15,7 @@ export const tryCatchWrapper =
       }
     }
   };
+
+export const selectWorkingMonth = (s) => s.localInfo.workingMonth;
+export const getWorkingMonth = () => selectWorkingMonth(store.getState());
+export const getAuthToken = () => localStorage.getItem('authToken');

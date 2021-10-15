@@ -1,21 +1,21 @@
-import { useCallback, useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './CSSTransitionClasses.css';
-import './App.css';
-import Alerts from './components/alerts';
-import UpperBar from './components/upperBar';
-import BottomBar from './components/bottomBar';
-import User from './components/user';
-import Prospect from './components/mainViewComponents/prospect';
-import CategoriesView from './components/mainViewComponents/expenditures';
-import Months from './components/mainViewComponents/months';
-import AddEditExpenditureOffcanvas from './components/addEditExpenditureOffcanvas';
-import LoadingImg from 'components/LoadingImg';
+// import './App.css';
+
+import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { userSelectors } from 'rdx/user';
+
+import Container from 'react-bootstrap/Container';
+
 import { databaseApi, userApi } from 'api';
+import { userSelectors } from 'rdx/user';
 import { localInfoSelectors } from 'rdx/localInfo';
 import { databaseSelectors } from 'rdx/database';
+
+import Alerts from 'components/alerts/';
+import HeaderBar from 'components/headerBar';
+import MainView from 'components/mainView';
+import BottomBar from 'components/bottomBar';
+import ExpenditureOffcanvas from 'components/expenditureEditor';
 
 const App = (props) => {
   const dispatch = useDispatch();
@@ -36,29 +36,6 @@ const App = (props) => {
     setAddExpenditureOffcanvasCounter,
   ] = useState(1);
 
-  const currentPanel = useSelector(localInfoSelectors.getCurrentPanel());
-
-  const generateMainContent = () => {
-    switch (currentPanel) {
-      case 'user':
-        return <User />;
-      case 'prospect':
-        return <Prospect />;
-      case 'months':
-        return <Months />;
-      case 'actual_expenditures':
-        return <CategoriesView />;
-      case 'expected_expenditures':
-        return <CategoriesView />;
-      default:
-        return (
-          <div className='text-center'>
-            <LoadingImg />
-          </div>
-        );
-    }
-  };
-
   const fetch = useCallback(
     async (dbId = workingDB.id) => {
       dispatch({ type: 'database/isLoading' });
@@ -66,21 +43,16 @@ const App = (props) => {
       try {
         const fullDB = await databaseApi.setWorkingDB({
           id: dbId,
-          workingMonth,
         });
         dispatch({ type: 'expenditures/dataRetrieved', payload: fullDB });
         dispatch({ type: 'database/dataRetrieved', payload: fullDB });
-        dispatch({
-          type: 'localInfo/setWorkingMonth',
-          payload: fullDB.months_list.find((m) => m.is_working)?.month,
-        });
         return fullDB;
       } catch (e) {
         // handle error e. Is an object that can be the json received from server or an object containing
         // {detail:'Service unreachable'}
       }
     },
-    [dispatch, workingDB, workingMonth]
+    [dispatch, workingDB]
   );
 
   useEffect(() => {
@@ -110,11 +82,11 @@ const App = (props) => {
         if (fullDB) {
           localStorage.setItem('workingDBId', fullDB.id);
           dispatch({ type: 'localInfo/panelChanged', payload: 'prospect' });
+          return;
         }
       }
-    } else {
-      dispatch({ type: 'localInfo/panelChanged', payload: 'user' });
     }
+    dispatch({ type: 'localInfo/panelChanged', payload: 'user' });
   }, [fetch, dispatch, workingDB]);
 
   useEffect(() => {
@@ -124,16 +96,22 @@ const App = (props) => {
   }, [isInitial, isAvailableForRequests, initialize]);
 
   return (
-    <div>
-      <UpperBar
+    <div className='py-1'>
+      <HeaderBar
         fetch={fetch}
         onAdd={() => setShowAddExpenditureOffcanvas(true)}
       />
       <Alerts />
 
-      <div className='safe-down'>{generateMainContent()}</div>
+      <div className='safe-down'>
+        <Container fluid>
+          <div style={{ maxWidth: 720 }} className='mx-auto'>
+            <MainView />
+          </div>
+        </Container>
+      </div>
 
-      <AddEditExpenditureOffcanvas
+      <ExpenditureOffcanvas
         key={`add_expenditure_offcanvas_${addEditExpenditureOffcanvasCounter}`}
         show={showAddExpenditureOffcanvas}
         clear={() => setAddExpenditureOffcanvasCounter((x) => x + 1)}

@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import { userApi } from 'api';
+import userApi from 'api/userApi';
 
 const initialState = {
   status: 'initial',
