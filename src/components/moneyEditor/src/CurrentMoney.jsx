@@ -119,7 +119,7 @@ const CurrentMoney = ({ ...props }) => {
                 {formattedValue ? (
                   <span>{formattedValue}</span>
                 ) : (
-                  <LoadingImg maxWidth={20} />
+                  <LoadingImg maxWidth={25} />
                 )}
                 <span className='ms-1'>€</span>
               </div>
@@ -129,7 +129,7 @@ const CurrentMoney = ({ ...props }) => {
                 {currentMoney?.date ? (
                   formatDate(currentMoney.date)
                 ) : (
-                  <LoadingImg maxWidth={20} />
+                  <LoadingImg maxWidth={25} />
                 )}
               </div>
             </div>
