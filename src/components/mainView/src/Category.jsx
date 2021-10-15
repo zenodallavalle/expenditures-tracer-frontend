@@ -192,7 +192,7 @@ const Category = ({ id, children = null, readOnly = false, ...props }) => {
     }
   }, [isEditing]);
 
-  const onEdited = async (e, collapseFunctionalityMenu) => {
+  const onEdited = async (e, onSuccess = () => {}, onFail = () => {}) => {
     if (Object.keys(instance).length > 0) {
       dispatch({ type: 'database/isLoading' });
       try {
@@ -201,23 +201,29 @@ const Category = ({ id, children = null, readOnly = false, ...props }) => {
           payload: instance,
         });
         dispatch({ type: 'database/dataUpdated', payload: fullDB });
+        setInstance({});
+        setIsEditing(false);
+        onSuccess();
       } catch {
         // error catched will be an instance of RequestRejected
+        dispatch({ type: 'database/loaded' });
+        onFail();
       }
+    } else {
+      onSuccess();
+      setIsEditing(false);
     }
-
-    setInstance({});
-    setIsEditing(false);
-    collapseFunctionalityMenu();
   };
 
-  const onDelete = async () => {
+  const onDelete = async (e, onSuccess = () => {}, onFail = () => {}) => {
     dispatch({ type: 'database/isLoading' });
     try {
       const fullDB = await categoryApi.deleteCategory({ id });
       dispatch({ type: 'database/dataUpdated', payload: fullDB });
+      onSuccess();
     } catch (e) {
       // error catched will be an instance of RequestRejected
+      onFail();
     }
   };
 

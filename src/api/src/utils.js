@@ -1,3 +1,4 @@
+import { getCurrentMonth } from 'utils';
 import RejectedRequest from './RejectedRequest';
 
 export const tryCatchWrapper =
@@ -15,3 +16,21 @@ export const tryCatchWrapper =
   };
 
 export const getAuthToken = () => localStorage.getItem('authToken');
+
+export const genUrl = (type, params = {}) => {
+  const apiPoint = process.env.REACT_APP_API_ROOT;
+  try {
+    const url = new URL(`${apiPoint}${type}`);
+    url.searchParams.set('month', getCurrentMonth());
+    Object.entries(params).forEach(([k, v]) => {
+      url.searchParams.set(k, v);
+    });
+    return url;
+  } catch {
+    const url = new URL(`${window.location.host}${apiPoint}${type}/`);
+    Object.entries(params).forEach(([k, v]) => {
+      url.searchParams.set(k, v);
+    });
+    return url;
+  }
+};

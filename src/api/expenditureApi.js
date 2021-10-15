@@ -1,14 +1,8 @@
-import { getWorkingMonth } from 'utils';
-
-import { getAuthToken, tryCatchWrapper } from './src/utils';
+import { genUrl, getAuthToken, tryCatchWrapper } from './src/utils';
 import RejectedRequest from './src/RejectedRequest';
 
-const apiPoint = process.env.REACT_APP_API_ROOT;
-
 const createExpenditure = async ({ payload, ...props }) => {
-  const url = new URL(apiPoint + `expenditures/`);
-  url.searchParams.append('month', getWorkingMonth());
-  const response = await fetch(url, {
+  const response = await fetch(genUrl(`expenditures/`), {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -17,17 +11,12 @@ const createExpenditure = async ({ payload, ...props }) => {
     body: JSON.stringify(payload),
   });
   const json = await response.json();
-  if (response.ok) {
-    return json;
-  } else {
-    throw new RejectedRequest(response, json);
-  }
+  if (response.ok) return json;
+  else throw new RejectedRequest(response, json);
 };
 
 const editExpenditure = async ({ id, payload, ...props }) => {
-  const url = new URL(apiPoint + `expenditures/${id}/`);
-  url.searchParams.append('month', getWorkingMonth());
-  const response = await fetch(url, {
+  const response = await fetch(genUrl(`expenditures/${id}/`), {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
@@ -36,17 +25,12 @@ const editExpenditure = async ({ id, payload, ...props }) => {
     body: JSON.stringify(payload),
   });
   const json = await response.json();
-  if (response.ok) {
-    return json;
-  } else {
-    throw new RejectedRequest(response, json);
-  }
+  if (response.ok) return json;
+  else throw new RejectedRequest(response, json);
 };
 
 const deleteExpenditure = async ({ id, ...props }) => {
-  const url = new URL(apiPoint + `expenditures/${id}/`);
-  url.searchParams.append('month', getWorkingMonth());
-  const response = await fetch(url, {
+  const response = await fetch(genUrl(`expenditures/${id}/`), {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
@@ -54,11 +38,8 @@ const deleteExpenditure = async ({ id, ...props }) => {
     },
   });
   const json = await response.json();
-  if (response.ok) {
-    return json;
-  } else {
-    throw new RejectedRequest(response, json);
-  }
+  if (response.ok) return json;
+  else throw new RejectedRequest(response, json);
 };
 
 const expenditureApi = {

@@ -1,13 +1,8 @@
-import { getWorkingMonth } from 'utils';
-import { getAuthToken, tryCatchWrapper } from './src/utils';
+import { genUrl, getAuthToken, tryCatchWrapper } from './src/utils';
 import RejectedRequest from './src/RejectedRequest';
 
-const apiPoint = process.env.REACT_APP_API_ROOT;
-
 const createCash = async ({ payload, ...props }) => {
-  const url = new URL(apiPoint + `cash/`);
-  url.searchParams.append('month', getWorkingMonth());
-  const response = await fetch(url, {
+  const response = await fetch(genUrl('cash/'), {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -16,17 +11,12 @@ const createCash = async ({ payload, ...props }) => {
     body: JSON.stringify(payload),
   });
   const json = await response.json();
-  if (response.ok) {
-    return json;
-  } else {
-    throw new RejectedRequest(response, json);
-  }
+  if (response.ok) return json;
+  else throw new RejectedRequest(response, json);
 };
 
 const editCash = async ({ id, payload, ...props }) => {
-  const url = new URL(apiPoint + `cash/${id}/`);
-  url.searchParams.append('month', getWorkingMonth());
-  const response = await fetch(url, {
+  const response = await fetch(genUrl(`cash/${id}/`), {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
@@ -35,17 +25,12 @@ const editCash = async ({ id, payload, ...props }) => {
     body: JSON.stringify(payload),
   });
   const json = await response.json();
-  if (response.ok) {
-    return json;
-  } else {
-    throw new RejectedRequest(response, json);
-  }
+  if (response.ok) return json;
+  else throw new RejectedRequest(response, json);
 };
 
 const deleteCash = async ({ id, ...props }) => {
-  const url = new URL(apiPoint + `cash/${id}/`);
-  url.searchParams.append('month', getWorkingMonth());
-  const response = await fetch(url, {
+  const response = await fetch(genUrl(`cash/${id}/`), {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
@@ -53,11 +38,8 @@ const deleteCash = async ({ id, ...props }) => {
     },
   });
   const json = await response.json();
-  if (response.ok) {
-    return json;
-  } else {
-    throw new RejectedRequest(response, json);
-  }
+  if (response.ok) return json;
+  else throw new RejectedRequest(response, json);
 };
 
 const cashApi = {
