@@ -1,5 +1,3 @@
-const selectors = {
-  getWorkingMonth: () => (s) => s.localInfo.workingMonth,
-};
+const selectors = {};
 
 export default selectors;

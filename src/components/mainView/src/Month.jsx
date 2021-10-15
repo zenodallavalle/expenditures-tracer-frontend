@@ -1,32 +1,37 @@
 import { Fragment, useCallback } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { useHistory, useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 
 import Alert from 'react-bootstrap/Alert';
 import Button from 'react-bootstrap/Button';
 
-import { formatMonth } from 'utils';
+import { getWorkingMonth, formatMonth, getCurrentMonth } from 'utils';
 import { mixinSelectors } from 'rdx';
-import { localInfoSelectors } from 'rdx/localInfo';
 
 const Month = ({ month, ...props }) => {
   const { month: name, current_money, income, warn } = month;
 
-  const dispatch = useDispatch();
-  const { panel = 'prospect' } = useParams();
   const history = useHistory();
 
-  const workingMonth = useSelector(localInfoSelectors.getWorkingMonth());
+  const workingMonth = getWorkingMonth();
   const isWorkingMonth = workingMonth === name;
 
   const isLoading = useSelector(mixinSelectors.isLoading());
 
   const onClick = useCallback(
     (name) => {
-      dispatch({ type: 'localInfo/setWorkingMonth', payload: name });
-      history.push(history.location.pathname.replace(`${panel}`, 'prospect'));
+      const urlSearchParams = new URLSearchParams(window.location.search);
+      if (name === getCurrentMonth()) {
+        urlSearchParams.delete('month');
+      } else {
+        urlSearchParams.set('month', name);
+      }
+      history.push(
+        history.location.pathname.replace('months', 'prospect') +
+          `?${urlSearchParams.toString()}`
+      );
     },
-    [dispatch, history, panel]
+    [history]
   );
 
   return (

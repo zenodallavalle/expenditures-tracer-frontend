@@ -1,11 +1,17 @@
-import { getAuthToken, getWorkingMonth, tryCatchWrapper } from './src/utils';
+import { getWorkingMonth } from 'utils';
+
+import { getAuthToken, tryCatchWrapper } from './src/utils';
 import RejectedRequest from './src/RejectedRequest';
 
 const apiPoint = process.env.REACT_APP_API_ROOT;
 
-const setWorkingDB = async ({ id, ...props }) => {
+const setWorkingDB = async ({
+  id,
+  workingMonth = getWorkingMonth(),
+  ...props
+}) => {
   const url = new URL(apiPoint + `dbs/${id}/`);
-  url.searchParams.append('month', getWorkingMonth());
+  url.searchParams.append('month', workingMonth);
   const response = await fetch(url, {
     method: 'GET',
     headers: {

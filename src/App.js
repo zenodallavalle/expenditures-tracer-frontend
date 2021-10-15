@@ -1,15 +1,15 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-// import './App.css';
+import './App.css';
 
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { Route, useParams } from 'react-router-dom';
 
 import Container from 'react-bootstrap/Container';
 
 import { databaseApi, userApi } from 'api';
+import { getWorkingMonth } from 'utils';
 import { userSelectors } from 'rdx/user';
-import { localInfoSelectors } from 'rdx/localInfo';
 import { databaseSelectors } from 'rdx/database';
 
 import Alerts from 'components/alerts/';
@@ -20,6 +20,7 @@ import MainView from 'components/mainView';
 
 const App = (props) => {
   const dispatch = useDispatch();
+  const params = useParams();
   const isInitial = useSelector(userSelectors.isInitial());
   const isAvailableForRequests = useSelector(
     userSelectors.isAvailableForRequests()
@@ -28,7 +29,6 @@ const App = (props) => {
   const workingDBWorkingMonth = useSelector(
     databaseSelectors.getWorkingMonth()
   );
-  const workingMonth = useSelector(localInfoSelectors.getWorkingMonth());
 
   const [showAddExpenditureOffcanvas, setShowAddExpenditureOffcanvas] =
     useState(false);
@@ -57,14 +57,11 @@ const App = (props) => {
   );
 
   useEffect(() => {
-    if (
-      workingMonth &&
-      workingDBWorkingMonth &&
-      workingMonth !== workingDBWorkingMonth
-    ) {
+    const workingMonth = getWorkingMonth();
+    if (workingDBWorkingMonth && workingMonth !== workingDBWorkingMonth) {
       fetch();
     }
-  }, [workingMonth, workingDBWorkingMonth, fetch]);
+  }, [workingDBWorkingMonth, fetch, params]);
 
   const initialize = useCallback(async () => {
     const workingDBId = localStorage.getItem('workingDBId');
@@ -97,34 +94,32 @@ const App = (props) => {
   }, [isInitial, isAvailableForRequests, initialize]);
 
   return (
-    <Router>
-      <Route path='/:panel?/'>
-        <div className='py-1'>
-          <HeaderBar
-            fetch={fetch}
-            onAdd={() => setShowAddExpenditureOffcanvas(true)}
-          />
-          <Alerts />
+    <Route path='/:panel?/'>
+      <div className='py-1'>
+        <HeaderBar
+          fetch={fetch}
+          onAdd={() => setShowAddExpenditureOffcanvas(true)}
+        />
+        <Alerts />
 
-          <div className='safe-down'>
-            <Container fluid>
-              <div style={{ maxWidth: 720 }} className='mx-auto'>
-                <MainView />
-              </div>
-            </Container>
-          </div>
-
-          <ExpenditureOffcanvas
-            key={`add_expenditure_offcanvas_${addEditExpenditureOffcanvasCounter}`}
-            show={showAddExpenditureOffcanvas}
-            clear={() => setAddExpenditureOffcanvasCounter((x) => x + 1)}
-            onHide={() => setShowAddExpenditureOffcanvas(false)}
-          />
-
-          <BottomBar />
+        <div className='safe-down'>
+          <Container fluid>
+            <div style={{ maxWidth: 720 }} className='mx-auto'>
+              <MainView />
+            </div>
+          </Container>
         </div>
-      </Route>
-    </Router>
+
+        <ExpenditureOffcanvas
+          key={`add_expenditure_offcanvas_${addEditExpenditureOffcanvasCounter}`}
+          show={showAddExpenditureOffcanvas}
+          clear={() => setAddExpenditureOffcanvasCounter((x) => x + 1)}
+          onHide={() => setShowAddExpenditureOffcanvas(false)}
+        />
+
+        <BottomBar />
+      </div>
+    </Route>
   );
 };
 

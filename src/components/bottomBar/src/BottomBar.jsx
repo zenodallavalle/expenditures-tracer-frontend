@@ -33,7 +33,12 @@ const BottomBar = (props) => {
   const workingDB = useSelector(databaseSelectors.getWorkingDB());
 
   const setPanel = useCallback(
-    (to) => history.push(history.location.pathname.replace(`${panel}`, to)),
+    (to) => {
+      history.push(
+        history.location.pathname.replace(`${panel}`, to) +
+          window.location.search
+      );
+    },
     [history, panel]
   );
 

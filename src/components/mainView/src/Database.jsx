@@ -12,6 +12,7 @@ import {
 } from 'utils';
 import { userSelectors } from 'rdx/user';
 import { databaseSelectors } from 'rdx/database';
+import { useHistory, useParams } from 'react-router';
 
 const emptyDatabase = { name: '' };
 
@@ -147,6 +148,8 @@ export const AddDatabase = ({ ...props }) => {
 
 const Database = ({ id, ...props }) => {
   const dispatch = useDispatch();
+  const history = useHistory();
+  const { panel } = useParams();
   const isLoading = useSelector(userSelectors.isLoading());
   const database = useSelector(userSelectors.getDBById(id));
   const workingDB = useSelector(databaseSelectors.getWorkingDB());
@@ -159,14 +162,24 @@ const Database = ({ id, ...props }) => {
   const refName = useRef();
 
   const onSetWorkingDB = async () => {
-    dispatch({ type: 'localInfo/setWorkingMonth', payload: getCurrentMonth() });
     dispatch({ type: 'database/isLoading' });
     try {
-      const fullDB = await databaseApi.setWorkingDB({ id: database.id });
+      //when a db is loaded we want to reset workingMonth to currentMonth, so we load with it and then
+      const fullDB = await databaseApi.setWorkingDB({
+        id: database.id,
+        workingMonth: getCurrentMonth(),
+      });
+      // we update url so we are sure that loading went well and we send user to prospect
+      const urlSearchParams = new URLSearchParams(window.location.search);
+      urlSearchParams.delete('month');
+      history.push(
+        history.location.pathname.replace(panel, 'prospect') +
+          `?${urlSearchParams.toString()}`
+      );
+
       dispatch({ type: 'expenditures/dataRetrieved', payload: fullDB });
       dispatch({ type: 'database/dataRetrieved', payload: fullDB });
       localStorage.setItem('workingDBId', database.id);
-      dispatch({ type: 'localInfo/panelChanged', payload: 'prospect' });
     } catch (e) {
       // handle error e. Is an object that can be the json received from server or an object containing
       // {detail:'Service unreachable'}
@@ -259,10 +272,9 @@ const Database = ({ id, ...props }) => {
       if (isWorkingDB) {
         dispatch({ type: 'expenditures/dataErased' });
         dispatch({ type: 'database/dataErased' });
-        dispatch({
-          type: 'localInfo/setWorkingMonth',
-          payload: getCurrentMonth(),
-        });
+        const urlSearchParams = new URLSearchParams(window.location.search);
+        urlSearchParams.delete('month');
+        history.push(history.location.pathname + `?${urlSearchParams}`);
       }
     } catch (e) {
       dispatch({ type: 'user/loaded' });

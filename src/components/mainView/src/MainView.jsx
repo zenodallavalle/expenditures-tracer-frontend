@@ -23,7 +23,8 @@ const MainView = () => {
         ].includes(panel)
       ) {
         history.push(
-          history.location.pathname.replace(`${panel}/`, '') + 'prospect/'
+          history.location.pathname.replace(panel, 'prospect') +
+            window.location.search
         );
       }
     },

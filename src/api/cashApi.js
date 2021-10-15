@@ -1,4 +1,5 @@
-import { getAuthToken, getWorkingMonth, tryCatchWrapper } from './src/utils';
+import { getWorkingMonth } from 'utils';
+import { getAuthToken, tryCatchWrapper } from './src/utils';
 import RejectedRequest from './src/RejectedRequest';
 
 const apiPoint = process.env.REACT_APP_API_ROOT;

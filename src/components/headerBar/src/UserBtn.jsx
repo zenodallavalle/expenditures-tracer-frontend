@@ -20,10 +20,12 @@ const UserBtn = (props) => {
   const user = useSelector(userSelectors.user());
   const workingDB = useSelector(databaseSelectors.getWorkingDB());
 
-  const onClick = useCallback(
-    () => history.push(history.location.pathname.replace(`${panel}`, 'user')),
-    [history, panel]
-  );
+  const onClick = useCallback(() => {
+    history.push(
+      history.location.pathname.replace(`${panel}`, 'user') +
+        window.location.search
+    );
+  }, [history, panel]);
 
   const color =
     !isAuthenticated && !workingDB
