@@ -49,10 +49,15 @@ const UserBtn = (props) => {
           <InlineIcon icon={person16} />
         </div>
         <div className='mx-1'>{user?.username || 'Please login'}</div>
-        <div className='mx-1'>
-          <InlineIcon icon={package16} />
-        </div>
-        <div className='mx-1'>{workingDB?.name || 'Choose DB'}</div>
+
+        {isAuthenticated && (
+          <div className='mx-1'>
+            <InlineIcon icon={package16} />
+          </div>
+        )}
+        {isAuthenticated && (
+          <div className='mx-1'>{workingDB?.name || 'Choose DB'}</div>
+        )}
       </div>
     </AutoBlurButton>
   );

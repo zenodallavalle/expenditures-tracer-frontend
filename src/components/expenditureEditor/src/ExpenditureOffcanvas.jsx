@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import Offcanvas from 'react-bootstrap/Offcanvas';
-import Button from 'react-bootstrap/Button';
-import { useSelector } from 'react-redux';
+
+import { expenditureApi } from 'api';
+import { LoadingImg, dateToLocaleISOString, AutoBlurButton } from 'utils';
 import { expendituresSelectors } from 'rdx/expenditures';
 import { databaseSelectors } from 'rdx/database';
-import { LoadingImg } from 'utils';
-import { expenditureApi } from 'api';
-import { useDispatch } from 'react-redux';
+import { Form, FormControl } from 'react-bootstrap';
 
 const toPKRelated = (v) => {
   const int = parseInt(v.trim());
@@ -37,20 +37,13 @@ const getUpdatedValue = (e) => {
   }
 };
 
-const dateToLocaleISOString = (date = new Date()) => {
-  const utcMilliseconds = date.getTime();
-  const localMilliseconds =
-    utcMilliseconds - date.getTimezoneOffset() * 60 * 1000;
-  const localDate = new Date(localMilliseconds);
-  return localDate.toISOString().slice(0, -8);
-};
-
 const ExpenditureOffcanvas = ({
   show = false,
   onHide = () => {},
   clear = () => {},
   id,
-  expected = false,
+  expected: passedExpected = false,
+
   ...props
 }) => {
   const emptyExpenditure = {
@@ -59,22 +52,32 @@ const ExpenditureOffcanvas = ({
     date: new Date(),
     category: null,
     expected_expenditure: null,
-    is_expected: expected,
+    is_expected: passedExpected,
   };
 
   const dispatch = useDispatch();
 
-  const expendituresLoading = useSelector(expendituresSelectors.isLoading());
-  const databaseLoading = useSelector(databaseSelectors.isLoading());
-  const isLoading = databaseLoading || expendituresLoading;
+  const expendituresAreLoading = useSelector(expendituresSelectors.isLoading());
+  const databaseIsLoading = useSelector(databaseSelectors.isLoading());
+  const isLoading = databaseIsLoading || expendituresAreLoading;
 
   const workingDB = useSelector(databaseSelectors.getWorkingDB());
 
   const categories = useSelector(databaseSelectors.getCategories());
   const expenditure = useSelector(expendituresSelectors.getById(id));
   const expectedExpenditures = useSelector(expendituresSelectors.getAll(true));
+
   const [instance, setInstance] = useState(id ? {} : emptyExpenditure);
   const [messages, setMessages] = useState({});
+
+  const refName = useRef();
+  const refValue = useRef();
+  const refDate = useRef();
+  const refCategory = useRef();
+  const refExpected = useRef();
+
+  const isExpected = id ? !expenditure?.is_expected : !instance.is_expected;
+
   useEffect(() => {
     if (id && expenditure) {
       setInstance({});
@@ -101,9 +104,24 @@ const ExpenditureOffcanvas = ({
     }
   };
 
-  const onSubmit = async (e) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const onKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      switch (e.target.name === 'name') {
+        case 'name':
+          return refValue.current?.focus();
+        case 'value':
+          return refDate.current?.focus();
+        case 'date':
+          return refCategory.current?.focus();
+        case 'category':
+          return isExpected ? refExpected.current?.focus() : onSave();
+        default:
+          return;
+      }
+    }
+  };
+
+  const onSave = async () => {
     if (id) {
       let isValid = true;
       const msgs = {};
@@ -198,207 +216,222 @@ const ExpenditureOffcanvas = ({
     }
   };
 
+  useEffect(() => {
+    if (show) {
+      refName.current?.focus();
+    }
+  }, [show]);
+
   return (
-    <Offcanvas show={show} onHide={onHide} placement='end'>
+    <Offcanvas
+      show={show}
+      onHide={onHide}
+      placement='end'
+      style={{ width: '100%', maxWidth: 700 }}
+    >
       <Offcanvas.Header closeButton>
         <Offcanvas.Title>{getTitle()}</Offcanvas.Title>
       </Offcanvas.Header>
       <Offcanvas.Body>
         <div>
-          <form onSubmit={onSubmit}>
-            <div className='form-group'>
-              <p>
-                <label htmlFor='name'>Description</label>
-                <input
-                  type='text'
-                  className='form-control'
-                  name='name'
-                  placeholder='Description'
-                  value={
-                    instance.name !== undefined
-                      ? instance.name
-                      : expenditure.name
-                  }
-                  onChange={onChange}
-                />
-                {messages.name?.map((m, idx) => (
-                  <div
-                    key={`msg_expenditure_name_val_${idx}`}
-                    className='text-danger'
-                  >
-                    {m}
-                  </div>
-                ))}
-              </p>
-              <p>
-                <label htmlFor='name'>Value</label>
-                <input
-                  type='number'
-                  step={0.01}
-                  className='form-control'
-                  name='value'
-                  placeholder='€'
-                  value={
-                    instance.value !== undefined
-                      ? instance.value
-                      : expenditure.value
-                  }
-                  onChange={onChange}
-                />
-                {messages.value?.map((m, idx) => (
-                  <div
-                    key={`msg_expenditure_value_val_${idx}`}
-                    className='text-danger'
-                  >
-                    {m}
-                  </div>
-                ))}
-              </p>
-              {!id && (
-                <p>
-                  <Button
-                    className='w-100'
-                    onClick={() => {
-                      setInstance((i) => ({
-                        ...i,
-                        is_expected: !i.is_expected,
-                      }));
-                    }}
-                  >{`Switch to ${
-                    instance.is_expected ? 'actual' : 'expected'
-                  }`}</Button>
-                </p>
-              )}
-              <p>
-                <label htmlFor='name'>{'Date & Time'}</label>
-                <input
-                  type='datetime-local'
-                  className='form-control'
-                  name='date'
-                  placeholder='Date & Time'
-                  value={dateToLocaleISOString(
-                    new Date(
-                      instance.date !== undefined
-                        ? instance.date
-                        : expenditure.date
-                    )
-                  )}
-                  onChange={onChange}
-                />
-                {messages.date?.map((m, idx) => (
-                  <div
-                    key={`msg_expenditure_date_val_${idx}`}
-                    className='text-danger'
-                  >
-                    {m}
-                  </div>
-                ))}
-              </p>
-              <p>
-                <label htmlFor='category'>
-                  <span>Category</span>
-                  {databaseLoading && (
-                    <LoadingImg className='ms-2' maxWidth={30} />
-                  )}
-                </label>
-                {databaseLoading ? (
-                  <input
-                    name='category'
-                    className='form-control'
-                    value={'Loading...'}
-                    disabled
-                  />
-                ) : (
-                  <select
-                    name='category'
-                    className='form-control'
-                    onChange={onChange}
-                    value={
-                      (instance.category !== undefined
-                        ? instance.category
-                        : expenditure.category) || 0
-                    }
-                  >
-                    <option key={'categorydefault0'} value={0}>
-                      -----
-                    </option>
-                    {categories?.map((c) => (
-                      <option
-                        key={`category_add_edit_modal_${c.id}`}
-                        value={c.id}
-                      >
-                        {c.name}
-                      </option>
-                    ))}
-                  </select>
+          <div className='d-flex align-items-baseline py-2'>
+            <div className='pe-2'>Description</div>
+            <div className='flex-grow-1'>
+              <FormControl
+                name='name'
+                value={
+                  instance.name !== undefined
+                    ? instance.name
+                    : expenditure?.name || ''
+                }
+                onChange={onChange}
+                onKeyDown={onKeyDown}
+                ref={refName}
+                disabled={isLoading}
+              />
+            </div>
+          </div>
+          {messages.name?.map((m, idx) => (
+            <div
+              key={`msg_expenditure_name_val_${idx}`}
+              className='text-danger'
+            >
+              {m}
+            </div>
+          ))}
+
+          <div className='d-flex align-items-baseline py-2'>
+            <div className='pe-2'>Value</div>
+            <div className='flex-grow-1'>
+              <FormControl
+                name='value'
+                value={
+                  instance.value !== undefined
+                    ? instance.value
+                    : expenditure?.value || ''
+                }
+                placeholder='€'
+                type='number'
+                step={0.01}
+                onChange={onChange}
+                onKeyDown={onKeyDown}
+                ref={refValue}
+                disabled={isLoading}
+              />
+            </div>
+          </div>
+          {messages.value?.map((m, idx) => (
+            <div
+              key={`msg_expenditure_name_val_${idx}`}
+              className='text-danger'
+            >
+              {m}
+            </div>
+          ))}
+
+          {!id && (
+            <div className='py-2'>
+              <AutoBlurButton
+                className='w-100'
+                onClick={() => {
+                  setInstance((i) => ({
+                    ...i,
+                    is_expected: !i.is_expected,
+                  }));
+                }}
+              >{`Switch to ${
+                instance.is_expected ? 'actual' : 'expected'
+              }`}</AutoBlurButton>
+            </div>
+          )}
+
+          <div className='d-flex align-items-baseline py-2'>
+            <div className='pe-2'>Date</div>
+            <div className='flex-grow-1'>
+              <FormControl
+                name='date'
+                type='datetime-local'
+                value={dateToLocaleISOString(
+                  new Date(
+                    instance.date !== undefined
+                      ? instance.date
+                      : expenditure?.date
+                  )
                 )}
-                {messages.category?.map((m, idx) => (
-                  <div
-                    key={`msg_expenditure_category_val_${idx}`}
-                    className='text-danger'
-                  >
-                    {m}
-                  </div>
-                ))}
-              </p>
-              {(id ? !expenditure?.is_expected : !instance.is_expected) ? (
-                <p>
-                  <label htmlFor='expected_expenditure'>
-                    <span>Expected expenditure</span>
-                    {expendituresLoading && (
-                      <LoadingImg className='ms-2' maxWidth={30} />
-                    )}
-                  </label>
-                  {expendituresLoading ? (
-                    <input
-                      name='expected_expenditure'
-                      className='form-control'
-                      value={'Loading...'}
-                      disabled
-                    />
-                  ) : (
-                    <select
-                      name='expected_expenditure'
-                      className='form-control'
-                      onChange={onChange}
-                      value={
-                        (instance.expected_expenditure !== undefined
-                          ? instance.expected_expenditure
-                          : expenditure.expected_expenditure) || 0
-                      }
+                onChange={onChange}
+                onKeyDown={onKeyDown}
+                ref={refDate}
+                disabled={isLoading}
+              />
+            </div>
+          </div>
+          {messages.date?.map((m, idx) => (
+            <div
+              key={`msg_expenditure_name_val_${idx}`}
+              className='text-danger'
+            >
+              {m}
+            </div>
+          ))}
+
+          <div className='d-flex align-items-baseline py-2'>
+            <div className='pe-2'>Category</div>
+            <div className='flex-grow-1'>
+              {databaseIsLoading ? (
+                <FormControl value='Loading...' />
+              ) : (
+                <Form.Select
+                  name='category'
+                  value={
+                    instance.category !== undefined
+                      ? instance.category || 0
+                      : expenditure?.category || 0
+                  }
+                  onChange={onChange}
+                  onKeyDown={onKeyDown}
+                  ref={refCategory}
+                  disabled={isLoading}
+                >
+                  <option key={'categorydefault0'} value={0}>
+                    -----
+                  </option>
+                  {categories?.map((c) => (
+                    <option
+                      key={`category_add_edit_modal_${c.id}`}
+                      value={c.id}
                     >
-                      <option key={'expectedexpendituredefault0'} value={0}>
+                      {c.name}
+                    </option>
+                  ))}
+                </Form.Select>
+              )}
+            </div>
+          </div>
+          {messages.category?.map((m, idx) => (
+            <div
+              key={`msg_expenditure_name_val_${idx}`}
+              className='text-danger'
+            >
+              {m}
+            </div>
+          ))}
+
+          {isExpected && (
+            <div>
+              <div className='d-flex align-items-baseline py-2'>
+                <div className='pe-2'>Expected expenditure</div>
+                <div className='flex-grow-1'>
+                  {expendituresAreLoading ? (
+                    <FormControl value='Loading...' />
+                  ) : (
+                    <Form.Select
+                      name='expected_expenditure'
+                      value={
+                        instance.expected_expenditure !== undefined
+                          ? instance.expected_expenditure || 0
+                          : expenditure?.expected_expenditure || 0
+                      }
+                      onChange={onChange}
+                      onKeyDown={onKeyDown}
+                      ref={refExpected}
+                      disabled={isLoading}
+                    >
+                      <option key={'expected_expenditure_default0'} value={0}>
                         -----
                       </option>
                       {expectedExpenditures?.map((e) => (
-                        <option key={'expectedexpenditure' + e.id} value={e.id}>
+                        <option
+                          key={`expected_expenditure_add_edit_modal_${e.id}`}
+                          value={e.id}
+                        >
                           {e.value.toString() + '€, ' + e.name}
                         </option>
                       ))}
-                    </select>
+                    </Form.Select>
                   )}
-                  {messages.expected_expenditure?.map((m, idx) => (
-                    <div
-                      key={`msg_expenditure_expected_expenditure_val_${idx}`}
-                      className='text-danger'
-                    >
-                      {m}
-                    </div>
-                  ))}
-                </p>
-              ) : null}
+                </div>
+              </div>
+              {messages.expected_expenditure?.map((m, idx) => (
+                <div
+                  key={`msg_expenditure_name_val_${idx}`}
+                  className='text-danger'
+                >
+                  {m}
+                </div>
+              ))}
             </div>
-            <div className='text-center w-100'>
-              <Button
-                variant='primary'
-                className='px-5'
-                type='submit'
-                disabled={isLoading}
-              >
-                Save
-              </Button>
-            </div>
-          </form>
+          )}
+
+          <div className='ps-1 flex-grow-1 pt-4'>
+            <AutoBlurButton
+              variant='success'
+              className='w-100'
+              onClick={onSave}
+              disabled={isLoading}
+            >
+              {isLoading ? <LoadingImg maxWidth={25} /> : 'Save'}
+            </AutoBlurButton>
+          </div>
         </div>
       </Offcanvas.Body>
     </Offcanvas>

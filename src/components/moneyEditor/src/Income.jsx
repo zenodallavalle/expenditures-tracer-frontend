@@ -266,7 +266,6 @@ const Income = ({ id, ...props }) => {
     try {
       const fullDB = await cashApi.deleteCash({ id });
       dispatch({ type: 'database/dataUpdated', payload: fullDB });
-      onSuccess();
     } catch (e) {
       dispatch({ type: 'database/loaded' });
       onFail();

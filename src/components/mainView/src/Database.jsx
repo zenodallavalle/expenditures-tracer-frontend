@@ -91,7 +91,7 @@ export const AddDatabase = ({ ...props }) => {
   }, [isAdding]);
 
   return (
-    <div>
+    <div className='py-1'>
       {isAdding ? (
         <div>
           <h5 className='text-center'>Create new database</h5>
@@ -264,7 +264,6 @@ const Database = ({ id, ...props }) => {
           payload: getCurrentMonth(),
         });
       }
-      onSuccess();
     } catch (e) {
       dispatch({ type: 'user/loaded' });
       onFail();
@@ -276,7 +275,7 @@ const Database = ({ id, ...props }) => {
       <div className='flex-grow-1'>
         {isEditing ? (
           <div>
-            <div className='d-flex align-items-baseline py-1'>
+            <div className='d-flex align-items-center py-1'>
               <div style={{ width: 50 }}>Name</div>
               <div className='flex-grow-1'>
                 <FormControl
@@ -294,7 +293,7 @@ const Database = ({ id, ...props }) => {
             )}
           </div>
         ) : (
-          <div className='d-flex'>
+          <div className='d-flex align-items-center py-1'>
             <div>
               <AutoBlurButton
                 style={{ width: 80 }}
@@ -306,7 +305,7 @@ const Database = ({ id, ...props }) => {
                 {isWorkingDB ? 'selected' : 'select'}
               </AutoBlurButton>
             </div>
-            <div className='flex-grow-1'>{database?.name}</div>
+            <div className='flex-grow-1 ps-2'>{database?.name}</div>
           </div>
         )}
       </div>

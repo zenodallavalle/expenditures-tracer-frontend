@@ -23,7 +23,7 @@ const Month = ({ month, ...props }) => {
   return (
     <Fragment>
       <tr>
-        <td>
+        <td className='col-3'>
           <Button
             size='sm'
             variant={isWorkingMonth ? 'success' : 'primary'}
