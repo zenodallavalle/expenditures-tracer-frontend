@@ -1,8 +1,8 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory, useParams } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
-import { AutoBlurButton } from 'utils';
+import { AutoBlurButton, getCurrentPanel } from 'utils';
 
 import { mixinSelectors } from 'rdx';
 import { databaseSelectors } from 'rdx/database';
@@ -28,18 +28,17 @@ const buttons = [
 
 const BottomBar = (props) => {
   const history = useHistory();
-  const { panel = 'prospect' } = useParams();
+  const panel = getCurrentPanel();
   const isLoading = useSelector(mixinSelectors.isLoading());
   const workingDB = useSelector(databaseSelectors.getWorkingDB());
 
   const setPanel = useCallback(
     (to) => {
-      history.push(
-        history.location.pathname.replace(`${panel}`, to) +
-          window.location.search
-      );
+      const urlSearchParams = new URLSearchParams(window.location.search);
+      urlSearchParams.set('panel', to);
+      history.push(`/?${urlSearchParams.toString()}`);
     },
-    [history, panel]
+    [history]
   );
 
   return (

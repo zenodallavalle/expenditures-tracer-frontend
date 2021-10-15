@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 
-import { AutoBlurButton } from 'utils';
+import { AutoBlurButton, getCurrentPanel } from 'utils';
 import { InlineIcon } from '@iconify/react';
 import person16 from '@iconify/icons-octicon/person-16';
 import package16 from '@iconify/icons-octicon/package-16';
@@ -13,7 +13,7 @@ import { databaseSelectors } from 'rdx/database';
 
 const UserBtn = (props) => {
   const history = useHistory();
-  const { panel = 'prospect' } = useParams();
+  const panel = getCurrentPanel();
 
   const isLoading = useSelector(mixinSelectors.isLoading());
   const isAuthenticated = useSelector(userSelectors.isAuthenticated());
@@ -21,11 +21,10 @@ const UserBtn = (props) => {
   const workingDB = useSelector(databaseSelectors.getWorkingDB());
 
   const onClick = useCallback(() => {
-    history.push(
-      history.location.pathname.replace(`${panel}`, 'user') +
-        window.location.search
-    );
-  }, [history, panel]);
+    const urlSearchParams = new URLSearchParams(window.location.search);
+    urlSearchParams.set('panel', 'user');
+    history.push(`/?${urlSearchParams.toString()}`);
+  }, [history]);
 
   const color =
     !isAuthenticated && !workingDB

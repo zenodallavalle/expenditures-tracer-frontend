@@ -5,10 +5,13 @@ import PanelUser from './PanelUser';
 import PanelProspect from './PanelProspect';
 import PanelExpenditures from './PanelExpenditures';
 import PanelMonths from './PanelMonths';
+import { getCurrentPanel } from 'utils';
 
 const MainView = () => {
   const history = useHistory();
-  const { panel } = useParams();
+  const panel = getCurrentPanel();
+
+  console.log(panel);
 
   const checkInvalidPanel = useCallback(
     (panel) => {
@@ -22,18 +25,15 @@ const MainView = () => {
           'prospect',
         ].includes(panel)
       ) {
-        history.push(
-          history.location.pathname.replace(panel, 'prospect') +
-            window.location.search
-        );
+        const urlSearchParams = new URLSearchParams(window.location.search);
+        urlSearchParams.set('panel', 'prospect');
+        history.push(`/?${urlSearchParams.toString()}`);
       }
     },
     [history]
   );
 
-  useEffect(() => {
-    checkInvalidPanel(panel);
-  }, [checkInvalidPanel, panel]);
+  // useEffect(() => checkInvalidPanel());
 
   switch (panel) {
     case 'user':

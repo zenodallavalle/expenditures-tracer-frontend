@@ -9,6 +9,7 @@ import {
   AutoBlurButton,
   FunctionalitiesMenu,
   getCurrentMonth,
+  getCurrentPanel,
 } from 'utils';
 import { userSelectors } from 'rdx/user';
 import { databaseSelectors } from 'rdx/database';
@@ -77,7 +78,8 @@ export const AddDatabase = ({ ...props }) => {
           localStorage.setItem('workingDBId', fullDB.id);
           const urlSearchParams = new URLSearchParams(window.location.search);
           urlSearchParams.delete('month');
-          history.push(`/prospect/?${urlSearchParams.toString()}`);
+          urlSearchParams.set('panel', 'prospect');
+          history.push(`/?${urlSearchParams.toString()}`);
         }
         setMessages({});
         setInstance(emptyDatabase);
@@ -152,7 +154,7 @@ export const AddDatabase = ({ ...props }) => {
 const Database = ({ id, ...props }) => {
   const dispatch = useDispatch();
   const history = useHistory();
-  const { panel } = useParams();
+  const panel = getCurrentPanel();
   const isLoading = useSelector(userSelectors.isLoading());
   const database = useSelector(userSelectors.getDBById(id));
   const workingDB = useSelector(databaseSelectors.getWorkingDB());
@@ -175,10 +177,8 @@ const Database = ({ id, ...props }) => {
       // we update url so we are sure that loading went well and we send user to prospect
       const urlSearchParams = new URLSearchParams(window.location.search);
       urlSearchParams.delete('month');
-      history.push(
-        history.location.pathname.replace(panel, 'prospect') +
-          `?${urlSearchParams.toString()}`
-      );
+      urlSearchParams.set('panel', 'prospect');
+      history.push(`/?${urlSearchParams.toString()}`);
 
       dispatch({ type: 'expenditures/dataRetrieved', payload: fullDB });
       dispatch({ type: 'database/dataRetrieved', payload: fullDB });
@@ -277,7 +277,7 @@ const Database = ({ id, ...props }) => {
         dispatch({ type: 'database/dataErased' });
         const urlSearchParams = new URLSearchParams(window.location.search);
         urlSearchParams.delete('month');
-        history.push(history.location.pathname + `?${urlSearchParams}`);
+        history.push(`/?${urlSearchParams}`);
       }
     } catch (e) {
       dispatch({ type: 'user/loaded' });

@@ -3,7 +3,7 @@ import './App.css';
 
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Route, useParams, useHistory } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 
 import Container from 'react-bootstrap/Container';
 
@@ -82,14 +82,16 @@ const App = (props) => {
           localStorage.setItem('workingDBId', fullDB.id);
           const urlSearchParams = new URLSearchParams(window.location.search);
           urlSearchParams.delete('month');
-          history.push(`/prospect/?${urlSearchParams.toString()}`);
+          urlSearchParams.set('panel', 'prospect');
+          history.push(`/?${urlSearchParams.toString()}`);
           return;
         }
       }
     }
     const urlSearchParams = new URLSearchParams(window.location.search);
     urlSearchParams.delete('month');
-    history.push(`/user/?${urlSearchParams.toString()}`);
+    urlSearchParams.set('panel', 'user');
+    history.push(`/?${urlSearchParams.toString()}`);
   }, [fetch, dispatch, workingDB, history]);
 
   useEffect(() => {
@@ -99,14 +101,13 @@ const App = (props) => {
   }, [isInitial, isAvailableForRequests, initialize]);
 
   return (
-    <Route path='/:panel?/'>
+    <div>
+      <HeaderBar
+        fetch={fetch}
+        onAdd={() => setShowAddExpenditureOffcanvas(true)}
+      />
+      <Alerts />
       <div className='py-1'>
-        <HeaderBar
-          fetch={fetch}
-          onAdd={() => setShowAddExpenditureOffcanvas(true)}
-        />
-        <Alerts />
-
         <div className='safe-down'>
           <Container fluid>
             <div style={{ maxWidth: 720 }} className='mx-auto'>
@@ -114,17 +115,15 @@ const App = (props) => {
             </div>
           </Container>
         </div>
-
-        <ExpenditureOffcanvas
-          key={`add_expenditure_offcanvas_${addEditExpenditureOffcanvasCounter}`}
-          show={showAddExpenditureOffcanvas}
-          clear={() => setAddExpenditureOffcanvasCounter((x) => x + 1)}
-          onHide={() => setShowAddExpenditureOffcanvas(false)}
-        />
-
-        <BottomBar />
       </div>
-    </Route>
+      <ExpenditureOffcanvas
+        key={`add_expenditure_offcanvas_${addEditExpenditureOffcanvasCounter}`}
+        show={showAddExpenditureOffcanvas}
+        clear={() => setAddExpenditureOffcanvasCounter((x) => x + 1)}
+        onHide={() => setShowAddExpenditureOffcanvas(false)}
+      />
+      <BottomBar />
+    </div>
   );
 };
 

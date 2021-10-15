@@ -8,3 +8,4 @@ export { default as AutoBlurTransparentButton } from './src/AutoBlurTransparentB
 export { default as getCurrentMonth } from './src/getCurrentMonth';
 export { default as dateToLocaleISOString } from './src/dateToLocaleISOString';
 export { default as getWorkingMonth } from './src/getWorkingMonth';
+export { default as getCurrentPanel } from './src/getCurrentPanel';

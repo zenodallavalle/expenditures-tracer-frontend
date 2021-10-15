@@ -26,10 +26,8 @@ const Month = ({ month, ...props }) => {
       } else {
         urlSearchParams.set('month', name);
       }
-      history.push(
-        history.location.pathname.replace('months', 'prospect') +
-          `?${urlSearchParams.toString()}`
-      );
+      urlSearchParams.set('panel', 'prospect');
+      history.push(`/?${urlSearchParams.toString()}`);
     },
     [history]
   );
