@@ -18,6 +18,7 @@ const emptyDatabase = { name: '' };
 
 export const AddDatabase = ({ ...props }) => {
   const dispatch = useDispatch();
+  const history = useHistory();
   const isLoading = useSelector(userSelectors.isLoading());
   const dbsCount = useSelector(userSelectors.countDBS());
 
@@ -74,7 +75,9 @@ export const AddDatabase = ({ ...props }) => {
           dispatch({ type: 'expenditures/dataRetrieved', payload: fullDB });
           dispatch({ type: 'database/dataRetrieved', payload: fullDB });
           localStorage.setItem('workingDBId', fullDB.id);
-          dispatch({ type: 'localInfo/panelChanged', payload: 'prospect' });
+          const urlSearchParams = new URLSearchParams(window.location.search);
+          urlSearchParams.delete('month');
+          history.push(`/prospect/?${urlSearchParams.toString()}`);
         }
         setMessages({});
         setInstance(emptyDatabase);

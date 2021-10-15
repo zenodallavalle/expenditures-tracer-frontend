@@ -39,7 +39,7 @@ const userApi = {
         });
       } catch (e) {
         console.error(e);
-        throw Error('serviceUnreachable');
+        throw Error('service unreachable');
       }
     },
     {

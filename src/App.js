@@ -3,7 +3,7 @@ import './App.css';
 
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Route, useParams } from 'react-router-dom';
+import { Route, useParams, useHistory } from 'react-router-dom';
 
 import Container from 'react-bootstrap/Container';
 
@@ -21,6 +21,7 @@ import MainView from 'components/mainView';
 const App = (props) => {
   const dispatch = useDispatch();
   const params = useParams();
+  const history = useHistory();
   const isInitial = useSelector(userSelectors.isInitial());
   const isAvailableForRequests = useSelector(
     userSelectors.isAvailableForRequests()
@@ -79,13 +80,17 @@ const App = (props) => {
         const fullDB = await fetch(dbId);
         if (fullDB) {
           localStorage.setItem('workingDBId', fullDB.id);
-          dispatch({ type: 'localInfo/panelChanged', payload: 'prospect' });
+          const urlSearchParams = new URLSearchParams(window.location.search);
+          urlSearchParams.delete('month');
+          history.push(`/prospect/?${urlSearchParams.toString()}`);
           return;
         }
       }
     }
-    dispatch({ type: 'localInfo/panelChanged', payload: 'user' });
-  }, [fetch, dispatch, workingDB]);
+    const urlSearchParams = new URLSearchParams(window.location.search);
+    urlSearchParams.delete('month');
+    history.push(`/user/?${urlSearchParams.toString()}`);
+  }, [fetch, dispatch, workingDB, history]);
 
   useEffect(() => {
     if (isInitial && isAvailableForRequests) {
