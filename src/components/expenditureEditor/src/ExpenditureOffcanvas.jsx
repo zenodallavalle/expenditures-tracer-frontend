@@ -105,10 +105,9 @@ const ExpenditureOffcanvas = ({
   };
 
   const onKeyDown = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-
     if (e.key === 'Enter') {
+      e.preventDefault();
+      e.stopPropagation();
       switch (e.target.name) {
         case 'name':
           return refValue.current?.focus();
@@ -125,6 +124,8 @@ const ExpenditureOffcanvas = ({
       }
     }
     if (e.key === 'Tab') {
+      e.preventDefault();
+      e.stopPropagation();
       switch (e.target.name) {
         case 'name':
           return refValue.current?.focus();
@@ -250,7 +251,7 @@ const ExpenditureOffcanvas = ({
       show={show}
       onHide={onHide}
       placement='end'
-      style={{ width: '100%', maxWidth: 700 }}
+      style={{ width: '100%', maxWidth: 500 }}
     >
       <Offcanvas.Header closeButton>
         <Offcanvas.Title>{getTitle()}</Offcanvas.Title>

@@ -106,6 +106,8 @@ export const AddIncome = ({ ...props }) => {
                 onKeyDown={onKeyDown}
                 ref={refValue}
                 disabled={isLoading}
+                type='number'
+                step={0.01}
               />
             </div>
           </div>
@@ -287,6 +289,8 @@ const Income = ({ id, ...props }) => {
                   onKeyDown={onKeyDown}
                   ref={refValue}
                   disabled={isLoading}
+                  type='number'
+                  step={0.01}
                 />
               </div>
             </div>
