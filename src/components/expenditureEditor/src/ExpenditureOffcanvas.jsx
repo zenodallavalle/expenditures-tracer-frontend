@@ -362,7 +362,7 @@ const ExpenditureOffcanvas = ({
             <div className='pe-2'>Category</div>
             <div className='flex-grow-1'>
               {databaseIsLoading ? (
-                <FormControl value='Loading...' />
+                <FormControl value='Loading...' readOnly />
               ) : (
                 <Form.Select
                   name='category'
@@ -406,7 +406,7 @@ const ExpenditureOffcanvas = ({
                 <div className='pe-2'>Expected expenditure</div>
                 <div className='flex-grow-1'>
                   {expendituresAreLoading ? (
-                    <FormControl value='Loading...' />
+                    <FormControl value='Loading...' readOnly />
                   ) : (
                     <Form.Select
                       name='expected_expenditure'
