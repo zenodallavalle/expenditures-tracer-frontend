@@ -1,10 +1,10 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
+import { useHistory, useParams } from 'react-router-dom';
 
 import { AutoBlurButton } from 'utils';
 
 import { mixinSelectors } from 'rdx';
 import { databaseSelectors } from 'rdx/database';
-import { localInfoActions, localInfoSelectors } from 'rdx/localInfo';
 
 const buttons = [
   {
@@ -26,12 +26,15 @@ const buttons = [
 ];
 
 const BottomBar = (props) => {
-  const dispatch = useDispatch();
+  const history = useHistory();
+  const { panel = 'prospect' } = useParams();
   const isLoading = useSelector(mixinSelectors.isLoading());
   const workingDB = useSelector(databaseSelectors.getWorkingDB());
-  const currentPanel = useSelector(localInfoSelectors.getCurrentPanel());
 
-  const setPanel = (to) => dispatch(localInfoActions.panelChanged(to));
+  const setPanel = useCallback(
+    (to) => history.push(history.location.pathname.replace(`${panel}`, to)),
+    [history, panel]
+  );
 
   return (
     <footer className='footer fixed-bottom bg-white safe-fixed-x safe-fixed-bottom'>
@@ -39,9 +42,7 @@ const BottomBar = (props) => {
         {buttons.map(({ name, displayedName }) => (
           <div key={`bottom_button_${name}`} className='flex-grow-1'>
             <AutoBlurButton
-              variant={
-                currentPanel === name ? 'secondary' : 'outline-secondary'
-              }
+              variant={panel === name ? 'secondary' : 'outline-secondary'}
               size='sm'
               className='w-100'
               onClick={() => setPanel(name)}

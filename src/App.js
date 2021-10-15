@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
 import Container from 'react-bootstrap/Container';
 
@@ -13,9 +14,9 @@ import { databaseSelectors } from 'rdx/database';
 
 import Alerts from 'components/alerts/';
 import HeaderBar from 'components/headerBar';
-import MainView from 'components/mainView';
 import BottomBar from 'components/bottomBar';
 import ExpenditureOffcanvas from 'components/expenditureEditor';
+import MainView from 'components/mainView';
 
 const App = (props) => {
   const dispatch = useDispatch();
@@ -96,30 +97,34 @@ const App = (props) => {
   }, [isInitial, isAvailableForRequests, initialize]);
 
   return (
-    <div className='py-1'>
-      <HeaderBar
-        fetch={fetch}
-        onAdd={() => setShowAddExpenditureOffcanvas(true)}
-      />
-      <Alerts />
+    <Router>
+      <Route path='/:panel?/'>
+        <div className='py-1'>
+          <HeaderBar
+            fetch={fetch}
+            onAdd={() => setShowAddExpenditureOffcanvas(true)}
+          />
+          <Alerts />
 
-      <div className='safe-down'>
-        <Container fluid>
-          <div style={{ maxWidth: 720 }} className='mx-auto'>
-            <MainView />
+          <div className='safe-down'>
+            <Container fluid>
+              <div style={{ maxWidth: 720 }} className='mx-auto'>
+                <MainView />
+              </div>
+            </Container>
           </div>
-        </Container>
-      </div>
 
-      <ExpenditureOffcanvas
-        key={`add_expenditure_offcanvas_${addEditExpenditureOffcanvasCounter}`}
-        show={showAddExpenditureOffcanvas}
-        clear={() => setAddExpenditureOffcanvasCounter((x) => x + 1)}
-        onHide={() => setShowAddExpenditureOffcanvas(false)}
-      />
+          <ExpenditureOffcanvas
+            key={`add_expenditure_offcanvas_${addEditExpenditureOffcanvasCounter}`}
+            show={showAddExpenditureOffcanvas}
+            clear={() => setAddExpenditureOffcanvasCounter((x) => x + 1)}
+            onHide={() => setShowAddExpenditureOffcanvas(false)}
+          />
 
-      <BottomBar />
-    </div>
+          <BottomBar />
+        </div>
+      </Route>
+    </Router>
   );
 };
 

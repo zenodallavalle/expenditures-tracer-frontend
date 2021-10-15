@@ -63,12 +63,7 @@ const PanelProspect = (props) => {
           </p>
         ) : (
           categories.map(({ id, prospect }) => (
-            <Category
-              id={id}
-              key={'category_prospect' + id}
-              readOnly
-              hideProspect
-            >
+            <Category id={id} key={'category_prospect' + id} readOnly>
               <div className='d-flex justify-content-between p-1'>
                 <div className='d-flex flex-column text-center'>
                   <div className='fst-italic fw-light small'>Expected</div>

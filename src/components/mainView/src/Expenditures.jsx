@@ -2,18 +2,13 @@ import { useSelector } from 'react-redux';
 
 import { LoadingDiv } from 'utils';
 import { expendituresSelectors } from 'rdx/expenditures';
-import { localInfoSelectors } from 'rdx/localInfo';
 
 import Expenditure from './Expenditure';
 
-const Expenditures = ({ categoryId, ...props }) => {
-  const currentPanel = useSelector(localInfoSelectors.getCurrentPanel());
+const Expenditures = ({ categoryId, expected, ...props }) => {
   const isLoading = useSelector(expendituresSelectors.isLoading());
   const expendituresIds = useSelector(
-    expendituresSelectors.getIdsByCategory(
-      categoryId,
-      currentPanel === 'expected_expenditures'
-    )
+    expendituresSelectors.getIdsByCategory(categoryId, expected)
   );
 
   if (expendituresIds.length === 0) {

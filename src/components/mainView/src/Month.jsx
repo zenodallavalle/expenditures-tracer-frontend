@@ -1,5 +1,6 @@
-import { Fragment } from 'react';
+import { Fragment, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useHistory, useParams } from 'react-router-dom';
 
 import Alert from 'react-bootstrap/Alert';
 import Button from 'react-bootstrap/Button';
@@ -10,15 +11,23 @@ import { localInfoSelectors } from 'rdx/localInfo';
 
 const Month = ({ month, ...props }) => {
   const { month: name, current_money, income, warn } = month;
+
+  const dispatch = useDispatch();
+  const { panel = 'prospect' } = useParams();
+  const history = useHistory();
+
   const workingMonth = useSelector(localInfoSelectors.getWorkingMonth());
   const isWorkingMonth = workingMonth === name;
-  const dispatch = useDispatch();
+
   const isLoading = useSelector(mixinSelectors.isLoading());
 
-  const onClick = (name) => {
-    dispatch({ type: 'localInfo/setWorkingMonth', payload: name });
-    dispatch({ type: 'localInfo/panelChanged', payload: 'prospect' });
-  };
+  const onClick = useCallback(
+    (name) => {
+      dispatch({ type: 'localInfo/setWorkingMonth', payload: name });
+      history.push(history.location.pathname.replace(`${panel}`, 'prospect'));
+    },
+    [dispatch, history, panel]
+  );
 
   return (
     <Fragment>
