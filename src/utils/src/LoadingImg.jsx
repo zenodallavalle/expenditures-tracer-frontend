@@ -1,11 +1,11 @@
-import LoadingGif from 'media/img/loading256.gif';
+import LoadingGif from 'media/img/loading100.gif';
 
 const getPositionClassName = (position) => ` text-${position}`;
 
 const LoadingImg = ({
   alt = 'loading',
   position = 'center',
-  maxWidth = 150,
+  maxWidth = 100,
   style = {},
   className = '',
   ...props
