@@ -6,6 +6,7 @@ export { default as LoadingDiv } from './src/LoadingDiv';
 export { default as AutoBlurButton } from './src/AutoBlurButton';
 export { default as AutoBlurTransparentButton } from './src/AutoBlurTransparentButton';
 export { default as getCurrentMonth } from './src/getCurrentMonth';
+export { default as capitalize } from './src/capitalize';
 export { default as dateToLocaleISOString } from './src/dateToLocaleISOString';
 export { default as getWorkingMonth } from './src/getWorkingMonth';
 export { default as getCurrentPanel } from './src/getCurrentPanel';
