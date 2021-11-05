@@ -27,7 +27,7 @@ const toFloat = (v) => {
 const getUpdatedValue = (e) => {
   switch (e.target.name) {
     case 'value':
-      return toFloat(e.target.value);
+      return e.target.value === '' ? '' : toFloat(e.target.value);
     case 'category':
       return toPKRelated(e.target.value);
     case 'expected_expenditure':
