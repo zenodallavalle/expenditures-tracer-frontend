@@ -4,13 +4,22 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 
 import { Provider } from 'react-redux';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import store from 'rdx/store';
+
+import Build from './Build';
 
 ReactDOM.render(
   <Provider store={store}>
     <Router>
-      <App />
+      <Switch>
+        <Route path='/build'>
+          <Build />
+        </Route>
+        <Route path='/'>
+          <App />
+        </Route>
+      </Switch>
     </Router>
   </Provider>,
   document.getElementById('root')
