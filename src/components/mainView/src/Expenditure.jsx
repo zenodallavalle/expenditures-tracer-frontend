@@ -6,11 +6,7 @@ import { InlineIcon } from '@iconify/react';
 import workflow16 from '@iconify/icons-octicon/workflow-16';
 
 import { expenditureApi } from 'api';
-import {
-  formatDate,
-  FunctionalitiesMenu,
-  AutoBlurTransparentButton,
-} from 'utils';
+import { formatDate, FunctionalitiesMenu } from 'utils';
 
 import { expendituresSelectors } from 'rdx/expenditures';
 import ExpenditureOffcanvas from 'components/expenditureEditor';
