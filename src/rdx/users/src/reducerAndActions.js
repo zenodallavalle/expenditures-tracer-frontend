@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   status: 'initial',
-  content: { entitis: {}, ids: [] },
+  content: { entities: {}, ids: [] },
   error: null,
 };
 

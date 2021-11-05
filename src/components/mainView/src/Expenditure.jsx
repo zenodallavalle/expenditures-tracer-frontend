@@ -10,11 +10,12 @@ import {
   formatDate,
   FunctionalitiesMenu,
   AutoBlurTransparentButton,
-  LoadingImg,
 } from 'utils';
-import { usersSelectors } from 'rdx/users';
+
 import { expendituresSelectors } from 'rdx/expenditures';
 import ExpenditureOffcanvas from 'components/expenditureEditor';
+
+import ExpenditureModal from './ExpenditureModal';
 
 const Expenditure = ({ id, ...props }) => {
   const dispatch = useDispatch();
@@ -37,7 +38,6 @@ const Expenditure = ({ id, ...props }) => {
 
   const isLoading = useSelector(expendituresSelectors.isLoading());
   const expenditure = useSelector(expendituresSelectors.getById(id));
-  const user = useSelector(usersSelectors.getById(expenditure?.user));
 
   const onEdit = (e, collapseFunctionalityMenu) => {
     setShowEditExpenditure(true);
@@ -102,14 +102,13 @@ const Expenditure = ({ id, ...props }) => {
             </div>
           </div>
         </div>
-        {showExpenditureDetails && (
-          <div>
-            <div className='fst-italic small'>
-              <span className='me-1'>Registered by:</span>
-              <span>{user ? <LoadingImg width={20} /> : user.username}</span>
-            </div>
-          </div>
-        )}
+
+        <ExpenditureModal
+          show={showExpenditureDetails}
+          setShow={setShowExpenditureDetails}
+          setShowEditExpenditure={setShowEditExpenditure}
+          id={id}
+        />
       </div>
 
       <ExpenditureOffcanvas

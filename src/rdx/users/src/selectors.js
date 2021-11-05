@@ -1,5 +1,8 @@
 const selectors = {
-  getById: (id) => (s) => id && s.users.content.entities[id],
+  getById: (id) => (s) =>
+    id && s.user.content?.id === id
+      ? s.user.content
+      : s.users.content.entities[id],
   status: () => (s) => s.users.status,
   error: () => (s) => s.users.error,
   isLoading:
