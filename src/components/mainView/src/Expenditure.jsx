@@ -94,9 +94,9 @@ const Expenditure = ({ id, ...props }) => {
                 (expenditure?.is_expected &&
                   expenditure?.actual_expenditures.length > 0)) && (
                 <div className='ms-auto mt-auto'>
-                  <AutoBlurTransparentButton>
+                  <div className='py-1 px-2' onClick={onToggleDetails}>
                     <InlineIcon icon={workflow16} rotate={135} />
-                  </AutoBlurTransparentButton>
+                  </div>
                 </div>
               )}
             </div>
