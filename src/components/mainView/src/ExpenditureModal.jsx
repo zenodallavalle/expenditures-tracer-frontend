@@ -18,14 +18,18 @@ import { usersSelectors } from 'rdx/users';
 const right = 'text-end';
 const center = 'text-center';
 
-const legend = 'small fst-italic p-0';
+const legend = 'small fst-italic p-0 pt-4';
 const value = 'p-0';
+const prospect = 'p-0';
 
 const rightLegend = [right, legend].join(' ');
 const centerLegend = [center, legend].join(' ');
 
 const rightValue = [right, value].join(' ');
 const centerValue = [center, value].join(' ');
+
+const rightProspect = [right, prospect].join(' ');
+const centerProspect = [center, prospect].join(' ');
 
 const ComparisonExpenditure = ({ id }) => {
   const expenditure = useSelector(expendituresSelectors.getById(id));
@@ -126,28 +130,32 @@ const ExpenditureModal = ({
         {hasRelated ? (
           <Table borderless size='sm'>
             <tbody>
+              <ComparisonRow expectedId={expectedId} />
               <tr>
                 <th className={legend}>Expected expenditure</th>
                 <th className={centerLegend}>Delta</th>
                 <th className={rightLegend}>Actual expenditures</th>
               </tr>
-              <ComparisonRow expectedId={expectedId} />
+
               <tr>
-                <td className={value}>
+                <td className={prospect}>
                   {expenditure?.prospect?.expected || ''}
                 </td>
                 <td
                   className={
-                    centerValue +
+                    centerProspect +
                     ` ${getTextColorClassForDelta(
                       expenditure?.prospect?.delta
                     )}`
                   }
                 >
-                  {expenditure?.prospect?.delta || ''}
+                  {expenditure?.prospect?.delta !== null ||
+                  expenditure?.prospect?.delta !== undefined
+                    ? expenditure?.prospect?.delta
+                    : ''}
                 </td>
-                <td className={rightValue}>
-                  {expenditure?.prospect?.expected}
+                <td className={rightProspect}>
+                  {expenditure?.prospect?.actual}
                 </td>
               </tr>
             </tbody>
