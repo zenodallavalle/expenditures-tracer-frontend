@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import Table from 'react-bootstrap/Table';
 
 import { databaseSelectors } from 'rdx/database';
-import { LoadingImg } from 'utils';
+import { getTextColorClassForDelta, LoadingImg } from 'utils';
 import { expendituresSelectors } from 'rdx/expenditures';
 
 const right = 'text-end';
@@ -17,16 +17,6 @@ const centerLegend = [center, legend].join(' ');
 
 const rightValue = [right, value].join(' ');
 const centerValue = [center, value].join(' ');
-
-const getTextColorClassForDelta = (value) => {
-  if (!value) {
-  } else if (value > 0) {
-    return 'text-success';
-  } else if (value < 0) {
-    return 'text-danger';
-  }
-  return 'text-dark';
-};
 
 const Prospect = ({ ...priops }) => {
   const prospect = useSelector(databaseSelectors.getProspect());

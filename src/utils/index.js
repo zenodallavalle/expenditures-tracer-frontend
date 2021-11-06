@@ -5,6 +5,7 @@ export { default as LoadingImg } from './src/LoadingImg';
 export { default as LoadingDiv } from './src/LoadingDiv';
 export { default as AutoBlurButton } from './src/AutoBlurButton';
 export { default as AutoBlurTransparentButton } from './src/AutoBlurTransparentButton';
+export { default as getTextColorClassForDelta } from './src/getTextColorClassForDelta';
 export { default as getCurrentMonth } from './src/getCurrentMonth';
 export { default as capitalize } from './src/capitalize';
 export { default as dateToLocaleISOString } from './src/dateToLocaleISOString';
