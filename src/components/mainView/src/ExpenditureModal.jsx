@@ -1,19 +1,40 @@
 import { useSelector } from 'react-redux';
 
 import Badge from 'react-bootstrap/Badge';
-import Col from 'react-bootstrap/Col';
 import Modal from 'react-bootstrap/Modal';
-import Row from 'react-bootstrap/Row';
+import Table from 'react-bootstrap/Table';
 
-import { capitalize, formatDate, LoadingImg, AutoBlurButton } from 'utils';
+import {
+  capitalize,
+  getTextColorClassForDelta,
+  formatDate,
+  LoadingImg,
+  AutoBlurButton,
+} from 'utils';
 
 import { expendituresSelectors } from 'rdx/expenditures';
 import { usersSelectors } from 'rdx/users';
 
+const right = 'text-end';
+const center = 'text-center';
+
+const legend = 'small fst-italic p-0 pt-4';
+const value = 'p-0';
+const prospect = 'p-0';
+
+const rightLegend = [right, legend].join(' ');
+const centerLegend = [center, legend].join(' ');
+
+const rightValue = [right, value].join(' ');
+const centerValue = [center, value].join(' ');
+
+const rightProspect = [right, prospect].join(' ');
+const centerProspect = [center, prospect].join(' ');
+
 const ComparisonExpenditure = ({ id }) => {
   const expenditure = useSelector(expendituresSelectors.getById(id));
   return (
-    <div className='text-center'>
+    <div>
       <span>{expenditure?.name}</span>
       <span className='me-1'>,</span>
       <span className='me-1 fw-bold'>{expenditure?.value}</span>
@@ -26,21 +47,20 @@ const ComparisonRow = ({ expectedId }) => {
   const expected = useSelector(expendituresSelectors.getById(expectedId));
   const actualIds = expected.actual_expenditures;
   return (
-    <Row>
-      <Col>
-        <div className='text-center'>Expected</div>
+    <tr>
+      <td className={value}>
         <ComparisonExpenditure id={expectedId} />
-      </Col>
-      <Col>
-        <div className='text-center'>Actual</div>
+      </td>
+      <td />
+      <td className={rightValue}>
         {actualIds.map((aId) => (
           <ComparisonExpenditure
             key={`expenditure_comparison_${aId}`}
             id={aId}
           />
         ))}
-      </Col>
-    </Row>
+      </td>
+    </tr>
   );
 };
 
@@ -108,7 +128,38 @@ const ExpenditureModal = ({
         </div>
         <hr />
         {hasRelated ? (
-          <ComparisonRow expectedId={expectedId} />
+          <Table borderless size='sm'>
+            <tbody>
+              <ComparisonRow expectedId={expectedId} />
+              <tr>
+                <th className={legend}>Expected expenditure</th>
+                <th className={centerLegend}>Delta</th>
+                <th className={rightLegend}>Actual expenditures</th>
+              </tr>
+
+              <tr>
+                <td className={prospect}>
+                  {expenditure?.prospect?.expected || ''}
+                </td>
+                <td
+                  className={
+                    centerProspect +
+                    ` ${getTextColorClassForDelta(
+                      expenditure?.prospect?.delta
+                    )}`
+                  }
+                >
+                  {expenditure?.prospect?.delta !== null ||
+                  expenditure?.prospect?.delta !== undefined
+                    ? expenditure?.prospect?.delta
+                    : ''}
+                </td>
+                <td className={rightProspect}>
+                  {expenditure?.prospect?.actual}
+                </td>
+              </tr>
+            </tbody>
+          </Table>
         ) : (
           <div>This expenditure has no related expenditures</div>
         )}

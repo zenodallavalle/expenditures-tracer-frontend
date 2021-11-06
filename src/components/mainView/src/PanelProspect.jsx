@@ -6,17 +6,9 @@ import { useSelector } from 'react-redux';
 import { InlineIcon } from '@iconify/react';
 import pencil16 from '@iconify/icons-octicon/pencil-16';
 import MoneyIncomeOffcanvas from 'components/moneyEditor';
+import { getTextColorClassForDelta } from 'utils';
 import Category from './Category';
 import Prospect from './Prospect';
-
-const retrieveClassForDeltaDiv = (value) => {
-  if (value > 0) {
-    return 'text-success';
-  } else if (value < 0) {
-    return 'text-danger';
-  }
-  return 'text-dark';
-};
 
 const PanelProspect = (props) => {
   const isLoading = useSelector(databaseSelectors.isLoading());
@@ -72,7 +64,7 @@ const PanelProspect = (props) => {
 
                 <div className='d-flex flex-column text-center'>
                   <div className='fst-italic fw-light small'>Delta</div>
-                  <div className={retrieveClassForDeltaDiv(prospect.delta)}>
+                  <div className={getTextColorClassForDelta(prospect.delta)}>
                     {prospect.delta}
                   </div>
                 </div>
