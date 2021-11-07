@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import FormControl from 'react-bootstrap/FormControl';
 import Alert from 'react-bootstrap/Alert';
@@ -182,6 +183,11 @@ const User = ({ ...props }) => {
           </div>
         </div>
       )}
+      <div>
+        <div className='text-center mt-4'>
+          <Link to='/build/'>More info about this version...</Link>
+        </div>
+      </div>
     </div>
   );
 };
