@@ -1,11 +1,41 @@
-import { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import FormControl from 'react-bootstrap/FormControl';
+import { InlineIcon } from '@iconify/react';
+import plus16 from '@iconify/icons-octicon/plus-16';
+import dash16 from '@iconify/icons-octicon/dash-16';
+import eyeClosed16 from '@iconify/icons-octicon/eye-closed-16';
+import foldDown16 from '@iconify/icons-octicon/fold-down-16';
+import foldUp16 from '@iconify/icons-octicon/fold-up-16';
 
 import { categoryApi } from 'api';
-import { AutoBlurButton, FunctionalitiesMenu, LoadingImg } from 'utils';
-import { databaseSelectors } from 'rdx/database';
+import {
+  AutoBlurButton,
+  AutoBlurTransparentButton,
+  FunctionalitiesMenu,
+  LoadingImg,
+} from 'utils';
+import { databaseSelectors, databaseActions } from 'rdx/database';
+
+export const ExpandHiddenCategories = ({ ...props }) => {
+  const dispatch = useDispatch();
+  const onClick = () => {
+    dispatch(databaseActions.expandHiddenCategories());
+  };
+  const hiddenCategoriesIds = useSelector(
+    databaseSelectors.getHiddenCategoriesIds()
+  );
+  if (hiddenCategoriesIds.length === 0) return null;
+  else
+    return (
+      <div>
+        <AutoBlurButton className='w-100' onClick={onClick}>
+          Expand hidden categories
+        </AutoBlurButton>
+      </div>
+    );
+};
 
 const emptyCategory = { name: '' };
 
@@ -170,6 +200,27 @@ const Category = ({ id, children = null, readOnly = false, ...props }) => {
 
   const ref = useRef();
 
+  const collapsed = category?.status === 'collapsed';
+  const hidden = category?.status === 'hidden';
+
+  const toggleCollapsed = () => {
+    dispatch(
+      databaseActions.updateCategoryState({
+        id,
+        status: collapsed ? 'expanded' : 'collapsed',
+      })
+    );
+  };
+
+  const hideCategory = () => {
+    dispatch(
+      databaseActions.updateCategoryState({
+        id,
+        status: 'hidden',
+      })
+    );
+  };
+
   const onChange = (e) =>
     setInstance((instance) => ({
       ...instance,
@@ -227,6 +278,10 @@ const Category = ({ id, children = null, readOnly = false, ...props }) => {
     }
   };
 
+  const onMove = (relativeDelta) => () => {
+    dispatch(databaseActions.alterOrder({ id, relativeDelta }));
+  };
+
   const FunctionalitiesMenuCompiled = (
     <FunctionalitiesMenu
       clickable={!isLoading}
@@ -239,9 +294,35 @@ const Category = ({ id, children = null, readOnly = false, ...props }) => {
     />
   );
 
+  if (hidden) return null;
   return (
     <div className='border rounded border-primary px-1 mt-1 mb-3'>
       <div className='d-flex align-items-center pb-1'>
+        {isEditing ? (
+          <React.Fragment>
+            <div>
+              <AutoBlurTransparentButton onClick={hideCategory}>
+                <InlineIcon icon={eyeClosed16} />
+              </AutoBlurTransparentButton>
+            </div>
+            <div>
+              <AutoBlurTransparentButton onClick={onMove(1)}>
+                <InlineIcon icon={foldDown16} />
+              </AutoBlurTransparentButton>
+            </div>
+            <div>
+              <AutoBlurTransparentButton onClick={onMove(-1)}>
+                <InlineIcon icon={foldUp16} />
+              </AutoBlurTransparentButton>
+            </div>
+          </React.Fragment>
+        ) : (
+          <div>
+            <AutoBlurTransparentButton onClick={toggleCollapsed}>
+              <InlineIcon icon={collapsed ? plus16 : dash16} />
+            </AutoBlurTransparentButton>
+          </div>
+        )}
         <div className='flex-grow-1 text-primary px-1'>
           {isEditing ? (
             <FormControl
@@ -259,7 +340,7 @@ const Category = ({ id, children = null, readOnly = false, ...props }) => {
         </div>
         {!readOnly && <div>{FunctionalitiesMenuCompiled}</div>}
       </div>
-      {children}
+      {!collapsed && children}
     </div>
   );
 };

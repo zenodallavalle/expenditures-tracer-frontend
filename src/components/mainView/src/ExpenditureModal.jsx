@@ -26,7 +26,7 @@ const rightLegend = [right, legend].join(' ');
 const centerLegend = [center, legend].join(' ');
 
 const rightValue = [right, value].join(' ');
-const centerValue = [center, value].join(' ');
+// const centerValue = [center, value].join(' ');
 
 const rightProspect = [right, prospect].join(' ');
 const centerProspect = [center, prospect].join(' ');
