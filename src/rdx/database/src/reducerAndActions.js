@@ -1,15 +1,21 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+import { mergeOrder, saveOrder } from './categoryOrder';
+import { getStatus, saveStatus } from './categoryStatus';
+
 const analyzePayload = (db) => {
   const incomes = [...db.incomes];
   const categories = [...db.categories];
-  const categoriesIds = [];
+  let categoriesIds = [];
   const categoriesEntities = {};
   const incomesIds = incomes.map((i) => i.id);
   const incomesEntities = incomes.reduce(
     (acc, i) => ({ ...acc, [i.id]: i }),
     {}
   );
+
+  const state = getStatus();
+
   categories.forEach((cat) => {
     const category = {
       ...cat,
@@ -17,8 +23,12 @@ const analyzePayload = (db) => {
       actual_expenditures: cat.actual_expenditures.map((e) => e.id),
     };
     categoriesIds.push(cat.id);
-    categoriesEntities[cat.id] = category;
+    categoriesEntities[cat.id] = { ...category, status: state[cat.id] };
   });
+
+  categoriesIds = mergeOrder(categoriesIds);
+  saveOrder(categoriesIds);
+
   return {
     ...db,
     incomes: { ids: incomesIds, entities: incomesEntities },
@@ -56,6 +66,29 @@ const slice = createSlice({
     dataUpdated: (state, action) => {
       state.status = 'idle';
       state.content = analyzePayload(action.payload);
+    },
+    updateCategoryState: (state, action) => {
+      saveStatus(action.payload.id, action.payload.status);
+      const categoriesEntities = state.content.categories.entities;
+      state.content.categories.entities = {
+        ...categoriesEntities,
+        [action.payload.id]: {
+          ...categoriesEntities[action.payload.id],
+          status: action.payload.status,
+        },
+      };
+    },
+    expandHiddenCategories: (state, action) => {
+      const categoriesIds = state.content?.categories.ids;
+      const categories = {};
+      categoriesIds.forEach((id) => {
+        saveStatus(id, 'expanded');
+        categories[id] = {
+          ...state.content?.categories.entities[id],
+          status: 'expanded',
+        };
+      });
+      state.content.categories.entities = categories;
     },
   },
 });

@@ -3,7 +3,11 @@ import { useSelector } from 'react-redux';
 import { LoadingDiv } from 'utils';
 import { databaseSelectors } from 'rdx/database';
 
-import Category, { AddCategory, CategoryProspect } from './Category';
+import Category, {
+  AddCategory,
+  CategoryProspect,
+  ExpandHiddenCategories,
+} from './Category';
 import Expenditures from './Expenditures';
 
 const PanelExpenditures = ({ expected, ...props }) => {
@@ -34,6 +38,8 @@ const PanelExpenditures = ({ expected, ...props }) => {
             <CategoryProspect expected={expected} id={id} />
           </Category>
         ))}
+        <ExpandHiddenCategories />
+        <div className='my-2'></div>
         <AddCategory />
       </div>
     );
