@@ -41,3 +41,7 @@ export const mergeOrder = (truth) => {
 
   return result;
 };
+
+export const insertAt = (elements, element, index) => {
+  return elements.splice(index, 0, element);
+};

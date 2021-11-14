@@ -90,6 +90,21 @@ const slice = createSlice({
       });
       state.content.categories.entities = categories;
     },
+    alterOrder: (state, action) => {
+      const categoriesIds = state.content?.categories.ids;
+      const index = categoriesIds.indexOf(action.payload.id);
+      if (index + action.payload.relativeDelta >= 0) {
+        const categoryId = categoriesIds[index];
+        categoriesIds.splice(index, 1);
+        categoriesIds.splice(
+          index + action.payload.relativeDelta,
+          0,
+          categoryId
+        );
+        state.content.categories.ids = categoriesIds;
+        saveOrder(categoriesIds);
+      }
+    },
   },
 });
 
