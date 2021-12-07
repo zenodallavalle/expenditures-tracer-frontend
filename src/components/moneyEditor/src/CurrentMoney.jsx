@@ -20,13 +20,22 @@ const CurrentMoney = ({ ...props }) => {
 
   const refValue = useRef();
 
+  const floated = parseFloat(currentMoney?.value);
+  const greaterThan1000 = !isNaN(floated) && floated >= 1000;
+  const formattedValue = isNaN(floated)
+    ? ''
+    : floated.toFixed(greaterThan1000 ? 0 : 2);
+
   const onChange = (e) => {
     setInstance(
       currentMoney.value === e.target.value ? undefined : e.target.value
     );
   };
 
-  const onEdit = () => setIsEditing(true);
+  const onEdit = () => {
+    setIsEditing(true)
+    setInstance(floated)
+  };
 
   const onKeyDown = (e) => {
     if (e.key === 'Enter') {
@@ -87,11 +96,7 @@ const CurrentMoney = ({ ...props }) => {
     }
   }, [isEditing]);
 
-  const floated = parseFloat(currentMoney?.value);
-  const greaterThan1000 = !isNaN(floated) && floated >= 1000;
-  const formattedValue = isNaN(floated)
-    ? ''
-    : floated.toFixed(greaterThan1000 ? 0 : 2);
+  
 
   return (
     <div>
@@ -103,7 +108,7 @@ const CurrentMoney = ({ ...props }) => {
             <div>
               <FormControl
                 name='value'
-                value={instance || formattedValue}
+                value={instance === undefined ? formattedValue : instance}
                 onChange={onChange}
                 onKeyDown={onKeyDown}
                 ref={refValue}
