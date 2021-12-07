@@ -1,12 +1,12 @@
-import { useState, useEffect, useRef } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import Offcanvas from 'react-bootstrap/Offcanvas';
+import { useState, useEffect, useRef } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import Offcanvas from "react-bootstrap/Offcanvas";
 
-import { expenditureApi } from 'api';
-import { LoadingImg, dateToLocaleISOString, AutoBlurButton } from 'utils';
-import { expendituresSelectors } from 'rdx/expenditures';
-import { databaseSelectors } from 'rdx/database';
-import { Form, FormControl } from 'react-bootstrap';
+import { expenditureApi } from "api";
+import { LoadingImg, dateToLocaleISOString, AutoBlurButton } from "utils";
+import { expendituresSelectors } from "rdx/expenditures";
+import { databaseSelectors } from "rdx/database";
+import { Form, FormControl } from "react-bootstrap";
 
 const toPKRelated = (v) => {
   const int = parseInt(v.trim());
@@ -17,7 +17,7 @@ const toPKRelated = (v) => {
 };
 
 const toFloat = (v) => {
-  const float = parseFloat(v.trim().replace(',', '.'));
+  const float = parseFloat(v.trim().replace(",", "."));
   if (!isNaN(float)) {
     return float;
   }
@@ -26,11 +26,11 @@ const toFloat = (v) => {
 
 const getUpdatedValue = (e) => {
   switch (e.target.name) {
-    case 'value':
-      return e.target.value === '' ? '' : toFloat(e.target.value);
-    case 'category':
+    case "value":
+      return e.target.value === "" ? "" : toFloat(e.target.value);
+    case "category":
       return toPKRelated(e.target.value);
-    case 'expected_expenditure':
+    case "expected_expenditure":
       return toPKRelated(e.target.value);
     default:
       return e.target.value;
@@ -47,8 +47,8 @@ const ExpenditureOffcanvas = ({
   ...props
 }) => {
   const emptyExpenditure = {
-    name: '',
-    value: '',
+    name: "",
+    value: "",
     date: new Date(),
     category: null,
     expected_expenditure: null,
@@ -89,55 +89,73 @@ const ExpenditureOffcanvas = ({
     if (updatedValue !== undefined) {
       if (id) {
         if (expenditure[e.target.name] !== updatedValue) {
-          setInstance((i) => ({ ...i, [e.target.name]: updatedValue }));
+          if (e.target.name === "expected_expenditure") {
+            setInstance((i) => ({
+              ...i,
+              [e.target.name]: updatedValue,
+              category: expectedExpenditures.find((e) => e.id === updatedValue)
+                ?.category,
+            }));
+          } else {
+            setInstance((i) => ({ ...i, [e.target.name]: updatedValue }));
+          }
         } else {
           const updatedInstance = { ...instance };
           delete updatedInstance[e.target.name];
           setInstance(updatedInstance);
         }
       } else {
-        setInstance((instance) => ({
-          ...instance,
-          [e.target.name]: updatedValue,
-        }));
+        if (e.target.name === "expected_expenditure") {
+          setInstance((instance) => ({
+            ...instance,
+            [e.target.name]: updatedValue,
+            category: expectedExpenditures.find((e) => e.id === updatedValue)
+              ?.category,
+          }));
+        } else {
+          setInstance((instance) => ({
+            ...instance,
+            [e.target.name]: updatedValue,
+          }));
+        }
       }
     }
   };
 
   const onKeyDown = (e) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       e.preventDefault();
       e.stopPropagation();
       switch (e.target.name) {
-        case 'name':
+        case "name":
           return refValue.current?.focus();
-        case 'value':
+        case "value":
           return refDate.current?.focus();
-        case 'date':
+        case "date":
           return refCategory.current?.focus();
-        case 'category':
+        case "category":
           return isExpected ? refExpected.current?.focus() : onSave();
-        case 'expected_expenditure':
+        case "expected_expenditure":
           return onSave();
         default:
           return;
       }
     }
-    if (e.key === 'Tab') {
+    if (e.key === "Tab") {
       e.preventDefault();
       e.stopPropagation();
       switch (e.target.name) {
-        case 'name':
+        case "name":
           return refValue.current?.focus();
-        case 'value':
+        case "value":
           return refDate.current?.focus();
-        case 'date':
+        case "date":
           return refCategory.current?.focus();
-        case 'category':
+        case "category":
           return isExpected
             ? refExpected.current?.focus()
             : refName.current?.focus();
-        case 'expected_expenditure':
+        case "expected_expenditure":
           return refName.current?.focus();
         default:
           return;
@@ -151,44 +169,44 @@ const ExpenditureOffcanvas = ({
       const msgs = {};
       Object.entries(instance).forEach(([k, v]) => {
         if (!v) {
-          if (['category', 'name', 'value'].includes(k)) {
+          if (["category", "name", "value"].includes(k)) {
             isValid = false;
-            msgs[k] = ['This field is required'];
+            msgs[k] = ["This field is required"];
           }
         }
       });
       setMessages(msgs);
       if (isValid) {
-        dispatch({ type: 'expenditures/isLoading' });
+        dispatch({ type: "expenditures/isLoading" });
         try {
           const fullDB = await expenditureApi.editExpenditure({
             id,
             payload: instance,
           });
-          dispatch({ type: 'database/dataUpdated', payload: fullDB });
-          dispatch({ type: 'expenditures/dataUpdated', payload: fullDB });
+          dispatch({ type: "database/dataUpdated", payload: fullDB });
+          dispatch({ type: "expenditures/dataUpdated", payload: fullDB });
           onHide();
           clear();
         } catch (e) {
           if (e.json.non_field_errors) {
             dispatch({
-              type: 'alerts/added',
-              payload: e.json.non_field_errors.join(', '),
+              type: "alerts/added",
+              payload: e.json.non_field_errors.join(", "),
             });
           } else {
             setMessages(e.json);
           }
-          dispatch({ type: 'expenditures/loaded' });
+          dispatch({ type: "expenditures/loaded" });
         }
       }
     } else {
       setMessages({
         name:
           !instance.name || !instance.name.trim()
-            ? ['This field is required']
+            ? ["This field is required"]
             : [],
-        value: !instance.value ? ['This field should be float'] : [],
-        category: !instance.category ? ['This field is required'] : [],
+        value: !instance.value ? ["This field should be float"] : [],
+        category: !instance.category ? ["This field is required"] : [],
       });
       if (!instance.name || !instance.value || !instance.category) {
         // not ok
@@ -198,27 +216,27 @@ const ExpenditureOffcanvas = ({
           db: workingDB.id,
         };
         if (instance.is_expected) {
-          delete payload['expected_expenditure'];
+          delete payload["expected_expenditure"];
         }
-        dispatch({ type: 'expenditures/isLoading' });
+        dispatch({ type: "expenditures/isLoading" });
         try {
           const fullDB = await expenditureApi.createExpenditure({
             payload,
           });
-          dispatch({ type: 'database/dataUpdated', payload: fullDB });
-          dispatch({ type: 'expenditures/dataUpdated', payload: fullDB });
+          dispatch({ type: "database/dataUpdated", payload: fullDB });
+          dispatch({ type: "expenditures/dataUpdated", payload: fullDB });
           onHide();
           clear();
         } catch (e) {
           if (e.json.non_field_errors) {
             dispatch({
-              type: 'alerts/added',
-              payload: e.json.non_field_errors.join(', '),
+              type: "alerts/added",
+              payload: e.json.non_field_errors.join(", "),
             });
           } else {
             setMessages(e.json);
           }
-          dispatch({ type: 'expenditures/loaded' });
+          dispatch({ type: "expenditures/loaded" });
         }
       }
     }
@@ -227,15 +245,15 @@ const ExpenditureOffcanvas = ({
   const getTitle = () => {
     if (!id) {
       if (instance.is_expected) {
-        return 'Add new expected expenditure';
+        return "Add new expected expenditure";
       } else {
-        return 'Add new actual expenditure';
+        return "Add new actual expenditure";
       }
     } else {
       if (expenditure.is_expected) {
-        return 'Edit expected expenditure';
+        return "Edit expected expenditure";
       } else {
-        return 'Edit actual expenditure';
+        return "Edit actual expenditure";
       }
     }
   };
@@ -250,23 +268,23 @@ const ExpenditureOffcanvas = ({
     <Offcanvas
       show={show}
       onHide={onHide}
-      placement='end'
-      style={{ width: '100%', maxWidth: 500 }}
+      placement="end"
+      style={{ width: "100%", maxWidth: 500 }}
     >
       <Offcanvas.Header closeButton>
         <Offcanvas.Title>{getTitle()}</Offcanvas.Title>
       </Offcanvas.Header>
       <Offcanvas.Body>
         <div>
-          <div className='d-flex align-items-baseline py-2'>
-            <div className='pe-2'>Description</div>
-            <div className='flex-grow-1'>
+          <div className="d-flex align-items-baseline py-2">
+            <div className="pe-2">Description</div>
+            <div className="flex-grow-1">
               <FormControl
-                name='name'
+                name="name"
                 value={
                   instance.name !== undefined
                     ? instance.name
-                    : expenditure?.name || ''
+                    : expenditure?.name || ""
                 }
                 onChange={onChange}
                 onKeyDown={onKeyDown}
@@ -278,24 +296,24 @@ const ExpenditureOffcanvas = ({
           {messages.name?.map((m, idx) => (
             <div
               key={`msg_expenditure_name_val_${idx}`}
-              className='text-danger'
+              className="text-danger"
             >
               {m}
             </div>
           ))}
 
-          <div className='d-flex align-items-baseline py-2'>
-            <div className='pe-2'>Value</div>
-            <div className='flex-grow-1'>
+          <div className="d-flex align-items-baseline py-2">
+            <div className="pe-2">Value</div>
+            <div className="flex-grow-1">
               <FormControl
-                name='value'
+                name="value"
                 value={
                   instance.value !== undefined
                     ? instance.value
-                    : expenditure?.value || ''
+                    : expenditure?.value || ""
                 }
-                placeholder='€'
-                type='number'
+                placeholder="€"
+                type="number"
                 step={0.01}
                 onChange={onChange}
                 onKeyDown={onKeyDown}
@@ -307,16 +325,16 @@ const ExpenditureOffcanvas = ({
           {messages.value?.map((m, idx) => (
             <div
               key={`msg_expenditure_name_val_${idx}`}
-              className='text-danger'
+              className="text-danger"
             >
               {m}
             </div>
           ))}
 
           {!id && (
-            <div className='py-2'>
+            <div className="py-2">
               <AutoBlurButton
-                className='w-100'
+                className="w-100"
                 onClick={() => {
                   setInstance((i) => ({
                     ...i,
@@ -324,17 +342,17 @@ const ExpenditureOffcanvas = ({
                   }));
                 }}
               >{`Switch to ${
-                instance.is_expected ? 'actual' : 'expected'
+                instance.is_expected ? "actual" : "expected"
               }`}</AutoBlurButton>
             </div>
           )}
 
-          <div className='d-flex align-items-baseline py-2'>
-            <div className='pe-2'>Date</div>
-            <div className='flex-grow-1'>
+          <div className="d-flex align-items-baseline py-2">
+            <div className="pe-2">Date</div>
+            <div className="flex-grow-1">
               <FormControl
-                name='date'
-                type='datetime-local'
+                name="date"
+                type="datetime-local"
                 value={dateToLocaleISOString(
                   new Date(
                     instance.date !== undefined
@@ -352,20 +370,20 @@ const ExpenditureOffcanvas = ({
           {messages.date?.map((m, idx) => (
             <div
               key={`msg_expenditure_name_val_${idx}`}
-              className='text-danger'
+              className="text-danger"
             >
               {m}
             </div>
           ))}
 
-          <div className='d-flex align-items-baseline py-2'>
-            <div className='pe-2'>Category</div>
-            <div className='flex-grow-1'>
+          <div className="d-flex align-items-baseline py-2">
+            <div className="pe-2">Category</div>
+            <div className="flex-grow-1">
               {databaseIsLoading ? (
-                <FormControl value='Loading...' readOnly />
+                <FormControl value="Loading..." readOnly />
               ) : (
                 <Form.Select
-                  name='category'
+                  name="category"
                   value={
                     instance.category !== undefined
                       ? instance.category || 0
@@ -376,7 +394,7 @@ const ExpenditureOffcanvas = ({
                   ref={refCategory}
                   disabled={isLoading}
                 >
-                  <option key={'categorydefault0'} value={0}>
+                  <option key={"categorydefault0"} value={0}>
                     -----
                   </option>
                   {categories?.map((c) => (
@@ -394,7 +412,7 @@ const ExpenditureOffcanvas = ({
           {messages.category?.map((m, idx) => (
             <div
               key={`msg_expenditure_name_val_${idx}`}
-              className='text-danger'
+              className="text-danger"
             >
               {m}
             </div>
@@ -402,14 +420,14 @@ const ExpenditureOffcanvas = ({
 
           {isExpected && (
             <div>
-              <div className='d-flex align-items-baseline py-2'>
-                <div className='pe-2'>Expected expenditure</div>
-                <div className='flex-grow-1'>
+              <div className="d-flex align-items-baseline py-2">
+                <div className="pe-2">Expected expenditure</div>
+                <div className="flex-grow-1">
                   {expendituresAreLoading ? (
-                    <FormControl value='Loading...' readOnly />
+                    <FormControl value="Loading..." readOnly />
                   ) : (
                     <Form.Select
-                      name='expected_expenditure'
+                      name="expected_expenditure"
                       value={
                         instance.expected_expenditure !== undefined
                           ? instance.expected_expenditure || 0
@@ -420,7 +438,7 @@ const ExpenditureOffcanvas = ({
                       ref={refExpected}
                       disabled={isLoading}
                     >
-                      <option key={'expected_expenditure_default0'} value={0}>
+                      <option key={"expected_expenditure_default0"} value={0}>
                         -----
                       </option>
                       {expectedExpenditures?.map((e) => (
@@ -428,7 +446,7 @@ const ExpenditureOffcanvas = ({
                           key={`expected_expenditure_add_edit_modal_${e.id}`}
                           value={e.id}
                         >
-                          {e.value.toString() + '€, ' + e.name}
+                          {e.value.toString() + "€, " + e.name}
                         </option>
                       ))}
                     </Form.Select>
@@ -438,7 +456,7 @@ const ExpenditureOffcanvas = ({
               {messages.expected_expenditure?.map((m, idx) => (
                 <div
                   key={`msg_expenditure_name_val_${idx}`}
-                  className='text-danger'
+                  className="text-danger"
                 >
                   {m}
                 </div>
@@ -446,14 +464,14 @@ const ExpenditureOffcanvas = ({
             </div>
           )}
 
-          <div className='ps-1 flex-grow-1 pt-4'>
+          <div className="ps-1 flex-grow-1 pt-4">
             <AutoBlurButton
-              variant='success'
-              className='w-100'
+              variant="success"
+              className="w-100"
               onClick={onSave}
               disabled={isLoading}
             >
-              {isLoading ? <LoadingImg maxWidth={25} /> : 'Save'}
+              {isLoading ? <LoadingImg maxWidth={25} /> : "Save"}
             </AutoBlurButton>
           </div>
         </div>
