@@ -56,6 +56,35 @@ selectors.getNotHiddenCategories = () => (s) =>
     .getNotHiddenCategoriesIds()(s)
     .map((id) => selectors.getCategoryById(id)(s));
 
+selectors.getExpendituresIdsByCategory = (cateogoryId, expected) => (s) => {
+  return expected
+    ? s.database.content?.categories.entities[cateogoryId].expected_expenditures
+    : s.database.content?.categories.entities[cateogoryId].actual_expenditures;
+};
+selectors.getExpendituresIds = (expected) => (s) => {
+  const ids = [];
+  if (s.database.content?.categories?.ids) {
+    expected
+      ? ids.push(
+          ...Object.values(s.database.content.categories.entities).reduce(
+            (acc, cat) => [...acc, ...cat.expected_expenditures],
+            ids
+          )
+        )
+      : ids.push(
+          ...Object.values(s.database.content.categories.entities).reduce(
+            (acc, cat) => [...acc, ...cat.expected_expenditures],
+            ids
+          )
+        );
+  }
+  return ids;
+};
+selectors.getExpenditures = (expected) => (s) => {
+  const ids = selectors.getExpendituresIds(expected)(s);
+  return ids.map((id) => s.expenditures.content[id]);
+};
+
 selectors.getMonths = () => (s) => s.database.content?.months_list;
 
 export default selectors;

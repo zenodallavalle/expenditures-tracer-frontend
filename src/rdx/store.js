@@ -7,6 +7,7 @@ import { usersReducer } from './users';
 import { databaseReducer } from './database';
 import { expendituresReducer } from './expenditures';
 import { alertsReducer } from './alerts';
+import { searchReducer } from './search';
 
 const newStore = () =>
   createStore(
@@ -16,6 +17,7 @@ const newStore = () =>
       users: usersReducer,
       database: databaseReducer,
       expenditures: expendituresReducer,
+      search: searchReducer,
     }),
     composeWithDevTools(applyMiddleware(thunkMiddleware))
   );

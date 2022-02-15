@@ -9,4 +9,5 @@ export const mixinSelectors = {
           ? ['loading', 'initial'].includes(s[k].status)
           : s[k].status === 'loading'
       ),
+  isInitializing: () => (s) => keys.some((k) => s[k].status === 'initial'),
 };

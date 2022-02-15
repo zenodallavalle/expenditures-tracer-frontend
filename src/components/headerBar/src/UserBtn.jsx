@@ -11,7 +11,58 @@ import { mixinSelectors } from 'rdx';
 import { userSelectors } from 'rdx/user';
 import { databaseSelectors } from 'rdx/database';
 
-const UserBtn = (props) => {
+const ShortUserBtn = (props) => {
+  const history = useHistory();
+  const panel = getCurrentPanel();
+
+  const isLoading = useSelector(mixinSelectors.isLoading());
+  const isAuthenticated = useSelector(userSelectors.isAuthenticated());
+  // const user = useSelector(userSelectors.user());
+  const workingDB = useSelector(databaseSelectors.getWorkingDB());
+
+  const onClick = useCallback(() => {
+    const urlSearchParams = new URLSearchParams(window.location.search);
+    urlSearchParams.set('panel', 'user');
+    history.push(`/?${urlSearchParams.toString()}`);
+  }, [history]);
+
+  const color =
+    !isAuthenticated && !workingDB
+      ? 'danger'
+      : isAuthenticated && !workingDB
+      ? 'warning'
+      : 'primary';
+  let btnVariant = '';
+
+  if (panel !== 'user') {
+    btnVariant = btnVariant + 'outline-';
+  }
+
+  btnVariant = btnVariant + color;
+
+  return (
+    <AutoBlurButton
+      variant={btnVariant}
+      className='px-1 mx-1'
+      onClick={onClick}
+      disabled={isLoading || panel === 'user'}
+    >
+      <div className='d-flex flex-row'>
+        <div className='mx-1'>
+          <InlineIcon icon={person16} />
+        </div>
+
+        {isAuthenticated && (
+          <div className='mx-1'>
+            <InlineIcon icon={package16} />
+          </div>
+        )}
+      </div>
+    </AutoBlurButton>
+  );
+};
+
+const LongUserBtn = (props) => {
   const history = useHistory();
   const panel = getCurrentPanel();
 
@@ -63,5 +114,13 @@ const UserBtn = (props) => {
       </div>
     </AutoBlurButton>
   );
+};
+
+const UserBtn = (props) => {
+  const panel = getCurrentPanel();
+  const makeItShort = panel === 'search';
+
+  if (makeItShort) return <ShortUserBtn {...props} />;
+  else return <LongUserBtn {...props} />;
 };
 export default UserBtn;

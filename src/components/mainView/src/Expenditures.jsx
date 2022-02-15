@@ -1,14 +1,18 @@
 import { useSelector } from 'react-redux';
 
 import { LoadingDiv } from 'utils';
+import { databaseSelectors } from 'rdx/database';
 import { expendituresSelectors } from 'rdx/expenditures';
 
 import Expenditure from './Expenditure';
 
 const Expenditures = ({ categoryId, expected, ...props }) => {
-  const isLoading = useSelector(expendituresSelectors.isLoading());
+  const expendituresAreLoading = useSelector(expendituresSelectors.isLoading());
+  const databaseIsLoading = useSelector(databaseSelectors.isLoading());
+  const isLoading = expendituresAreLoading || databaseIsLoading;
+
   const expendituresIds = useSelector(
-    expendituresSelectors.getIdsByCategory(categoryId, expected)
+    databaseSelectors.getExpendituresIdsByCategory(categoryId, expected)
   );
 
   if (expendituresIds.length === 0) {

@@ -1,27 +1,14 @@
 const selectors = {
   getAll: (expected) => (s) =>
     s.expenditures.content
-      ? Object.values(s.expenditures.content.entities).filter((exp) => {
+      ? Object.values(s.expenditures.content).filter((exp) => {
           if (expected === undefined) return true;
           else return exp.is_expected === expected;
         })
       : [],
-  getIds: (expected) => (s) =>
-    Object.values(s.expenditures.content?.entities)
-      ?.filter((exp) => {
-        if (expected === undefined) return true;
-        else return exp.is_expected === expected;
-      })
-      .map((e) => e.id),
-  getIdsByCategory: (categoryId, expected) => (s) =>
-    Object.values(s.expenditures.content?.entities)
-      ?.filter(
-        (exp) => exp.category === categoryId && exp.is_expected === expected
-      )
-      .map((e) => e.id),
-  getById: (id) => (s) => s.expenditures.content?.entities[id],
-  getByIds: (ids) => (s) =>
-    ids.map((id) => s.expenditures.content?.entities[id]),
+
+  getById: (id) => (s) => s.expenditures.content[id],
+  getByIds: (ids) => (s) => ids.map((id) => s.expenditures.content[id]),
 
   status: () => (s) => s.expenditures.status,
   error: () => (s) => s.expenditures.error,

@@ -42,10 +42,39 @@ const deleteExpenditure = async ({ id, ...props }) => {
   else throw new RejectedRequest(response, json);
 };
 
+const searchExpenditure = async ({
+  queryString,
+  from,
+  to,
+  lowerPrice,
+  upperPrice,
+  type,
+  ...props
+}) => {
+  const params = {};
+  if (queryString) params.queryString = queryString;
+  if (from) params.from = from;
+  if (to) params.to = to;
+  if (lowerPrice) params.lowerPrice = lowerPrice;
+  if (upperPrice) params.upperPrice = upperPrice;
+  if (type) params.type = type;
+  const response = await fetch(genUrl('expenditures/search/', params, false), {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Token ${getAuthToken()}`,
+    },
+  });
+  const json = await response.json();
+  if (response.ok) return json;
+  else throw new RejectedRequest(response, json);
+};
+
 const expenditureApi = {
   createExpenditure: tryCatchWrapper(createExpenditure),
   editExpenditure: tryCatchWrapper(editExpenditure),
   deleteExpenditure: tryCatchWrapper(deleteExpenditure),
+  searchExpenditure: tryCatchWrapper(searchExpenditure),
 };
 
 export default expenditureApi;
