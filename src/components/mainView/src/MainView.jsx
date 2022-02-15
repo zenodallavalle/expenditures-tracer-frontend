@@ -5,6 +5,7 @@ import PanelUser from './PanelUser';
 import PanelProspect from './PanelProspect';
 import PanelExpenditures from './PanelExpenditures';
 import PanelMonths from './PanelMonths';
+import Search from './Search';
 import { getCurrentPanel } from 'utils';
 
 const MainView = () => {
@@ -21,6 +22,7 @@ const MainView = () => {
           'actual_expenditures',
           'expected_expenditures',
           'prospect',
+          'search',
         ].includes(panel)
       ) {
         const urlSearchParams = new URLSearchParams(window.location.search);
@@ -42,6 +44,8 @@ const MainView = () => {
       return <PanelExpenditures expected={false} />;
     case 'expected_expenditures':
       return <PanelExpenditures expected />;
+    case 'search':
+      return <Search />;
     default:
       return <PanelProspect />;
   }

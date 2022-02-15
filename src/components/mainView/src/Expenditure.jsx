@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useSwipeable } from 'react-swipeable';
 
+import Badge from 'react-bootstrap/Badge';
 import { InlineIcon } from '@iconify/react';
 import workflow16 from '@iconify/icons-octicon/workflow-16';
 
@@ -12,8 +13,14 @@ import { expendituresSelectors } from 'rdx/expenditures';
 import ExpenditureOffcanvas from 'components/expenditureEditor';
 
 import ExpenditureModal from './ExpenditureModal';
+import { databaseSelectors } from 'rdx/database';
 
-const Expenditure = ({ id, ...props }) => {
+const Expenditure = ({
+  id,
+  showCategory = false,
+  showType = false,
+  ...props
+}) => {
   const dispatch = useDispatch();
   const [showEditExpenditure, setShowEditExpenditure] = useState(false);
   const [showExpenditureDetails, setShowExpenditureDetails] = useState(false);
@@ -35,6 +42,12 @@ const Expenditure = ({ id, ...props }) => {
   const isLoading = useSelector(expendituresSelectors.isLoading());
   const expenditure = useSelector(expendituresSelectors.getById(id));
 
+  const category = useSelector(
+    databaseSelectors.getCategoryById(expenditure?.category)
+  );
+  const colors = ['warning', 'danger', 'success', 'info', 'dark'];
+  const categoryBg = colors[(expenditure?.category || 0) % colors.length];
+
   const onEdit = (e, collapseFunctionalityMenu) => {
     setShowEditExpenditure(true);
     collapseFunctionalityMenu();
@@ -54,7 +67,7 @@ const Expenditure = ({ id, ...props }) => {
   };
 
   return (
-    <div>
+    <div {...props}>
       <div
         {...(hasMouse ? null : handlers)}
         onClick={onToggleDetails}
@@ -62,6 +75,7 @@ const Expenditure = ({ id, ...props }) => {
       >
         <div className='d-flex align-items-stretch'>
           <div className='flex-grow-1'>
+            {showCategory && <Badge bg={categoryBg}>{category?.name}</Badge>}
             <div>{expenditure?.name}</div>
             <div className='text-muted fst-italic small'>
               {formatDate(expenditure?.date)}
@@ -70,6 +84,11 @@ const Expenditure = ({ id, ...props }) => {
               <span>{expenditure?.value}</span>
               <span className='ms-1'>€</span>
             </div>
+            {showType && (
+              <Badge bg={expenditure?.is_expected ? 'secondary' : 'primary'}>
+                {expenditure?.is_expected ? 'Expected' : 'Actual'}
+              </Badge>
+            )}
           </div>
           <div>
             <div

@@ -18,7 +18,7 @@ const centerLegend = [center, legend].join(' ');
 const rightValue = [right, value].join(' ');
 const centerValue = [center, value].join(' ');
 
-const Prospect = ({ ...priops }) => {
+const Prospect = ({ ...props }) => {
   const prospect = useSelector(databaseSelectors.getProspect());
   const databaseIsLoading = useSelector(databaseSelectors.isLoading());
   const expendituresAreLoading = useSelector(expendituresSelectors.isLoading());

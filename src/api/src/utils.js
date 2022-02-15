@@ -17,11 +17,14 @@ export const tryCatchWrapper =
 
 export const getAuthToken = () => localStorage.getItem('authToken');
 
-export const genUrl = (type, params = {}) => {
+export const genUrl = (type, params = {}, includeCurrentMonth = true) => {
   const apiPoint = process.env.REACT_APP_API_ROOT;
   try {
     const url = new URL(`${apiPoint}${type}`);
-    url.searchParams.set('month', getCurrentMonth());
+    if (includeCurrentMonth) {
+      url.searchParams.set('month', getCurrentMonth());
+    }
+
     Object.entries(params).forEach(([k, v]) => {
       url.searchParams.set(k, v);
     });

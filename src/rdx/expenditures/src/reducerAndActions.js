@@ -1,24 +1,21 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const analyzePayload = (db) => {
-  const ids = [];
   const entities = {};
   db.categories.forEach((cat) => {
     cat.expected_expenditures.forEach((e) => {
-      ids.push(e.id);
       entities[e.id] = e;
     });
     cat.actual_expenditures.forEach((e) => {
-      ids.push(e.id);
       entities[e.id] = e;
     });
   });
-  return { ids, entities };
+  return { entities };
 };
 
 const initialState = {
   status: 'initial',
-  content: null,
+  content: {},
   error: null,
 };
 
@@ -37,20 +34,22 @@ const slice = createSlice({
     },
     dataErased: (state, action) => {
       state.status = 'idle';
-      state.content = null;
+      state.content = {};
     },
     dataRetrieved: (state, action) => {
       state.status = 'idle';
-      state.content = analyzePayload(action.payload);
-    },
-    dataUpdated: (state, action) => {
-      state.status = 'idle';
-      state.content = analyzePayload(action.payload);
+      const { entities } = analyzePayload(action.payload);
+      state.content = { ...state.content, ...entities };
     },
     expenditureRetrieved: (state, action) => {
       state.status = 'idle';
-      state.content.ids.push(action.payload.id);
-      state.content.entities[action.payload.id] = action.payload;
+      state.content[action.payload.id] = action.payload;
+    },
+    expendituresRetrieved: (state, action) => {
+      state.status = 'idle';
+      action.payload.forEach((exp) => {
+        state.content[exp.id] = exp;
+      });
     },
   },
 });
