@@ -185,8 +185,8 @@ const ExpenditureOffcanvas = ({
             id,
             payload: instance,
           });
+          dispatch({ type: 'expenditures/dataRetrieved', payload: fullDB });
           dispatch({ type: 'database/dataUpdated', payload: fullDB });
-          dispatch({ type: 'expenditures/dataUpdated', payload: fullDB });
           onHide();
           clear();
         } catch (e) {
@@ -225,8 +225,8 @@ const ExpenditureOffcanvas = ({
           const fullDB = await expenditureApi.createExpenditure({
             payload,
           });
+          dispatch({ type: 'expenditures/dataRetrieved', payload: fullDB });
           dispatch({ type: 'database/dataUpdated', payload: fullDB });
-          dispatch({ type: 'expenditures/dataUpdated', payload: fullDB });
           onHide();
           clear();
         } catch (e) {

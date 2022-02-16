@@ -57,7 +57,7 @@ const Expenditure = ({
     dispatch({ type: 'expenditures/isLoading' });
     try {
       const fullDB = await expenditureApi.deleteExpenditure({ id });
-      dispatch({ type: 'expenditures/dataUpdated', payload: fullDB });
+      dispatch({ type: 'expenditures/dataRetrieved', payload: fullDB });
       dispatch({ type: 'database/dataUpdated', payload: fullDB });
     } catch (e) {}
   };

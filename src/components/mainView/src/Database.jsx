@@ -239,7 +239,7 @@ const Database = ({ id, ...props }) => {
         };
         dispatch({ type: 'user/dbUpdated', payload: editedDB });
         if (isWorkingDB) {
-          dispatch({ type: 'expenditures/dataUpdated', payload: fullDB });
+          dispatch({ type: 'expenditures/dataRetrieved', payload: fullDB });
           dispatch({ type: 'database/dataUpdated', payload: fullDB });
         }
         setMessages({});
