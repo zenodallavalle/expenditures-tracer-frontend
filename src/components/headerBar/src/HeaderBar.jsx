@@ -16,7 +16,7 @@ const UpperBar = ({ fetch = () => {}, onAdd = () => {}, ...props }) => {
             <div>
               <RefreshBtn fetch={fetch} />
             </div>
-            <div>
+            <div className='text-nowrap'>
               <UserBtn />
             </div>
           </div>
