@@ -89,6 +89,37 @@ const userApi = {
       return null;
     }
   ),
+
+  signup: createAsyncThunk(
+    'user/signup',
+    async ({ username, password, email }, thunkAPI) => {
+      try {
+        const url = new URL(apiPoint + 'users/');
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password, email }),
+        });
+        const json = await response.json();
+        if (json.auth_token) {
+          setAuthToken(json.auth_token);
+          delete json.auth_token;
+        }
+        if (response.ok) {
+          return thunkAPI.fulfillWithValue(json, {
+            response: genOkStatusFromResponse(response),
+          });
+        } else {
+          return thunkAPI.rejectWithValue(json, {
+            response: genOkStatusFromResponse(response),
+          });
+        }
+      } catch (e) {
+        console.error(e);
+        throw Error('Service unreachable');
+      }
+    }
+  ),
 };
 
 export default userApi;

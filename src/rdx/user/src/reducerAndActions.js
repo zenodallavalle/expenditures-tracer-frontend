@@ -85,6 +85,24 @@ const slice = createSlice({
       state.status = 'idle';
       state.content = null;
     });
+
+    // signup
+    builder.addCase(userApi.signup.pending, (state, action) => {
+      state.status = 'loading';
+    });
+    builder.addCase(userApi.signup.fulfilled, (state, action) => {
+      state.status = 'idle';
+      state.content = action.payload;
+    });
+    builder.addCase(userApi.signup.rejected, (state, action) => {
+      if (action.meta.response) {
+        state.status = 'idle';
+      } else {
+        state.status = 'error';
+        const { error } = action;
+        state.error = error.message;
+      }
+    });
   },
 });
 

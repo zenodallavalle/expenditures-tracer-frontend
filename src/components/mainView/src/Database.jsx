@@ -3,6 +3,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
 import FormControl from 'react-bootstrap/FormControl';
+import { InlineIcon } from '@iconify/react';
+import personAdd16 from '@iconify/icons-octicon/person-add-16';
 
 import { databaseApi } from 'api';
 import {
@@ -10,9 +12,12 @@ import {
   AutoBlurButton,
   FunctionalitiesMenu,
   getCurrentMonth,
+  AutoBlurTransparentButton,
 } from 'utils';
 import { userSelectors } from 'rdx/user';
 import { databaseSelectors } from 'rdx/database';
+
+import AddUserToDBModal from './AddUserToDBModal';
 
 const emptyDatabase = { name: '' };
 
@@ -161,6 +166,7 @@ const Database = ({ id, ...props }) => {
   const [instance, setInstance] = useState({});
   const [messages, setMessages] = useState({});
   const [isEditing, setIsEditing] = useState(false);
+  const [showAddUserModal, setShowAddUserModal] = useState(false);
 
   const refName = useRef();
 
@@ -322,6 +328,14 @@ const Database = ({ id, ...props }) => {
           </div>
         )}
       </div>
+      <div>
+        <AutoBlurTransparentButton
+          disabled={isLoading}
+          onClick={() => setShowAddUserModal(true)}
+        >
+          <InlineIcon icon={personAdd16} />
+        </AutoBlurTransparentButton>
+      </div>
       <FunctionalitiesMenu
         clickable={!isLoading}
         onEdit={onEdit}
@@ -330,6 +344,11 @@ const Database = ({ id, ...props }) => {
         onDelete={onDelete}
         deleteConfirmTimeout={4000}
         autocollapseTimeout={4000}
+      />
+      <AddUserToDBModal
+        show={showAddUserModal}
+        onHide={() => setShowAddUserModal(false)}
+        dbId={id}
       />
     </div>
   );
