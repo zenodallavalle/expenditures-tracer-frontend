@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { AutoBlurButton, getCurrentPanel } from 'utils';
 
@@ -27,7 +27,7 @@ const buttons = [
 ];
 
 const BottomBar = (props) => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const panel = getCurrentPanel();
   const isLoading = useSelector(mixinSelectors.isLoading());
   const workingDB = useSelector(databaseSelectors.getWorkingDB());
@@ -36,9 +36,9 @@ const BottomBar = (props) => {
     (to) => {
       const urlSearchParams = new URLSearchParams(window.location.search);
       urlSearchParams.set('panel', to);
-      history.push(`/?${urlSearchParams.toString()}`);
+      navigate(`/?${urlSearchParams.toString()}`);
     },
-    [history]
+    [navigate]
   );
 
   return (

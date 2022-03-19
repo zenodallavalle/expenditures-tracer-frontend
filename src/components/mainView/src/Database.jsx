@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import FormControl from 'react-bootstrap/FormControl';
 import { InlineIcon } from '@iconify/react';
@@ -23,7 +23,7 @@ const emptyDatabase = { name: '' };
 
 export const AddDatabase = ({ ...props }) => {
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const isLoading = useSelector(userSelectors.isLoading());
   const dbsCount = useSelector(userSelectors.countDBS());
 
@@ -83,7 +83,7 @@ export const AddDatabase = ({ ...props }) => {
           const urlSearchParams = new URLSearchParams(window.location.search);
           urlSearchParams.delete('month');
           urlSearchParams.set('panel', 'prospect');
-          history.push(`/?${urlSearchParams.toString()}`);
+          navigate(`/?${urlSearchParams.toString()}`);
         }
         setMessages({});
         setInstance(emptyDatabase);
@@ -157,7 +157,7 @@ export const AddDatabase = ({ ...props }) => {
 
 const Database = ({ id, ...props }) => {
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const isLoading = useSelector(userSelectors.isLoading());
   const database = useSelector(userSelectors.getDBById(id));
   const workingDB = useSelector(databaseSelectors.getWorkingDB());
@@ -182,7 +182,7 @@ const Database = ({ id, ...props }) => {
       const urlSearchParams = new URLSearchParams(window.location.search);
       urlSearchParams.delete('month');
       urlSearchParams.set('panel', 'prospect');
-      history.push(`/?${urlSearchParams.toString()}`);
+      navigate(`/?${urlSearchParams.toString()}`);
 
       dispatch({ type: 'expenditures/dataRetrieved', payload: fullDB });
       dispatch({ type: 'database/dataRetrieved', payload: fullDB });
@@ -281,7 +281,7 @@ const Database = ({ id, ...props }) => {
         dispatch({ type: 'database/dataErased' });
         const urlSearchParams = new URLSearchParams(window.location.search);
         urlSearchParams.delete('month');
-        history.push(`/?${urlSearchParams}`);
+        navigate(`/?${urlSearchParams}`);
       }
     } catch (e) {
       dispatch({ type: 'user/loaded' });

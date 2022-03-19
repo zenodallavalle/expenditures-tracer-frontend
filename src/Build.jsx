@@ -1,11 +1,11 @@
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { AutoBlurButton } from 'utils';
 
 const Build = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const backToApp = () => {
-    history.push('/');
+    navigate('/');
   };
   return (
     <div>

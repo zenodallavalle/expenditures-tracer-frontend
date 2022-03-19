@@ -1,6 +1,6 @@
 import { Fragment, useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import Alert from 'react-bootstrap/Alert';
 import Button from 'react-bootstrap/Button';
@@ -11,7 +11,7 @@ import { mixinSelectors } from 'rdx';
 const Month = ({ month, ...props }) => {
   const { month: name, current_money, income, warn } = month;
 
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const workingMonth = getWorkingMonth();
   const isWorkingMonth = workingMonth === name;
@@ -27,9 +27,9 @@ const Month = ({ month, ...props }) => {
         urlSearchParams.set('month', name);
       }
       urlSearchParams.set('panel', 'prospect');
-      history.push(`/?${urlSearchParams.toString()}`);
+      navigate(`/?${urlSearchParams.toString()}`);
     },
-    [history]
+    [navigate]
   );
 
   return (

@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { AutoBlurButton, getCurrentPanel } from 'utils';
 import { InlineIcon } from '@iconify/react';
@@ -12,7 +12,7 @@ import { userSelectors } from 'rdx/user';
 import { databaseSelectors } from 'rdx/database';
 
 const ShortUserBtn = (props) => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const panel = getCurrentPanel();
 
   const isLoading = useSelector(mixinSelectors.isLoading());
@@ -23,8 +23,8 @@ const ShortUserBtn = (props) => {
   const onClick = useCallback(() => {
     const urlSearchParams = new URLSearchParams(window.location.search);
     urlSearchParams.set('panel', 'user');
-    history.push(`/?${urlSearchParams.toString()}`);
-  }, [history]);
+    navigate(`/?${urlSearchParams.toString()}`);
+  }, [navigate]);
 
   const color =
     !isAuthenticated && !workingDB
@@ -63,7 +63,7 @@ const ShortUserBtn = (props) => {
 };
 
 const LongUserBtn = (props) => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const panel = getCurrentPanel();
 
   const isLoading = useSelector(mixinSelectors.isLoading());
@@ -74,8 +74,8 @@ const LongUserBtn = (props) => {
   const onClick = useCallback(() => {
     const urlSearchParams = new URLSearchParams(window.location.search);
     urlSearchParams.set('panel', 'user');
-    history.push(`/?${urlSearchParams.toString()}`);
-  }, [history]);
+    navigate(`/?${urlSearchParams.toString()}`);
+  }, [navigate]);
 
   const color =
     !isAuthenticated && !workingDB

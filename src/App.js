@@ -3,7 +3,7 @@ import './App.css';
 
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams, useHistory } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 import Container from 'react-bootstrap/Container';
 
@@ -21,7 +21,7 @@ import MainView from 'components/mainView';
 const App = (props) => {
   const dispatch = useDispatch();
   const params = useParams();
-  const history = useHistory();
+  const navigate = useNavigate();
   const isInitial = useSelector(userSelectors.isInitial());
   const isAvailableForRequests = useSelector(
     userSelectors.isAvailableForRequests()
@@ -83,7 +83,7 @@ const App = (props) => {
           const urlSearchParams = new URLSearchParams(window.location.search);
           urlSearchParams.delete('month');
           urlSearchParams.set('panel', 'prospect');
-          history.push(`/?${urlSearchParams.toString()}`);
+          navigate(`/?${urlSearchParams.toString()}`);
           return;
         }
       }
@@ -91,8 +91,8 @@ const App = (props) => {
     const urlSearchParams = new URLSearchParams(window.location.search);
     urlSearchParams.delete('month');
     urlSearchParams.set('panel', 'user');
-    history.push(`/?${urlSearchParams.toString()}`);
-  }, [fetch, dispatch, workingDB, history]);
+    navigate(`/?${urlSearchParams.toString()}`);
+  }, [fetch, dispatch, workingDB, navigate]);
 
   useEffect(() => {
     if (isInitial && isAvailableForRequests) {

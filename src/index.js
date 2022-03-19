@@ -1,25 +1,22 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
+
 import reportWebVitals from './reportWebVitals';
 
 import { Provider } from 'react-redux';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import store from 'rdx/store';
 
+import App from './App';
 import Build from './Build';
 
 ReactDOM.render(
   <Provider store={store}>
     <Router>
-      <Switch>
-        <Route path='/build'>
-          <Build />
-        </Route>
-        <Route path='/'>
-          <App />
-        </Route>
-      </Switch>
+      <Routes>
+        <Route path='/build' element={<Build />} />
+        <Route path='/' element={<App />} />
+      </Routes>
     </Router>
   </Provider>,
   document.getElementById('root')

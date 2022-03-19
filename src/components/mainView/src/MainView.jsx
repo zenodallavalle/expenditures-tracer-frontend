@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import PanelUser from './PanelUser';
 import PanelProspect from './PanelProspect';
@@ -9,7 +9,7 @@ import Search from './Search';
 import { getCurrentPanel } from 'utils';
 
 const MainView = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const panel = getCurrentPanel();
 
   const checkInvalidPanel = useCallback(
@@ -27,10 +27,10 @@ const MainView = () => {
       ) {
         const urlSearchParams = new URLSearchParams(window.location.search);
         urlSearchParams.set('panel', 'prospect');
-        history.push(`/?${urlSearchParams.toString()}`);
+        navigate(`/?${urlSearchParams.toString()}`);
       }
     },
-    [history]
+    [navigate]
   );
 
   useEffect(() => checkInvalidPanel(panel));

@@ -1,5 +1,5 @@
 import { useReducer, useCallback } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import FormControl from 'react-bootstrap/FormControl';
 
@@ -9,7 +9,7 @@ import { searchSelectors, searchActions } from 'rdx/search';
 import { useDispatch, useSelector } from 'react-redux';
 
 const SearchBar = ({ ...props }) => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const isInitial = useReducer(userSelectors.isInitial());
   const currentPanel = getCurrentPanel();
@@ -18,9 +18,9 @@ const SearchBar = ({ ...props }) => {
     (to) => {
       const urlSearchParams = new URLSearchParams(window.location.search);
       urlSearchParams.set('panel', to);
-      history.push(`/?${urlSearchParams.toString()}`);
+      navigate(`/?${urlSearchParams.toString()}`);
     },
-    [history]
+    [navigate]
   );
 
   const queryString = useSelector(searchSelectors.getQueryString());
