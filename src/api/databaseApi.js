@@ -56,9 +56,8 @@ const deleteDB = async ({ id, ...props }) => {
       Authorization: `Token ${getAuthToken()}`,
     },
   });
-  const json = await response.json();
-  if (response.ok) return json;
-  else throw new RejectedRequest(response, json);
+  if (response.ok) return {};
+  else throw new RejectedRequest(response, response.json());
 };
 
 const databaseApi = {

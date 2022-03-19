@@ -20,7 +20,7 @@ const Build = () => {
       </div>
       <div className='text-center mb-3'>
         <span className='me-1'>Build date:</span>
-        <span>14-03-2022</span>
+        <span>19-03-2022</span>
       </div>
       <div>
         <AutoBlurButton className='w-100' onClick={backToApp}>
