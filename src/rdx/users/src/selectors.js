@@ -3,6 +3,13 @@ const selectors = {
     id && s.user.content?.id === id
       ? s.user.content
       : s.users.content.entities[id],
+  getByIds: (ids) => (s) =>
+    ids.map((id) =>
+      id && s.user.content?.id === id
+        ? s.user.content
+        : s.users.content.entities[id]
+    ),
+  getIds: () => (s) => s.users.content.ids,
   status: () => (s) => s.users.status,
   error: () => (s) => s.users.error,
   isLoading:

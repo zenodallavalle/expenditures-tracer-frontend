@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect, useCallback, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import FormControl from 'react-bootstrap/FormControl';
@@ -9,6 +9,7 @@ import { AutoBlurButton, LoadingDiv, LoadingImg } from 'utils';
 import { userSelectors } from 'rdx/user';
 
 import Database, { AddDatabase } from './Database';
+import { usersSelectors } from 'rdx/users';
 
 const emptyLogin = { username: '', password: '' };
 const emptySignup = { username: '', email: '', password: '' };
@@ -53,7 +54,17 @@ const User = ({ ...props }) => {
     }
   };
 
-  const onSignupKeyDown = (e) => {};
+  const onSignupKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      if (e.target.name === 'username') {
+        refSignupEmail.current?.focus();
+      } else if (e.target.name === 'email') {
+        refSignupPassword.current?.focus();
+      } else {
+        onSignup();
+      }
+    }
+  };
 
   const validateLogin = () => {
     let isValid = true;
@@ -151,6 +162,34 @@ const User = ({ ...props }) => {
       payload: { variant: 'success', message: 'User logged out.' },
     });
   };
+
+  const retrieveUserData = useCallback(
+    async (ids) => ids.length > 0 && dispatch(userApi.getByIds({ ids })),
+    [dispatch]
+  );
+
+  const usersToLoadids = useMemo(
+    () => [
+      ...new Set(
+        user
+          ? user.dbs
+              .map((db) => db.users)
+              .reduce((acc, users) => [...acc, ...users], [])
+          : []
+      ),
+    ],
+    [user]
+  );
+
+  const loadedUsersIds = useSelector(usersSelectors.getIds());
+
+  useEffect(
+    () =>
+      retrieveUserData(
+        usersToLoadids.filter((id) => loadedUsersIds.indexOf(id) === -1)
+      ),
+    [usersToLoadids, loadedUsersIds, retrieveUserData]
+  );
 
   return (
     <div>

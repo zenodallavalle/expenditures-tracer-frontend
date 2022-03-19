@@ -120,6 +120,54 @@ const userApi = {
       }
     }
   ),
+
+  getByIds: createAsyncThunk('user/getByIds', async ({ ids }, thunkAPI) => {
+    try {
+      const url = new URL(apiPoint + 'users/');
+      url.searchParams.append('ids', ids.join(','));
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      });
+      const json = await response.json();
+      if (response.ok) {
+        return thunkAPI.fulfillWithValue(json, {
+          response: genOkStatusFromResponse(response),
+        });
+      } else {
+        return thunkAPI.rejectWithValue(json, {
+          response: genOkStatusFromResponse(response),
+        });
+      }
+    } catch (e) {
+      console.error(e);
+      throw Error('Service unreachable');
+    }
+  }),
+
+  search: createAsyncThunk('user/search', async ({ username }, thunkAPI) => {
+    try {
+      const url = new URL(apiPoint + 'users/search/');
+      url.searchParams.append('username', username);
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      });
+      const json = await response.json();
+      if (response.ok) {
+        return thunkAPI.fulfillWithValue(json, {
+          response: genOkStatusFromResponse(response),
+        });
+      } else {
+        return thunkAPI.rejectWithValue(json, {
+          response: genOkStatusFromResponse(response),
+        });
+      }
+    } catch (e) {
+      console.error(e);
+      throw Error('Service unreachable');
+    }
+  }),
 };
 
 export default userApi;
