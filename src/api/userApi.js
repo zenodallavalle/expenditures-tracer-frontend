@@ -127,7 +127,10 @@ const userApi = {
       url.searchParams.append('ids', ids.join(','));
       const response = await fetch(url, {
         method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Token ${authToken}`,
+        },
       });
       const json = await response.json();
       if (response.ok) {
@@ -151,7 +154,10 @@ const userApi = {
       url.searchParams.append('username', username);
       const response = await fetch(url, {
         method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Token ${authToken}`,
+        },
       });
       const json = await response.json();
       if (response.ok) {
