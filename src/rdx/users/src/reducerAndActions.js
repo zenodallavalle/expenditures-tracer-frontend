@@ -11,7 +11,18 @@ const initialState = {
 const slice = createSlice({
   name: 'users',
   initialState,
-  reducers: {},
+  reducers: {
+    currentUser: (state, action) => {
+      const { payload: user } = action;
+      const { id } = user;
+      !state.content.entities[id] && state.content.ids.push(id);
+      state.content.entities[id] = user;
+    },
+    dataErased: (state, action) => {
+      state.content.ids = [];
+      state.content.entities = {};
+    },
+  },
 
   extraReducers: (builder) => {
     //getByIds
@@ -49,12 +60,14 @@ const slice = createSlice({
       });
     });
     builder.addCase(userApi.search.rejected, (state, action) => {
-      if (!action.meta.response) {
-        state.status = 'error';
-        const { error } = action;
-        state.error = error.message;
-      } else {
-        state.status = 'idle';
+      if (!action.meta.aborted) {
+        if (!action.meta.response) {
+          state.status = 'error';
+          const { error } = action;
+          state.error = error.message;
+        } else {
+          state.status = 'idle';
+        }
       }
     });
   },

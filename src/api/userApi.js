@@ -121,7 +121,7 @@ const userApi = {
     }
   ),
 
-  getByIds: createAsyncThunk('user/getByIds', async ({ ids }, thunkAPI) => {
+  getByIds: createAsyncThunk('users/getByIds', async ({ ids }, thunkAPI) => {
     try {
       const url = new URL(apiPoint + 'users/');
       url.searchParams.append('ids', ids.join(','));
@@ -148,7 +148,7 @@ const userApi = {
     }
   }),
 
-  search: createAsyncThunk('user/search', async ({ username }, thunkAPI) => {
+  search: createAsyncThunk('users/search', async ({ username }, thunkAPI) => {
     try {
       const url = new URL(apiPoint + 'users/search/');
       url.searchParams.append('username', username);
@@ -158,6 +158,7 @@ const userApi = {
           'Content-Type': 'application/json',
           Authorization: `Token ${authToken}`,
         },
+        signal: thunkAPI.signal,
       });
       const json = await response.json();
       if (response.ok) {

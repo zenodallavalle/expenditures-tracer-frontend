@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import Modal from 'react-bootstrap/Modal';
@@ -14,13 +14,13 @@ import { userSelectors } from 'rdx/user';
 import { usersSelectors } from 'rdx/users';
 
 import { databaseApi, userApi } from 'api';
-import { AutoBlurTransparentButton } from 'utils';
+import { AutoBlurTransparentButton, LoadingDiv } from 'utils';
 
 const UserElement = ({ id, onExclude, ...props }) => {
   const mainUser = useSelector(userSelectors.user());
   const user = useSelector(usersSelectors.getById(id));
   const isMainUser = id === mainUser.id;
-  const isLoading = useSelector(databaseSelectors.isLoading());
+  const dbIsLoading = useSelector(databaseSelectors.isLoading());
 
   return (
     <ListGroupItem>
@@ -34,7 +34,7 @@ const UserElement = ({ id, onExclude, ...props }) => {
           <div>
             <AutoBlurTransparentButton
               onClick={() => onExclude(id)}
-              disabled={isLoading}
+              disabled={dbIsLoading}
             >
               <InlineIcon icon={xCircle16} />
             </AutoBlurTransparentButton>
@@ -48,9 +48,10 @@ const UserElement = ({ id, onExclude, ...props }) => {
 const DropdownElement = ({ id, usersInDb = [], ...props }) => {
   const user = useSelector(usersSelectors.getById(id));
   const isUserInDb = usersInDb.indexOf(id) >= 0;
+  const dbIsLoading = useSelector(databaseSelectors.isLoading());
 
   return (
-    <Dropdown.Item eventKey={id} disabled={isUserInDb}>
+    <Dropdown.Item eventKey={id} disabled={isUserInDb || dbIsLoading}>
       <div className='d-flex'>
         <div className='flex-grow-1'>
           {user?.username || `usernameId ${id}`}
@@ -72,7 +73,11 @@ const AddUserToDBModal = ({ show, onHide, dbId, ...props }) => {
   const [results, setResults] = useState(emptyResults);
   const [showDropdown, setShowDropdown] = useState(false);
   const db = useSelector(userSelectors.getDBById(dbId));
+  const dbIsLoading = useSelector(databaseSelectors.isLoading());
+  const userIsLoading = useSelector(userSelectors.isLoading());
+  const usersIsLoading = useSelector(usersSelectors.isLoading(false));
   const dispatch = useDispatch();
+  const lastRequest = useRef();
 
   const onExcludeUser = async (userId) => {
     const fullDB = await databaseApi.editDB({
@@ -85,13 +90,26 @@ const AddUserToDBModal = ({ show, onHide, dbId, ...props }) => {
   };
 
   const searchUsers = async (username) => {
-    const res = await dispatch(userApi.search({ username }));
-    if (res.meta.response.ok) {
-      setResults({
-        ids: res.payload.results.map((u) => u.id),
-        hasNext: Boolean(res.payload.next),
-        hasSearched: true,
-      });
+    const constructor = (username) => {
+      if (lastRequest.current?.abort) {
+        lastRequest.current.abort();
+      }
+      const promise = dispatch(userApi.search({ username }));
+      lastRequest.current = promise;
+      return promise;
+    };
+    const res = await constructor(username);
+    if (res.meta.response) {
+      // was executed
+      if (res.meta.response.ok) {
+        setResults({
+          ids: res.payload.results.map((u) => u.id),
+          hasNext: Boolean(res.payload.next),
+          hasSearched: true,
+        });
+      }
+    } else {
+      // was aborted
     }
   };
 
@@ -113,6 +131,7 @@ const AddUserToDBModal = ({ show, onHide, dbId, ...props }) => {
     if (e.target.value.trim()) {
       setShowDropdown(true);
       searchUsers(e.target.value.trim());
+      setResults(emptyResults);
     } else {
       setResults(emptyResults);
     }
@@ -140,7 +159,7 @@ const AddUserToDBModal = ({ show, onHide, dbId, ...props }) => {
         <Dropdown
           className='m-1'
           onToggle={setShowDropdown}
-          show={showDropdown && results.hasSearched}
+          show={showDropdown && (usersIsLoading || results.hasSearched)}
           onSelect={onSelect}
         >
           <Dropdown.Toggle
@@ -150,8 +169,14 @@ const AddUserToDBModal = ({ show, onHide, dbId, ...props }) => {
             onChange={onUsernameSearchChange}
             className='form-control'
             name='username_search'
-          ></Dropdown.Toggle>
+            disabled={userIsLoading || dbIsLoading}
+          />
           <Dropdown.Menu className='w-100'>
+            {usersIsLoading && (
+              <Dropdown.Item disabled key='search_is_loading'>
+                <LoadingDiv />
+              </Dropdown.Item>
+            )}
             {results.ids.map((userId) => (
               <DropdownElement
                 key={`search_username_${userId}`}

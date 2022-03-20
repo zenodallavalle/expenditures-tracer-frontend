@@ -67,6 +67,11 @@ const App = (props) => {
   const initialize = useCallback(async () => {
     const workingDBId = localStorage.getItem('workingDBId');
     const { payload: user } = await dispatch(userApi.tryAuthToken());
+    user?.id &&
+      dispatch({
+        type: 'users/currentUser',
+        payload: { id: user.id, username: user.username, isCurrentUser: true },
+      });
     let dbId = null;
     if (user) {
       if (user.dbs.length === 1) {

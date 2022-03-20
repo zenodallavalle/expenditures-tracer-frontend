@@ -107,11 +107,19 @@ const User = ({ ...props }) => {
     if (validateSignup()) {
       setResMessages({});
       const action = await dispatch(userApi.signup({ ...signupInstance }));
-      const json = action.payload;
+      const { payload: json } = action;
       const { response } = action.meta;
       if (response) {
         if (response.ok) {
           setSignupInstance(emptySignup);
+          dispatch({
+            type: 'users/currentUser',
+            payload: {
+              id: json.id,
+              username: json.username,
+              isCurrentUser: true,
+            },
+          });
         } else {
           setResSignupMessages(json);
           if (json.non_field_errors) {
@@ -132,10 +140,18 @@ const User = ({ ...props }) => {
     if (validateLogin()) {
       setResMessages({});
       const action = await dispatch(userApi.login({ ...instance }));
-      const json = action.payload;
+      const { payload: json } = action;
       const { response } = action.meta;
       if (response) {
         if (response.ok) {
+          dispatch({
+            type: 'users/currentUser',
+            payload: {
+              id: json.id,
+              username: json.username,
+              isCurrentUser: true,
+            },
+          });
           setInstance(emptyLogin);
         } else {
           setResMessages(json);
@@ -157,6 +173,7 @@ const User = ({ ...props }) => {
     dispatch(userApi.logout());
     dispatch({ type: 'database/dataErased' });
     dispatch({ type: 'expenditures/dataErased' });
+    dispatch({ type: 'users/dataErased' });
     dispatch({
       type: 'alerts/added',
       payload: { variant: 'success', message: 'User logged out.' },
@@ -168,7 +185,7 @@ const User = ({ ...props }) => {
     [dispatch]
   );
 
-  const usersToLoadids = useMemo(
+  const usersToLoadIds = useMemo(
     () => [
       ...new Set(
         user
@@ -186,9 +203,9 @@ const User = ({ ...props }) => {
   useEffect(
     () =>
       retrieveUserData(
-        usersToLoadids.filter((id) => loadedUsersIds.indexOf(id) === -1)
+        usersToLoadIds.filter((id) => loadedUsersIds.indexOf(id) === -1)
       ),
-    [usersToLoadids, loadedUsersIds, retrieveUserData]
+    [usersToLoadIds, loadedUsersIds, retrieveUserData]
   );
 
   return (
