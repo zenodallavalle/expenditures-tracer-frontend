@@ -10,6 +10,11 @@ import { getTextColorClassForDelta } from 'utils';
 import Category from './Category';
 import Prospect from './Prospect';
 
+let columnWidth = parseInt(process.env.REACT_APP_COL_WIDTH);
+if (isNaN(columnWidth)) {
+  columnWidth = 500;
+}
+
 const PanelProspect = (props) => {
   const isLoading = useSelector(databaseSelectors.isLoading());
   const prospect = useSelector(databaseSelectors.getProspect());
@@ -25,7 +30,7 @@ const PanelProspect = (props) => {
     useState(false);
 
   return (
-    <div>
+    <div className='mx-auto' style={{ maxWidth: columnWidth }}>
       <div className='border rounded border-primary p-1 mt-1 mb-3'>
         <div className='pb-1'>
           <div className='d-flex rounded bg-primary text-light'>

@@ -18,6 +18,11 @@ import {
 } from 'utils';
 import { databaseSelectors, databaseActions } from 'rdx/database';
 
+let columnWidth = parseInt(process.env.REACT_APP_COL_WIDTH);
+if (isNaN(columnWidth)) {
+  columnWidth = 500;
+}
+
 export const ExpandHiddenCategories = ({ ...props }) => {
   const dispatch = useDispatch();
   const onClick = () => {
@@ -296,51 +301,56 @@ const Category = ({ id, children = null, readOnly = false, ...props }) => {
 
   if (hidden) return null;
   return (
-    <div className='border rounded border-primary px-1 mt-1 mb-3'>
-      <div className='d-flex align-items-center pb-1'>
-        {isEditing ? (
-          <React.Fragment>
-            <div>
-              <AutoBlurTransparentButton onClick={hideCategory}>
-                <InlineIcon icon={eyeClosed16} />
-              </AutoBlurTransparentButton>
-            </div>
-            <div>
-              <AutoBlurTransparentButton onClick={onMove(1)}>
-                <InlineIcon icon={foldDown16} />
-              </AutoBlurTransparentButton>
-            </div>
-            <div>
-              <AutoBlurTransparentButton onClick={onMove(-1)}>
-                <InlineIcon icon={foldUp16} />
-              </AutoBlurTransparentButton>
-            </div>
-          </React.Fragment>
-        ) : (
-          <div>
-            <AutoBlurTransparentButton onClick={toggleCollapsed}>
-              <InlineIcon icon={collapsed ? plus16 : dash16} />
-            </AutoBlurTransparentButton>
-          </div>
-        )}
-        <div className='flex-grow-1 text-primary px-1'>
+    <div
+      className=' mt-1 mb-3 mx-auto w-100'
+      style={{ maxWidth: columnWidth, minWidth: columnWidth * 0.7 }}
+    >
+      <div className='px-1 border rounded border-primary'>
+        <div className='d-flex align-items-center pb-1'>
           {isEditing ? (
-            <FormControl
-              name='name'
-              className='my-1 me-2'
-              value={instance?.name || category?.name || ''}
-              onChange={onChange}
-              onKeyDown={onKeyDown}
-              ref={ref}
-              disabled={isLoading}
-            />
+            <React.Fragment>
+              <div>
+                <AutoBlurTransparentButton onClick={hideCategory}>
+                  <InlineIcon icon={eyeClosed16} />
+                </AutoBlurTransparentButton>
+              </div>
+              <div>
+                <AutoBlurTransparentButton onClick={onMove(1)}>
+                  <InlineIcon icon={foldDown16} />
+                </AutoBlurTransparentButton>
+              </div>
+              <div>
+                <AutoBlurTransparentButton onClick={onMove(-1)}>
+                  <InlineIcon icon={foldUp16} />
+                </AutoBlurTransparentButton>
+              </div>
+            </React.Fragment>
           ) : (
-            <div>{category?.name}</div>
+            <div>
+              <AutoBlurTransparentButton onClick={toggleCollapsed}>
+                <InlineIcon icon={collapsed ? plus16 : dash16} />
+              </AutoBlurTransparentButton>
+            </div>
           )}
+          <div className='flex-grow-1 text-primary px-1'>
+            {isEditing ? (
+              <FormControl
+                name='name'
+                className='my-1 me-2'
+                value={instance?.name || category?.name || ''}
+                onChange={onChange}
+                onKeyDown={onKeyDown}
+                ref={ref}
+                disabled={isLoading}
+              />
+            ) : (
+              <div>{category?.name}</div>
+            )}
+          </div>
+          {!readOnly && <div>{FunctionalitiesMenuCompiled}</div>}
         </div>
-        {!readOnly && <div>{FunctionalitiesMenuCompiled}</div>}
+        {!collapsed && children}
       </div>
-      {!collapsed && children}
     </div>
   );
 };

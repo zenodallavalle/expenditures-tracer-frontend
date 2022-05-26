@@ -12,6 +12,11 @@ import { databaseSelectors } from 'rdx/database';
 
 import Month from './Month';
 
+let columnWidth = parseInt(process.env.REACT_APP_COL_WIDTH);
+if (isNaN(columnWidth)) {
+  columnWidth = 500;
+}
+
 const Months = ({ ...props }) => {
   const months = useSelector(databaseSelectors.getMonths());
   const isLoading = useSelector(databaseSelectors.isLoading());
@@ -27,11 +32,15 @@ const Months = ({ ...props }) => {
     if (isLoading) {
       return <LoadingDiv className='text-center w-100' maxWidth={100} />;
     } else {
-      return <div>No monhts with registered money or expenditures yet.</div>;
+      return (
+        <div className='mx-auto' style={{ maxWidth: columnWidth }}>
+          No monhts with registered money or expenditures yet.
+        </div>
+      );
     }
   } else {
     return (
-      <div>
+      <div className='mx-auto' style={{ maxWidth: columnWidth }}>
         {
           <Table className='text-center'>
             <thead>

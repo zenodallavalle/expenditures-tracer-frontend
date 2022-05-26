@@ -2,6 +2,13 @@ import { searchSelectors } from 'rdx/search';
 import { useSelector } from 'react-redux';
 
 import { Expenditure } from 'components/mainView';
+import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
+
+let columnWidth = parseInt(process.env.REACT_APP_COL_WIDTH);
+if (isNaN(columnWidth)) {
+  columnWidth = 500;
+}
 
 const SearchResults = ({ ...props }) => {
   const searchResults = useSelector(searchSelectors.getIds());
@@ -17,15 +24,19 @@ const SearchResults = ({ ...props }) => {
   } else {
     return (
       <div>
-        {searchResults.map((id) => (
-          <Expenditure
-            id={id}
-            key={`search_results_${id}`}
-            showType
-            showCategory
-            className='pb-1'
-          />
-        ))}
+        <Row>
+          {searchResults.map((id) => (
+            <Col key={`search_results_${id}`}>
+              <Expenditure
+                id={id}
+                showType
+                showCategory
+                className='pb-1'
+                style={{ maxWidth: columnWidth, minWidth: columnWidth * 0.7 }}
+              />
+            </Col>
+          ))}
+        </Row>
       </div>
     );
   }

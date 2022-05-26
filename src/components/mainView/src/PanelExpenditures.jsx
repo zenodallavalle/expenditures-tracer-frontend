@@ -1,7 +1,11 @@
 import { useSelector } from 'react-redux';
 
-import { LoadingDiv } from 'utils';
+import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
+
 import { databaseSelectors } from 'rdx/database';
+
+import { LoadingDiv } from 'utils';
 
 import Category, {
   AddCategory,
@@ -9,6 +13,11 @@ import Category, {
   ExpandHiddenCategories,
 } from './Category';
 import Expenditures from './Expenditures';
+
+let columnWidth = parseInt(process.env.REACT_APP_COL_WIDTH);
+if (isNaN(columnWidth)) {
+  columnWidth = 500;
+}
 
 const PanelExpenditures = ({ expected, ...props }) => {
   const isLoading = useSelector(databaseSelectors.isLoading());
@@ -18,7 +27,7 @@ const PanelExpenditures = ({ expected, ...props }) => {
       return <LoadingDiv className='text-center w-100' maxWidth={100} />;
     } else {
       return (
-        <div>
+        <div className='mx-auto' style={{ maxWidth: columnWidth }}>
           <div className='text-center fst-italic mb-2'>
             No categories created yet.
           </div>
@@ -28,16 +37,23 @@ const PanelExpenditures = ({ expected, ...props }) => {
     }
   } else {
     return (
-      <div>
-        {categoriesIds.map((id) => (
-          <Category
-            id={id}
-            key={`category_${expected ? 'expected' : 'actual'}_${id}`}
-          >
-            <Expenditures expected={expected} categoryId={id} />
-            <CategoryProspect expected={expected} id={id} />
-          </Category>
-        ))}
+      <div className='mx-auto'>
+        <div>
+          <Row xs='auto' sm='auto' md='auto' lg='auto' xl='auto' xxl='auto'>
+            {categoriesIds.map((id) => (
+              <Col
+                key={`category_${expected ? 'expected' : 'actual'}_${id}`}
+                className='mx-auto'
+              >
+                <Category id={id}>
+                  <Expenditures expected={expected} categoryId={id} />
+                  <CategoryProspect expected={expected} id={id} />
+                </Category>
+              </Col>
+            ))}
+          </Row>
+        </div>
+
         <ExpandHiddenCategories />
         <div className='my-2'></div>
         <AddCategory />

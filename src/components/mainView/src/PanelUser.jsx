@@ -11,6 +11,11 @@ import { userSelectors } from 'rdx/user';
 import Database, { AddDatabase } from './Database';
 import { usersSelectors } from 'rdx/users';
 
+let columnWidth = parseInt(process.env.REACT_APP_COL_WIDTH);
+if (isNaN(columnWidth)) {
+  columnWidth = 500;
+}
+
 const emptyLogin = { username: '', password: '' };
 const emptySignup = { username: '', email: '', password: '' };
 
@@ -209,7 +214,7 @@ const User = ({ ...props }) => {
   );
 
   return (
-    <div>
+    <div className='mx-auto' style={{ maxWidth: columnWidth }}>
       {error && <Alert variant='danger'>{error}</Alert>}
       {isAuthenticated ? (
         //user logged in

@@ -115,7 +115,7 @@ const App = (props) => {
       <div className='py-1'>
         <div className='safe-down'>
           <Container fluid>
-            <div style={{ maxWidth: 720 }} className='mx-auto'>
+            <div className='mx-auto'>
               <MainView />
             </div>
           </Container>
