@@ -11,3 +11,5 @@ export { default as capitalize } from './src/capitalize';
 export { default as dateToLocaleISOString } from './src/dateToLocaleISOString';
 export { default as getWorkingMonth } from './src/getWorkingMonth';
 export { default as getCurrentPanel } from './src/getCurrentPanel';
+export { default as getColorFor } from './src/cycleColors';
+export { colors as availableColors } from './src/cycleColors';

@@ -7,7 +7,7 @@ import { InlineIcon } from '@iconify/react';
 import workflow16 from '@iconify/icons-octicon/workflow-16';
 
 import { expenditureApi } from 'api';
-import { formatDate, FunctionalitiesMenu } from 'utils';
+import { formatDate, FunctionalitiesMenu, getColorFor } from 'utils';
 
 import { expendituresSelectors } from 'rdx/expenditures';
 import ExpenditureOffcanvas from 'components/expenditureEditor';
@@ -45,8 +45,8 @@ const Expenditure = ({
   const category = useSelector(
     databaseSelectors.getCategoryById(expenditure?.category)
   );
-  const colors = ['warning', 'danger', 'success', 'info', 'dark'];
-  const categoryBg = colors[(expenditure?.category || 0) % colors.length];
+
+  const categoryBg = getColorFor(expenditure?.category);
 
   const onEdit = (e, collapseFunctionalityMenu) => {
     setShowEditExpenditure(true);

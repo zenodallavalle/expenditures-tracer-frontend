@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import clsx from 'clsx';
+
 import FormControl from 'react-bootstrap/FormControl';
 import { InlineIcon } from '@iconify/react';
 import plus16 from '@iconify/icons-octicon/plus-16';
@@ -14,6 +16,7 @@ import {
   AutoBlurButton,
   AutoBlurTransparentButton,
   FunctionalitiesMenu,
+  getColorFor,
   LoadingImg,
 } from 'utils';
 import { databaseSelectors, databaseActions } from 'rdx/database';
@@ -208,6 +211,8 @@ const Category = ({ id, children = null, readOnly = false, ...props }) => {
   const collapsed = category?.status === 'collapsed';
   const hidden = category?.status === 'hidden';
 
+  const categoryColor = getColorFor(id);
+
   const toggleCollapsed = () => {
     dispatch(
       databaseActions.updateCategoryState({
@@ -305,7 +310,14 @@ const Category = ({ id, children = null, readOnly = false, ...props }) => {
       className=' mt-1 mb-3 mx-auto w-100'
       style={{ maxWidth: columnWidth, minWidth: columnWidth * 0.7 }}
     >
-      <div className='px-1 border rounded border-primary'>
+      <div
+        className={clsx([
+          'px-1',
+          'border',
+          'rounded',
+          `border-${categoryColor}`,
+        ])}
+      >
         <div className='d-flex align-items-center pb-1'>
           {isEditing ? (
             <React.Fragment>
