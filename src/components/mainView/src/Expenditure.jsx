@@ -19,6 +19,7 @@ const Expenditure = ({
   id,
   showCategory = false,
   showType = false,
+  editable = false,
   ...props
 }) => {
   const dispatch = useDispatch();
@@ -69,7 +70,7 @@ const Expenditure = ({
   return (
     <div {...props}>
       <div
-        {...(hasMouse ? null : handlers)}
+        {...(hasMouse || !editable ? null : handlers)}
         onClick={onToggleDetails}
         className='bg-light border border-secondary rounded ms-2 my-1 ps-2 py-1'
       >
@@ -90,32 +91,34 @@ const Expenditure = ({
               </Badge>
             )}
           </div>
-          <div>
-            <div
-              className='d-flex flex-column h-100'
-              onClick={(e) => e.stopPropagation()}
-            >
-              <FunctionalitiesMenu
-                hideExpander={!hasMouse}
-                clickable={!isLoading}
-                isExtended={showControls}
-                setIsExtended={setShowControls}
-                onEdit={onEdit}
-                onDelete={onDelete}
-                deleteConfirmTimeout={4000}
-                autocollapseTimeout={4000}
-              />
-              {(Boolean(expenditure?.expected_expenditure) ||
-                (expenditure?.is_expected &&
-                  expenditure?.actual_expenditures.length > 0)) && (
-                <div className='ms-auto mt-auto'>
-                  <div className='py-1 px-2' onClick={onToggleDetails}>
-                    <InlineIcon icon={workflow16} rotate={135} />
+          {editable && (
+            <div>
+              <div
+                className='d-flex flex-column h-100'
+                onClick={(e) => e.stopPropagation()}
+              >
+                <FunctionalitiesMenu
+                  hideExpander={!hasMouse}
+                  clickable={!isLoading}
+                  isExtended={showControls}
+                  setIsExtended={setShowControls}
+                  onEdit={onEdit}
+                  onDelete={onDelete}
+                  deleteConfirmTimeout={4000}
+                  autocollapseTimeout={4000}
+                />
+                {(Boolean(expenditure?.expected_expenditure) ||
+                  (expenditure?.is_expected &&
+                    expenditure?.actual_expenditures.length > 0)) && (
+                  <div className='ms-auto mt-auto'>
+                    <div className='py-1 px-2' onClick={onToggleDetails}>
+                      <InlineIcon icon={workflow16} rotate={135} />
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
         <ExpenditureModal

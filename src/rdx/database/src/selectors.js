@@ -87,4 +87,7 @@ selectors.getExpenditures = (expected) => (s) => {
 
 selectors.getMonths = () => (s) => s.database.content?.months_list;
 
+selectors.getLastMonthAvailable = () => (s) =>
+  s.database.content?.months_list.find((m) => !m.is_working);
+
 export default selectors;

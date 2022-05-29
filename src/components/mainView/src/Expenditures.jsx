@@ -32,7 +32,7 @@ const Expenditures = ({ categoryId, expected, ...props }) => {
           <LoadingDiv className='text-center w-100 py-1' maxWidth={25} />
         )}
         {expendituresIds.map((id) => (
-          <Expenditure key={`expenditure_${id}`} id={id} />
+          <Expenditure key={`expenditure_${id}`} id={id} editable />
         ))}
       </div>
     );
