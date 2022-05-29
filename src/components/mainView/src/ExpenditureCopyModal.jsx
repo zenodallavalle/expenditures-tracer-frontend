@@ -88,7 +88,7 @@ const ExpenditureListGroupItem = ({
       });
       loaded.current = true;
     }
-  }, [expenditure, _expenditure]);
+  }, [expenditure, _expenditure, workingMonth]);
 
   const onChange = (fieldName) => (e) => {
     setExpenditure((s) => ({ ...s, [fieldName]: e.target.value }));

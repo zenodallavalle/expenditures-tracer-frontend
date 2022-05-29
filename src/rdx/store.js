@@ -1,6 +1,4 @@
-import { createStore, applyMiddleware, combineReducers } from 'redux';
-import thunkMiddleware from 'redux-thunk';
-import { composeWithDevTools } from 'redux-devtools-extension';
+import { configureStore } from '@reduxjs/toolkit';
 
 import { userReducer } from './user';
 import { usersReducer } from './users';
@@ -10,17 +8,17 @@ import { alertsReducer } from './alerts';
 import { searchReducer } from './search';
 
 const newStore = () =>
-  createStore(
-    combineReducers({
+  configureStore({
+    reducer: {
       alerts: alertsReducer,
       user: userReducer,
       users: usersReducer,
       database: databaseReducer,
       expenditures: expendituresReducer,
       search: searchReducer,
-    }),
-    composeWithDevTools(applyMiddleware(thunkMiddleware))
-  );
+    },
+    devTools: process.env.NODE_ENV !== 'production',
+  });
 
 const store = newStore();
 
