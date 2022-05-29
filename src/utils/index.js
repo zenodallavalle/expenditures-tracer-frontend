@@ -13,3 +13,8 @@ export { default as getWorkingMonth } from './src/getWorkingMonth';
 export { default as getCurrentPanel } from './src/getCurrentPanel';
 export { default as getColorFor } from './src/cycleColors';
 export { colors as availableColors } from './src/cycleColors';
+export { default as getDateFromMonthString } from './src/getDateFromMonthString';
+export { default as getLastDateForMonth } from './src/getLastDateForMonth';
+export { default as dateFormatI18n } from './src/dateFormatI18n';
+export { default as CheckButton } from './src/CheckButton';
+export { default as adaptDateForCurrentMonth } from './src/adaptDateForCurrentMonth';

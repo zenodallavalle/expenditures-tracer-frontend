@@ -31,8 +31,9 @@ const SearchResults = ({ ...props }) => {
                 id={id}
                 showType
                 showCategory
-                className='pb-1'
+                className='pb-1 mx-auto'
                 style={{ maxWidth: columnWidth, minWidth: columnWidth * 0.7 }}
+                editable
               />
             </Col>
           ))}
