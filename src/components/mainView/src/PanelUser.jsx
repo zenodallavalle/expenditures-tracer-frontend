@@ -10,6 +10,13 @@ import { userSelectors } from 'rdx/user';
 
 import Database, { AddDatabase } from './Database';
 import { usersSelectors } from 'rdx/users';
+import {
+  useLoginMutation,
+  useLogoutMutation,
+  useSignupMutation,
+  useUserTokenAuthQuery,
+} from 'api/userApiSlice';
+import { changedPanel, updatedWorkingDBId } from 'rdx/params';
 
 let columnWidth = parseInt(process.env.REACT_APP_COL_WIDTH);
 if (isNaN(columnWidth)) {
@@ -20,19 +27,30 @@ const emptyLogin = { username: '', password: '' };
 const emptySignup = { username: '', email: '', password: '' };
 
 const User = ({ ...props }) => {
+  const {
+    data: user,
+    isLoading,
+    isFetching,
+    isSuccess,
+    isError,
+    error,
+  } = useUserTokenAuthQuery();
+
+  const [login, { error: errorLogin }] = useLoginMutation();
+  const [logout, _] = useLogoutMutation();
+  const [signup, { error: errorSignup }] = useSignupMutation();
+
   const dispatch = useDispatch();
-  const isLoading = useSelector(userSelectors.isLoading());
-  const error = useSelector(userSelectors.error());
-  const isAuthenticated = useSelector(userSelectors.isAuthenticated());
-  const user = useSelector(userSelectors.user());
+  // const isLoading = useSelector(userSelectors.isLoading());
+  // const error = useSelector(userSelectors.error());
+  // const isAuthenticated = useSelector(userSelectors.isAuthenticated());
+  // const user = useSelector(userSelectors.user());
 
   const [showLogin, setShowLogin] = useState(true);
   const [instance, setInstance] = useState(emptyLogin);
   const [signupInstance, setSignupInstance] = useState(emptySignup);
   const [messages, setMessages] = useState({});
   const [signupMessages, setSignupMessages] = useState({});
-  const [resMessages, setResMessages] = useState({});
-  const [resSignupMessages, setResSignupMessages] = useState({});
 
   const refUsername = useRef();
   const refPassword = useRef();
@@ -110,32 +128,16 @@ const User = ({ ...props }) => {
 
   const onSignup = async () => {
     if (validateSignup()) {
-      setResMessages({});
-      const action = await dispatch(userApi.signup({ ...signupInstance }));
-      const { payload: json } = action;
-      const { response } = action.meta;
-      if (response) {
-        if (response.ok) {
-          setSignupInstance(emptySignup);
+      const response = await signup(signupInstance);
+      if (response.error) {
+        if (response.error.data?.non_field_errors) {
           dispatch({
-            type: 'users/currentUser',
+            type: 'alerts/added',
             payload: {
-              id: json.id,
-              username: json.username,
-              isCurrentUser: true,
+              variant: 'danger',
+              message: response.error.data.non_field_errors.join(', '),
             },
           });
-        } else {
-          setResSignupMessages(json);
-          if (json.non_field_errors) {
-            dispatch({
-              type: 'alerts/added',
-              payload: {
-                variant: 'danger',
-                message: json.non_field_errors.join(', '),
-              },
-            });
-          }
         }
       }
     }
@@ -143,42 +145,33 @@ const User = ({ ...props }) => {
 
   const onLogin = async () => {
     if (validateLogin()) {
-      setResMessages({});
-      const action = await dispatch(userApi.login({ ...instance }));
-      const { payload: json } = action;
-      const { response } = action.meta;
-      if (response) {
-        if (response.ok) {
+      const response = await login(instance);
+      if (response.data) {
+        if (response.data.dbs.length === 1) {
+          dispatch(updatedWorkingDBId(response.data.dbs[0]));
+          dispatch(changedPanel('prospect'));
+        }
+      }
+      if (response.error) {
+        if (response.error.data?.non_field_errors) {
           dispatch({
-            type: 'users/currentUser',
+            type: 'alerts/added',
             payload: {
-              id: json.id,
-              username: json.username,
-              isCurrentUser: true,
+              variant: 'danger',
+              message: response.error.data.non_field_errors.join(', '),
             },
           });
-          setInstance(emptyLogin);
-        } else {
-          setResMessages(json);
-          if (json.non_field_errors) {
-            dispatch({
-              type: 'alerts/added',
-              payload: {
-                variant: 'danger',
-                message: json.non_field_errors.join(', '),
-              },
-            });
-          }
         }
       }
     }
   };
 
   const onLogout = () => {
-    dispatch(userApi.logout());
-    dispatch({ type: 'database/dataErased' });
-    dispatch({ type: 'expenditures/dataErased' });
-    dispatch({ type: 'users/dataErased' });
+    // dispatch(userApi.logout());
+    // dispatch({ type: 'database/dataErased' });
+    // dispatch({ type: 'expenditures/dataErased' });
+    // dispatch({ type: 'users/dataErased' });
+    logout();
     dispatch({
       type: 'alerts/added',
       payload: { variant: 'success', message: 'User logged out.' },
@@ -215,21 +208,18 @@ const User = ({ ...props }) => {
 
   return (
     <div className='mx-auto' style={{ maxWidth: columnWidth }}>
-      {error && <Alert variant='danger'>{error}</Alert>}
-      {isAuthenticated ? (
+      {isLoading ? (
+        <LoadingDiv maxWidth={100} />
+      ) : isSuccess ? (
         //user logged in
         <div>
           <h5 className='text-center'>Databases</h5>
-          {!user?.dbs.length ? (
-            isLoading ? (
-              <LoadingDiv maxWidth={100} />
-            ) : (
-              <div className='text-center fst-italic'>
-                No databases created yet
-              </div>
-            )
-          ) : (
+          {user?.dbs.length > 0 ? (
             user.dbs.map((db) => <Database key={`db_${db.id}`} id={db.id} />)
+          ) : (
+            <div className='text-center fst-italic'>
+              No databases created yet
+            </div>
           )}
 
           <AddDatabase />
@@ -238,7 +228,7 @@ const User = ({ ...props }) => {
               variant='primary'
               className='w-100'
               onClick={onLogout}
-              disabled={isLoading}
+              disabled={isFetching}
             >
               {isLoading ? <LoadingImg maxWidth={25} /> : 'Logout'}
             </AutoBlurButton>
@@ -248,7 +238,6 @@ const User = ({ ...props }) => {
       showLogin ? (
         <div>
           <h5>Login</h5>
-
           <div className='d-flex align-items-baseline py-1'>
             <div style={{ width: 80 }}>Username</div>
             <div className='flex-grow-1'>
@@ -266,12 +255,11 @@ const User = ({ ...props }) => {
           {messages?.username && (
             <div className='text-danger'>{messages.username} </div>
           )}
-          {resMessages?.username &&
-            resMessages.username.map((msg, idx) => (
-              <div className='text-danger' key={`msg_login_username_${idx}`}>
-                {msg}{' '}
-              </div>
-            ))}
+          {errorLogin?.data?.username?.map((msg, idx) => (
+            <div className='text-danger' key={`msg_login_username_${idx}`}>
+              {msg}
+            </div>
+          ))}
 
           <div className='d-flex align-items-baseline py-1'>
             <div style={{ width: 80 }}>Password</div>
@@ -288,22 +276,19 @@ const User = ({ ...props }) => {
               />
             </div>
           </div>
-          {messages?.password && (
-            <div className='text-danger'>{messages.password} </div>
-          )}
-          {resMessages?.password &&
-            resMessages.password.map((msg, idx) => (
-              <div className='text-danger' key={`msg_login_pwd_${idx}`}>
-                {msg}{' '}
-              </div>
-            ))}
+
+          {errorLogin?.data?.password?.map((msg, idx) => (
+            <div className='text-danger' key={`msg_login_password_${idx}`}>
+              {msg}
+            </div>
+          ))}
 
           <div className='w-100 pt-3'>
             <AutoBlurButton
               variant='success'
               className='w-100'
               onClick={onLogin}
-              disabled={isLoading}
+              disabled={isFetching}
             >
               {isLoading ? <LoadingImg maxWidth={25} /> : 'Login'}
             </AutoBlurButton>
@@ -314,7 +299,7 @@ const User = ({ ...props }) => {
             <AutoBlurButton
               className='w-100'
               onClick={() => setShowLogin(false)}
-              disabled={isLoading}
+              disabled={isFetching}
             >
               {isLoading ? <LoadingImg maxWidth={25} /> : 'Signup for free now'}
             </AutoBlurButton>
@@ -340,12 +325,11 @@ const User = ({ ...props }) => {
           {signupMessages?.username && (
             <div className='text-danger'>{signupMessages.username} </div>
           )}
-          {resSignupMessages?.username &&
-            resSignupMessages.username.map((msg, idx) => (
-              <div className='text-danger' key={`msg_login_username_${idx}`}>
-                {msg}
-              </div>
-            ))}
+          {errorSignup?.data?.username?.map((msg, idx) => (
+            <div className='text-danger' key={`msg_login_username_${idx}`}>
+              {msg}
+            </div>
+          ))}
 
           <div className='d-flex align-items-baseline py-1'>
             <div style={{ width: 80 }}>Email</div>
@@ -364,12 +348,11 @@ const User = ({ ...props }) => {
           {signupMessages?.email && (
             <div className='text-danger'>{signupMessages.email} </div>
           )}
-          {resSignupMessages?.email &&
-            resSignupMessages.email.map((msg, idx) => (
-              <div className='text-danger' key={`msg_login_email_${idx}`}>
-                {msg}
-              </div>
-            ))}
+          {errorSignup?.data?.email?.map((msg, idx) => (
+            <div className='text-danger' key={`msg_login_email_${idx}`}>
+              {msg}
+            </div>
+          ))}
 
           <div className='d-flex align-items-baseline py-1'>
             <div style={{ width: 80 }}>Password</div>
@@ -389,19 +372,18 @@ const User = ({ ...props }) => {
           {signupMessages?.password && (
             <div className='text-danger'>{signupMessages.password} </div>
           )}
-          {resSignupMessages?.password &&
-            resSignupMessages.password.map((msg, idx) => (
-              <div className='text-danger' key={`msg_login_pwd_${idx}`}>
-                {msg}
-              </div>
-            ))}
+          {errorSignup?.data?.password?.map((msg, idx) => (
+            <div className='text-danger' key={`msg_login_password_${idx}`}>
+              {msg}
+            </div>
+          ))}
 
           <div className='w-100 pt-3'>
             <AutoBlurButton
               variant='success'
               className='w-100'
               onClick={onSignup}
-              disabled={isLoading}
+              disabled={isFetching}
             >
               {isLoading ? <LoadingImg maxWidth={25} /> : 'Signup'}
             </AutoBlurButton>
@@ -412,7 +394,7 @@ const User = ({ ...props }) => {
             <AutoBlurButton
               className='w-100'
               onClick={() => setShowLogin(true)}
-              disabled={isLoading}
+              disabled={isFetching}
             >
               {isLoading ? <LoadingImg maxWidth={25} /> : 'Login'}
             </AutoBlurButton>

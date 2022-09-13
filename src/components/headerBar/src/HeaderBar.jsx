@@ -14,7 +14,9 @@ const UpperBar = ({ fetch = () => {}, onAdd = () => {}, ...props }) => {
         <div className={!showSearchBar ? 'flex-grow-1' : ''}>
           <div className='d-flex'>
             <div>
-              <RefreshBtn fetch={fetch} />
+              <RefreshBtn
+              // fetch={fetch}
+              />
             </div>
             <div className='text-nowrap'>
               <UserBtn />

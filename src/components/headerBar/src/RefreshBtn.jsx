@@ -1,40 +1,28 @@
-import { useCallback } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-
-import { AutoBlurButton } from 'utils';
 import { InlineIcon } from '@iconify/react';
 import sync16 from '@iconify/icons-octicon/sync-16';
 
-import { databaseActions, databaseSelectors } from 'rdx/database';
-import { expendituresActions, expendituresSelectors } from 'rdx/expenditures';
-import { userSelectors } from 'rdx/user';
+import { useUserTokenAuthQuery } from 'api/userApiSlice';
+import { useAutomaticGetDBQuery } from 'api/dbsApiSlice';
+import { AutoBlurButton } from 'utils';
 
 const RefreshBtn = ({ fetch = () => {}, ...props }) => {
-  const dispatch = useDispatch();
-  const userIsLoading = useSelector(userSelectors.isLoading());
-  const isAuthenticated = useSelector(userSelectors.isAuthenticated());
-  const databaseIsLoading = useSelector(databaseSelectors.isLoading());
-  const expendituresAreLoading = useSelector(expendituresSelectors.isLoading());
-  const isLoading = isAuthenticated
-    ? userIsLoading || databaseIsLoading || expendituresAreLoading
-    : userIsLoading;
+  const { isFetching: isFetchingUser, isSuccess: isSuccessUser } =
+    useUserTokenAuthQuery();
+  const { isFetching: isFetchingDB } = useAutomaticGetDBQuery(
+    {},
+    { skip: !isSuccessUser }
+  );
 
-  const onRefresh = useCallback(async () => {
-    const fullDB = await fetch();
-    if (fullDB) {
-      dispatch(databaseActions.dataRetrieved(fullDB));
-      dispatch(expendituresActions.dataRetrieved(fullDB));
-    }
-  }, [fetch, dispatch]);
+  const isFetching = isFetchingUser || isFetchingDB;
 
   return (
     <AutoBlurButton
       variant='outline-primary'
       className='mirror'
-      onClick={onRefresh}
-      disabled={isLoading}
+      // onClick={onRefresh}
+      disabled={isFetching}
     >
-      <InlineIcon icon={sync16} className={isLoading ? 'spin' : ''} />
+      <InlineIcon icon={sync16} className={isFetching ? 'spin' : ''} />
     </AutoBlurButton>
   );
 };
