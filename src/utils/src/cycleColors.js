@@ -1,5 +1,18 @@
-export const colors = ['success', 'info', 'warning', 'danger', 'dark'];
+export const colors = ['warning', 'success', 'info', 'danger', 'dark'];
 
-const getColorFor = (number = 0) => colors[number % colors.length];
+let _number = 0;
 
-export default getColorFor;
+const assigned = {};
+
+export const getColorFor = ({ type, id } = {}) => {
+  const tag = `${type}_${id}`;
+  if (type === undefined && id === undefined) {
+    // no info supplied, cycle colors
+    return colors[_number++ % colors.length];
+  } else {
+    if (!assigned[tag]) {
+      assigned[tag] = colors[id % colors.length];
+    }
+    return assigned[tag];
+  }
+};

@@ -1,20 +1,23 @@
-import RefreshBtn from './RefreshBtn';
-import UserBtn from './UserBtn';
-import AddBtn from './AddBtn';
-import SearchBar from './SearchBar';
-import { getCurrentPanel } from 'utils';
-// import BackBtn from './upperBarComponents/backBtn';
+import { useSelector } from 'react-redux';
 
-const UpperBar = ({ fetch = () => {}, onAdd = () => {}, ...props }) => {
-  const currentPanel = getCurrentPanel();
+import { selectPanel } from 'rdx/params';
+
+import { RefreshBtn } from './RefreshBtn';
+import { UserBtn } from './UserBtn';
+import { UpperRightBtn } from './UpperRightBtn';
+import { SearchBar } from './SearchBar';
+
+export const HeaderBar = ({ onAdd = () => {}, ...props }) => {
+  const currentPanel = useSelector(selectPanel);
   const showSearchBar = !['user', 'months'].includes(currentPanel);
+
   return (
     <div className='fixed-top bg-white safe-fixed-x safe-fixed-top'>
       <div className='d-flex m-1'>
         <div className={!showSearchBar ? 'flex-grow-1' : ''}>
           <div className='d-flex'>
             <div>
-              <RefreshBtn fetch={fetch} />
+              <RefreshBtn />
             </div>
             <div className='text-nowrap'>
               <UserBtn />
@@ -27,11 +30,9 @@ const UpperBar = ({ fetch = () => {}, onAdd = () => {}, ...props }) => {
           </div>
         )}
         <div>
-          <AddBtn onAdd={onAdd} />
+          <UpperRightBtn onAdd={onAdd} />
         </div>
       </div>
     </div>
   );
 };
-
-export default UpperBar;

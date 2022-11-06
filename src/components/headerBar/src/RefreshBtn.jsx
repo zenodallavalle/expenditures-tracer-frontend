@@ -1,41 +1,33 @@
-import { useCallback } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
-import { AutoBlurButton } from 'utils';
 import { InlineIcon } from '@iconify/react';
 import sync16 from '@iconify/icons-octicon/sync-16';
 
-import { databaseActions, databaseSelectors } from 'rdx/database';
-import { expendituresActions, expendituresSelectors } from 'rdx/expenditures';
-import { userSelectors } from 'rdx/user';
+import { userApiSlice, useAutomaticUserTokenAuthQuery } from 'api/userApiSlice';
+import { useAutomaticGetFullDBQuery } from 'api/dbApiSlice';
+import { AutoBlurButton } from 'utils';
 
-const RefreshBtn = ({ fetch = () => {}, ...props }) => {
+export const RefreshBtn = ({ ...props }) => {
   const dispatch = useDispatch();
-  const userIsLoading = useSelector(userSelectors.isLoading());
-  const isAuthenticated = useSelector(userSelectors.isAuthenticated());
-  const databaseIsLoading = useSelector(databaseSelectors.isLoading());
-  const expendituresAreLoading = useSelector(expendituresSelectors.isLoading());
-  const isLoading = isAuthenticated
-    ? userIsLoading || databaseIsLoading || expendituresAreLoading
-    : userIsLoading;
+  const { isFetching: isFetchingUser, isSuccess: isSuccessUser } =
+    useAutomaticUserTokenAuthQuery();
+  const { isFetching: isFetchingDB } = useAutomaticGetFullDBQuery(
+    {},
+    { skip: !isSuccessUser }
+  );
 
-  const onRefresh = useCallback(async () => {
-    const fullDB = await fetch();
-    if (fullDB) {
-      dispatch(databaseActions.dataRetrieved(fullDB));
-      dispatch(expendituresActions.dataRetrieved(fullDB));
-    }
-  }, [fetch, dispatch]);
+  const isFetching = isFetchingUser || isFetchingDB;
+
+  const onRefreshData = () => dispatch(userApiSlice.util.resetApiState());
 
   return (
     <AutoBlurButton
       variant='outline-primary'
       className='mirror'
-      onClick={onRefresh}
-      disabled={isLoading}
+      onClick={onRefreshData}
+      disabled={isFetching}
     >
-      <InlineIcon icon={sync16} className={isLoading ? 'spin' : ''} />
+      <InlineIcon icon={sync16} className={isFetching ? 'spin' : ''} />
     </AutoBlurButton>
   );
 };
-export default RefreshBtn;
