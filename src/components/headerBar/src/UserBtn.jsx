@@ -1,16 +1,17 @@
-import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { AutoBlurButton, getCurrentPanel } from 'utils';
 import { InlineIcon } from '@iconify/react';
 import person16 from '@iconify/icons-octicon/person-16';
 import package16 from '@iconify/icons-octicon/package-16';
 
-import { useUserTokenAuthQuery } from 'api/userApiSlice';
-import { useAutomaticGetDBQuery } from 'api/dbsApiSlice';
+import { useAutomaticUserTokenAuthQuery } from 'api/userApiSlice';
+import { useAutomaticGetFullDBQuery } from 'api/dbApiSlice';
+import { changedPanel, selectPanel } from 'rdx/params';
+import { AutoBlurButton } from 'utils';
 
-const UserBtn = ({ ...props }) => {
-  const navigate = useNavigate();
-  const panel = getCurrentPanel();
+export const UserBtn = ({ ...props }) => {
+  const dispatch = useDispatch();
+  const panel = useSelector(selectPanel);
 
   const short = panel === 'search';
 
@@ -19,23 +20,19 @@ const UserBtn = ({ ...props }) => {
     isFetching: isFetchingUser,
     isSuccess: isSuccessUser,
     isError: isErrorUser,
-  } = useUserTokenAuthQuery();
+  } = useAutomaticUserTokenAuthQuery();
   const {
-    data: workingDB,
+    data: fullDB,
     isFetching: isFetchingDB,
     isSuccess: isSuccessDB,
     isError: isErrorDB,
-  } = useAutomaticGetDBQuery({}, { skip: !isSuccessUser });
+  } = useAutomaticGetFullDBQuery({}, { skip: !isSuccessUser });
 
   const isFetching = isFetchingDB || isFetchingUser;
   const isSuccess = isSuccessDB && isSuccessUser;
   const isError = isErrorDB || isErrorUser;
 
-  const onClick = () => {
-    const urlSearchParams = new URLSearchParams(window.location.search);
-    urlSearchParams.set('panel', 'user');
-    navigate(`/?${urlSearchParams.toString()}`);
-  };
+  const onClick = () => dispatch(changedPanel('user'));
 
   const color = isError ? 'danger' : isSuccess ? 'primary' : 'warning';
 
@@ -58,7 +55,9 @@ const UserBtn = ({ ...props }) => {
           <InlineIcon icon={person16} />
         </div>
         {!short && (
-          <div className='mx-1'>{user?.username || 'Please login'}</div>
+          <div className='mx-1'>
+            {isSuccessUser ? user.username : 'Please login'}
+          </div>
         )}
 
         {isSuccessUser && (
@@ -67,11 +66,9 @@ const UserBtn = ({ ...props }) => {
           </div>
         )}
         {isSuccessUser && !short && (
-          <div className='mx-1'>{workingDB?.name || 'Choose DB'}</div>
+          <div className='mx-1'>{fullDB?.name || 'Choose DB'}</div>
         )}
       </div>
     </AutoBlurButton>
   );
 };
-
-export default UserBtn;

@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { default as RBAlert } from 'react-bootstrap/Alert';
 import { useDispatch } from 'react-redux';
 
-const Alert = ({ alert, ...props }) => {
+export const Alert = ({ alert, ...props }) => {
   const timeoutRef = useRef();
   const dispatch = useDispatch();
 
@@ -30,5 +30,3 @@ const Alert = ({ alert, ...props }) => {
     </RBAlert>
   );
 };
-
-export default Alert;

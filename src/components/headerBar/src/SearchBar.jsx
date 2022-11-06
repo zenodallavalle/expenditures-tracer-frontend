@@ -1,51 +1,72 @@
-import { useReducer, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRef } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import FormControl from 'react-bootstrap/FormControl';
 
-import { getCurrentPanel } from 'utils';
-import { userSelectors } from 'rdx/user';
-import { searchSelectors, searchActions } from 'rdx/search';
-import { useDispatch, useSelector } from 'react-redux';
+import { useAutomaticUserTokenAuthQuery } from 'api/userApiSlice';
+import {
+  changedPanel,
+  changedSearchParams,
+  selectPanel,
+  selectSearchParams,
+} from 'rdx/params';
 
-const SearchBar = ({ ...props }) => {
-  const navigate = useNavigate();
+export const SearchBar = ({ ...props }) => {
   const dispatch = useDispatch();
-  const isInitial = useReducer(userSelectors.isInitial());
-  const currentPanel = getCurrentPanel();
 
-  const setPanel = useCallback(
-    (to) => {
-      const urlSearchParams = new URLSearchParams(window.location.search);
-      urlSearchParams.set('panel', to);
-      navigate(`/?${urlSearchParams.toString()}`);
-    },
-    [navigate]
-  );
+  const { queryString = '' } = useSelector(selectSearchParams);
 
-  const queryString = useSelector(searchSelectors.getQueryString());
-  const onQueryStringChange = (e) =>
-    dispatch(searchActions.parametersChanged({ queryString: e.target.value }));
+  const currentPanel = useSelector(selectPanel);
 
-  const startSearch = () => {
-    if (currentPanel !== 'search') {
-      setPanel('search');
+  const previousPanelRef = useRef(currentPanel);
+
+  const { isError: userNotAuthenticated } = useAutomaticUserTokenAuthQuery();
+
+  const changePanel = (to) => dispatch(changedPanel(to));
+
+  const ref = useRef();
+
+  const updatePanel = () => {
+    const query = ref.current.value;
+    if (query === '' && currentPanel === 'search') {
+      changePanel(previousPanelRef.current);
+    } else if (query !== '' && currentPanel !== 'search') {
+      previousPanelRef.current = currentPanel;
+      changePanel('search');
+    }
+  };
+
+  const updateSearchQuery = () => {
+    const queryString = ref.current?.value?.trim() || undefined;
+    dispatch(changedSearchParams({ queryString }));
+  };
+
+  const onFocus = () => {
+    previousPanelRef.current = currentPanel;
+    changePanel('search');
+  };
+
+  const onChange = () => {
+    const query = ref.current.value.trim();
+    updatePanel();
+    updateSearchQuery();
+    if (query === '') {
+      ref.current.blur();
     }
   };
 
   return (
     <div className='me-1'>
       <FormControl
+        defaultValue={queryString}
         type='search'
         placeholder='Search'
-        value={queryString}
-        onChange={onQueryStringChange}
-        onClick={startSearch}
-        disabled={!isInitial}
+        ref={ref}
+        onChange={onChange}
+        onFocus={onFocus}
+        disabled={userNotAuthenticated}
         className='me-1'
       />
     </div>
   );
 };
-
-export default SearchBar;

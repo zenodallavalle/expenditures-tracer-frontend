@@ -109,7 +109,7 @@ const FunctionalitiesMenu = ({
         setIsApplyingEdit(true);
         onEdited(
           e,
-          () => setIsExtended(false),
+          () => setIsExtended(false) || setIsApplyingEdit(false),
           () => setIsApplyingEdit(false)
         );
       }
@@ -120,7 +120,7 @@ const FunctionalitiesMenu = ({
         }
         onEdit(
           e,
-          () => setIsExtended(false),
+          () => setIsExtended(false) || setIsApplyingEdit(false),
           () => setIsApplyingEdit(false)
         );
       }
@@ -133,7 +133,7 @@ const FunctionalitiesMenu = ({
         setIsApplyingDelete(true);
         onDelete(
           e,
-          () => setIsExtended(false),
+          () => setIsExtended(false) || setIsApplyingDelete(false),
           () => setIsApplyingDelete(false)
         );
       }
@@ -146,7 +146,7 @@ const FunctionalitiesMenu = ({
           setIsApplyingDelete(true);
           onDelete(
             e,
-            () => setIsExtended(false),
+            () => setIsExtended(false) || setIsApplyingDelete(false),
             () => setIsApplyingDelete(false)
           );
         }
@@ -155,7 +155,7 @@ const FunctionalitiesMenu = ({
   };
 
   return (
-    <div className='d-flex flex-row'>
+    <div className='d-flex flex-row align-items-center'>
       {showExpander && !hideExpander && (
         <div>
           <AutoBlurTransparentButton

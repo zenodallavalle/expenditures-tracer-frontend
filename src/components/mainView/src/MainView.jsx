@@ -1,39 +1,34 @@
-import { useCallback, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
-import PanelUser from './PanelUser';
-import PanelProspect from './PanelProspect';
-import PanelExpenditures from './PanelExpenditures';
-import PanelMonths from './PanelMonths';
-import Search from './Search';
-import { getCurrentPanel } from 'utils';
+import { changedPanel, selectPanel } from 'rdx/params';
 
-const MainView = () => {
-  const navigate = useNavigate();
-  const panel = getCurrentPanel();
+import { PanelUser } from 'components/User';
+import { PanelProspect } from 'components/Prospect';
+import { PanelExpenditures } from 'components/Expenditure';
+import { PanelMonths } from 'components/Month';
+import { Search } from 'components/Search';
 
-  const checkInvalidPanel = useCallback(
-    (panel) => {
-      if (
-        !panel ||
-        ![
-          'user',
-          'months',
-          'actual_expenditures',
-          'expected_expenditures',
-          'prospect',
-          'search',
-        ].includes(panel)
-      ) {
-        const urlSearchParams = new URLSearchParams(window.location.search);
-        urlSearchParams.set('panel', 'prospect');
-        navigate(`/?${urlSearchParams.toString()}`);
-      }
-    },
-    [navigate]
-  );
+export const MainView = () => {
+  const dispatch = useDispatch();
+  const panel = useSelector(selectPanel);
 
-  useEffect(() => checkInvalidPanel(panel));
+  useEffect(() => {
+    // check panel is always something valid
+    if (
+      !panel ||
+      ![
+        'user',
+        'months',
+        'actual_expenditures',
+        'expected_expenditures',
+        'prospect',
+        'search',
+      ].includes(panel)
+    ) {
+      dispatch(changedPanel('prospect'));
+    }
+  });
 
   switch (panel) {
     case 'user':
@@ -41,7 +36,7 @@ const MainView = () => {
     case 'months':
       return <PanelMonths />;
     case 'actual_expenditures':
-      return <PanelExpenditures expected={false} />;
+      return <PanelExpenditures />;
     case 'expected_expenditures':
       return <PanelExpenditures expected />;
     case 'search':
@@ -50,5 +45,3 @@ const MainView = () => {
       return <PanelProspect />;
   }
 };
-
-export default MainView;

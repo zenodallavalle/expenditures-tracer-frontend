@@ -1,73 +1,87 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSelector, createSlice } from '@reduxjs/toolkit';
 
-import { getCurrentMonth, getCurrentPanel } from 'utils';
+import { getCurrentMonth } from 'utils';
+
+import { loadInitialParametersSyncWithLocalStorage } from './paramsSyncWithLocalStorage';
+import {
+  loadInitialParametersReadFromURL,
+  readFromURLParams,
+} from './paramsReadFromURL';
+
+export const initialSearchParams = {
+  queryString: undefined,
+  from: undefined,
+  to: undefined,
+  lowerPrice: undefined,
+  upperPrice: undefined,
+  type: undefined,
+};
 
 export const paramsSlice = createSlice({
   name: 'params',
   initialState: {
-    panel: getCurrentPanel(),
-    authToken: localStorage.getItem('authToken'),
-    workingDBId: localStorage.getItem('workingDBId'),
-    workingMonth: getCurrentMonth(),
+    ...loadInitialParametersSyncWithLocalStorage(),
+    ...loadInitialParametersReadFromURL(),
+    searchParams: {
+      ...initialSearchParams,
+    },
+    userSearchParams: { queryString: undefined },
   },
   reducers: {
-    changedPanel: {
-      reducer: (state, action) => {
-        const { payload: panel } = action;
-        state.panel = panel;
-      },
-      prepare: (panel) => {
-        // update url querystring
-        // const urlSearchParams = new URLSearchParams(window.location.search);
-        // urlSearchParams.set('panel', panel);
-        // navigate(`/?${urlSearchParams.toString()}`);
-        return { payload: panel };
-      },
+    changedPanel: (state, { payload: panel }) => {
+      state.panel = panel;
     },
-    updatedAuthToken: {
-      reducer: (state, action) => {
-        const { payload: token } = action;
-        state.authToken = token;
-      },
-      prepare: (token) => {
-        localStorage.setItem('authToken', token);
-        return { payload: token };
-      },
+
+    updatedAuthToken: (state, { payload: token }) => {
+      state.authToken = token;
     },
-    deletedAuthToken: {
-      reducer: (state) => {
-        state.authToken = null;
-      },
-      prepare: () => {
-        localStorage.removeItem('authToken');
-        return { payload: null };
-      },
+
+    deletedAuthToken: (state) => {
+      state.authToken = null;
     },
-    updatedWorkingDBId: {
-      reducer: (state, action) => {
-        const { payload: id } = action;
-        state.workingDBId = id;
-      },
-      prepare: (id) => {
-        localStorage.setItem('workingDBId', id);
-        return { payload: id };
-      },
+
+    updatedWorkingDBId: (state, { payload: id }) => {
+      state.workingDBId = id;
     },
-    deletedWorkingDBId: {
-      reducer: (state) => {
-        state.workingDBId = null;
-      },
-      prepare: () => {
-        localStorage.removeItem('workingDBId');
-        return { payload: null };
-      },
+
+    deletedWorkingDBId: (state) => {
+      state.workingDBId = null;
     },
-    updatedWorkingMonth: (state, action) => {
-      const { payload: workingMonth } = action;
+
+    updatedWorkingMonth: (state, { payload: workingMonth }) => {
       state.workingMonth = workingMonth;
     },
+
     resetWorkingMonth: (state, action) => {
       state.workingMonth = getCurrentMonth();
+    },
+
+    updatedCategoryViewStatus: (
+      state,
+      { payload: { id, categoryViewStatus } }
+    ) => {
+      state.categoriesViewStatus[id] = categoryViewStatus;
+    },
+
+    resetCategoryViewStatus: (state, { payload: categoriesToResetIds }) => {
+      categoriesToResetIds.forEach(
+        (catId) => delete state.categoriesViewStatus[catId]
+      );
+    },
+
+    changedSearchParams: (state, { payload: patch }) => {
+      state.searchParams = Object.assign(state.searchParams, patch);
+    },
+
+    resetSearchParamsButQueryString: (state, action) => {
+      state.searchParams = {
+        ...initialSearchParams,
+        queryString: state.searchParams.queryString,
+      };
+    },
+
+    changedUserSearchParams: (state, { payload: patch }) => {
+      state.userSearchParams = Object.assign(state.userSearchParams, patch);
     },
   },
 });
@@ -76,6 +90,42 @@ export const selectAuthToken = (state) => state.params.authToken;
 export const selectWorkingDBId = (state) => state.params.workingDBId;
 export const selectWorkingMonth = (state) => state.params.workingMonth;
 export const selectPanel = (state) => state.params.panel;
+export const selectCategoriesViewStatus = (state) =>
+  state.params.categoriesViewStatus;
+export const selectCategoriesViewOrder = (state) =>
+  state.params.categoriesViewOrder;
+
+export const selectCategoryViewStatus = (id) => (state) =>
+  state.params.categoriesViewStatus[id];
+export const selectCategoryViewOrder = (id) => (state) =>
+  state.params.categoriesViewOrder[id];
+
+export const selectHiddenCategoriesIds = createSelector(
+  (state) => state.params.categoriesViewStatus,
+  (categoriesViewStatus) =>
+    Object.entries(categoriesViewStatus)
+      .filter(([, v]) => v === 'hidden')
+      .map(([k]) => {
+        const parsedK = parseInt(k);
+        return isNaN(parsedK) ? k : parsedK;
+      })
+);
+
+export const selectSearchParams = (state) => state.params.searchParams;
+
+export const selectUserSearchParams = (state) => state.params.userSearchParams;
+
+const readFromURLParamsSelectors = readFromURLParams.map(
+  (k) => (state) => state.params[k]
+);
+
+export const selectParamsToSaveInURL = createSelector(
+  readFromURLParamsSelectors,
+  (...values) =>
+    Object.fromEntries(
+      values.map((value, index) => [readFromURLParams[index], value])
+    )
+);
 
 export const {
   changedPanel,
@@ -85,6 +135,11 @@ export const {
   deletedWorkingDBId,
   updatedWorkingMonth,
   resetWorkingMonth,
+  updatedCategoryViewStatus,
+  resetCategoryViewStatus,
+  changedSearchParams,
+  resetSearchParamsButQueryString,
+  changedUserSearchParams,
 } = paramsSlice.actions;
 
 export default paramsSlice.reducer;
