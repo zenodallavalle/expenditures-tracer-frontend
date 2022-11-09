@@ -35,7 +35,7 @@ const App = ({ ...props }) => {
 
   const onCancel = () => setShowAddExpenditureOffcanvas(false);
 
-  const onClear = () => setAddExpenditureOffcanvasCounter((x) => x + 1);
+  const onExited = () => setAddExpenditureOffcanvasCounter((x) => x + 1);
 
   useEffect(() => {
     if (!authToken || isError) dispatch(changedPanel('user'));
@@ -57,8 +57,8 @@ const App = ({ ...props }) => {
       <AddExpenditure
         key={`add_expenditure_offcanvas_${addEditExpenditureOffcanvasCounter}`}
         show={showAddExpenditureOffcanvas}
-        clear={onClear}
         onHide={onCancel}
+        onExited={onExited}
       />
       <BottomBar />
     </div>
