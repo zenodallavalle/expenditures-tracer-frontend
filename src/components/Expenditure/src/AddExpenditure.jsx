@@ -12,8 +12,8 @@ import {
 import { LoadingImg, dateToLocaleISOString, AutoBlurButton } from 'utils';
 
 const emptyExpenditure = {
-  name: '',
-  value: '',
+  name: undefined,
+  value: undefined,
   date: new Date(),
   category: null,
   expected_expenditure: null,
@@ -94,7 +94,6 @@ const CategoryOption = ({ id, ...props }) => {
 export const AddExpenditure = ({
   show = false,
   onHide = () => {},
-  clear = () => {},
   passedExpenditureParams = {},
   ...props
 }) => {
@@ -129,15 +128,27 @@ export const AddExpenditure = ({
   }
 
   useEffect(() => {
-    if (
-      !isFetching &&
-      expectedExpenditure?.category &&
-      instance.category !== expectedExpenditure.category
-    ) {
-      setInstance((instance) => ({
-        ...instance,
-        category: expectedExpenditure.category || instance.category,
-      }));
+    if (!isFetching) {
+      const instancePatch = {};
+      if (
+        expectedExpenditure?.category &&
+        instance.category !== expectedExpenditure?.category
+      ) {
+        instancePatch.category =
+          expectedExpenditure.category || instance.category;
+      }
+
+      if (instance.name === undefined && expectedExpenditure?.name) {
+        instancePatch.name = expectedExpenditure.name;
+      }
+
+      if (instance.value === undefined && expectedExpenditure?.value) {
+        instancePatch.value = expectedExpenditure.value;
+      }
+
+      if (Object.keys(instancePatch).length > 0) {
+        setInstance({ ...instance, ...instancePatch });
+      }
     }
   }, [expectedExpenditure, isFetching, instance]);
 
@@ -215,7 +226,6 @@ export const AddExpenditure = ({
     if (response?.data?.id) {
       // Remember to call onHide before clear
       onHide();
-      clear();
     }
   };
 
@@ -234,6 +244,7 @@ export const AddExpenditure = ({
       onHide={onHide}
       placement='end'
       style={{ width: '100%', maxWidth: 500 }}
+      {...props}
     >
       <Offcanvas.Header closeButton>
         <Offcanvas.Title>{getTitle()}</Offcanvas.Title>
@@ -245,7 +256,7 @@ export const AddExpenditure = ({
             <div className='flex-grow-1'>
               <Form.Control
                 name='name'
-                value={instance.name}
+                value={instance.name || ''}
                 onChange={onChange}
                 onKeyDown={onKeyDown}
                 ref={refName}
@@ -267,7 +278,7 @@ export const AddExpenditure = ({
             <div className='flex-grow-1'>
               <Form.Control
                 name='value'
-                value={instance.value}
+                value={instance.value || ''}
                 placeholder='€'
                 type='number'
                 step={0.01}
