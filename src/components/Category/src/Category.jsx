@@ -27,6 +27,8 @@ import {
   getColumnWidth,
 } from 'utils';
 
+import { CategoryContentLoading } from './CategoryContentLoading';
+
 const Category = ({ id, children = null, readOnly = false, ...props }) => {
   const dispatch = useDispatch();
 
@@ -108,18 +110,6 @@ const Category = ({ id, children = null, readOnly = false, ...props }) => {
     console.warn('onMove not implemented yet.', { relativeDelta });
   };
 
-  const FunctionalitiesMenuCompiled = (
-    <FunctionalitiesMenu
-      clickable={!isLoading}
-      onEdit={onEdit}
-      isEditing={isEditing}
-      onEdited={onEdited}
-      onDelete={onDelete}
-      deleteConfirmTimeout={4000}
-      autocollapseTimeout={4000}
-    />
-  );
-
   if (hidden) return null;
   return (
     <div
@@ -134,64 +124,84 @@ const Category = ({ id, children = null, readOnly = false, ...props }) => {
           `border-${getColorFor({ type: 'category', id })}`,
         ])}
       >
-        <div className='d-flex align-items-center pb-1'>
-          {isEditing ? (
-            <>
-              <div>
-                <AutoBlurTransparentButton onClick={hideCategory}>
-                  <InlineIcon icon={eyeClosed16} />
-                </AutoBlurTransparentButton>
-              </div>
-              <div>
-                <AutoBlurTransparentButton onClick={onMove(1)}>
-                  <InlineIcon icon={foldDown16} />
-                </AutoBlurTransparentButton>
-              </div>
-              <div>
-                <AutoBlurTransparentButton onClick={onMove(-1)}>
-                  <InlineIcon icon={foldUp16} />
-                </AutoBlurTransparentButton>
-              </div>
-            </>
-          ) : (
-            <div>
-              <AutoBlurTransparentButton
-                onClick={toggleCollapsedExpandedCategory}
-              >
-                <InlineIcon icon={collapsed ? plus16 : dash16} />
-              </AutoBlurTransparentButton>
-            </div>
-          )}
-          <div className='flex-grow-1 text-primary px-1'>
-            {isEditing ? (
-              <>
-                <FormControl
-                  name='name'
-                  className='my-1 me-2'
-                  value={
-                    patch.name === undefined ? category?.name || '' : patch.name
-                  }
-                  onChange={onChange}
-                  onKeyDown={onKeyDown}
-                  ref={ref}
-                  disabled={isLoading}
-                />
-                {patchCategoryError?.data?.name?.map((msg, idx) => (
-                  <div
-                    key={`patch_category_${id}_error_${idx}`}
-                    className='text-danger'
-                  >
-                    {msg}
+        {isLoading ? (
+          <CategoryContentLoading />
+        ) : (
+          <>
+            <div className='d-flex align-items-center pb-1'>
+              {isEditing ? (
+                <>
+                  <div>
+                    <AutoBlurTransparentButton onClick={hideCategory}>
+                      <InlineIcon icon={eyeClosed16} />
+                    </AutoBlurTransparentButton>
                   </div>
-                ))}
-              </>
-            ) : (
-              <div>{category?.name}</div>
-            )}
-          </div>
-          {!readOnly && <div>{FunctionalitiesMenuCompiled}</div>}
-        </div>
-        {!collapsed && children}
+                  <div>
+                    <AutoBlurTransparentButton onClick={onMove(1)}>
+                      <InlineIcon icon={foldDown16} />
+                    </AutoBlurTransparentButton>
+                  </div>
+                  <div>
+                    <AutoBlurTransparentButton onClick={onMove(-1)}>
+                      <InlineIcon icon={foldUp16} />
+                    </AutoBlurTransparentButton>
+                  </div>
+                </>
+              ) : (
+                <div>
+                  <AutoBlurTransparentButton
+                    onClick={toggleCollapsedExpandedCategory}
+                  >
+                    <InlineIcon icon={collapsed ? plus16 : dash16} />
+                  </AutoBlurTransparentButton>
+                </div>
+              )}
+              <div className='flex-grow-1 text-primary px-1'>
+                {isEditing ? (
+                  <>
+                    <FormControl
+                      name='name'
+                      className='my-1 me-2'
+                      value={
+                        patch.name === undefined
+                          ? category?.name || ''
+                          : patch.name
+                      }
+                      onChange={onChange}
+                      onKeyDown={onKeyDown}
+                      ref={ref}
+                      disabled={isLoading}
+                    />
+                    {patchCategoryError?.data?.name?.map((msg, idx) => (
+                      <div
+                        key={`patch_category_${id}_error_${idx}`}
+                        className='text-danger'
+                      >
+                        {msg}
+                      </div>
+                    ))}
+                  </>
+                ) : (
+                  <div>{category?.name}</div>
+                )}
+              </div>
+              {!readOnly && (
+                <div>
+                  <FunctionalitiesMenu
+                    clickable={!isLoading}
+                    onEdit={onEdit}
+                    isEditing={isEditing}
+                    onEdited={onEdited}
+                    onDelete={onDelete}
+                    deleteConfirmTimeout={4000}
+                    autocollapseTimeout={4000}
+                  />
+                </div>
+              )}
+            </div>
+            {!collapsed && children}
+          </>
+        )}
       </div>
     </div>
   );

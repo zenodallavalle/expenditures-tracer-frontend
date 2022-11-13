@@ -10,6 +10,8 @@ import {
   parseFloat,
 } from 'utils';
 
+import { CashLoading } from './CashLoading';
+
 const CurrentMoney = ({ id, ...props }) => {
   const ref = useRef();
   const [isEditing, setIsEditing] = useState();
@@ -41,7 +43,9 @@ const CurrentMoney = ({ id, ...props }) => {
   return (
     <div className='ms-2'>
       <div className='d-flex'>
-        {isEditing ? (
+        {isLoading ? (
+          <CashLoading />
+        ) : isEditing ? (
           <div className='flex-grow-1'>
             <FormControl
               ref={ref}

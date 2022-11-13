@@ -14,13 +14,13 @@ import {
   formatDateTime,
   FunctionalitiesMenu,
   getColorFor,
-  LoadingDiv,
   LoadingImg,
 } from 'utils';
 
 import { ExpenditureEditor } from './ExpenditureEditor';
 
 import ExpenditureModal from './ExpenditureModal';
+import { ExpenditureLoading } from './ExpenditureLoading';
 
 export const Expenditure = ({
   id,
@@ -77,7 +77,7 @@ export const Expenditure = ({
     setShowExpenditureDetails((s) => !s);
   };
 
-  if (isLoading) return <LoadingDiv />;
+  if (isLoading) return <ExpenditureLoading />;
   return (
     <div {...props}>
       <div

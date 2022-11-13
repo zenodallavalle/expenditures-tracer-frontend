@@ -9,9 +9,10 @@ import { useAutomaticGetFullDBQuery } from 'api/dbApiSlice';
 import { Category, CategoryProspect } from 'components/Category';
 import { CurrentMoneyIncomesOffcanvas } from 'components/CurrentMoneyIncomes';
 import { selectHiddenCategoriesIds } from 'rdx/params';
-import { AutoBlurButton, getColumnWidth, LoadingDiv } from 'utils';
+import { AutoBlurButton, getColumnWidth } from 'utils';
 
 import { DatabaseProspect } from './DatabaseProspect';
+import { DatabaseProspectLoading } from './DatabaseProspectLoading';
 
 export const PanelProspect = (props) => {
   const { data: fullDB, isSuccess, isLoading } = useAutomaticGetFullDBQuery();
@@ -32,34 +33,37 @@ export const PanelProspect = (props) => {
   return (
     <div className='mx-auto' style={{ maxWidth: getColumnWidth() }}>
       <div className='border rounded border-primary p-1 mt-1 mb-3'>
-        <div className='pb-1'>
-          <div className='d-flex rounded bg-primary text-light'>
-            <div className='flex-grow-1 px-1'>Overall prosepct</div>
-            <div>
-              <AutoBlurButton
-                onClick={() => setShowEditMoneyIncomeOffcavas(true)}
-                className='py-0'
-                disabled={!isSuccess}
-              >
-                <InlineIcon icon={pencil16} />
-              </AutoBlurButton>
+        {isLoading ? (
+          <DatabaseProspectLoading />
+        ) : (
+          <>
+            <div className='pb-1'>
+              <div className='d-flex rounded bg-primary text-light'>
+                <div className='flex-grow-1 px-1'>Overall prosepct</div>
+                <div>
+                  <AutoBlurButton
+                    onClick={() => setShowEditMoneyIncomeOffcavas(true)}
+                    className='py-0'
+                    disabled={!isSuccess}
+                  >
+                    <InlineIcon icon={pencil16} />
+                  </AutoBlurButton>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
 
-        <DatabaseProspect />
+            <DatabaseProspect />
 
-        {prospect?.warn && (
-          <Alert variant='warning' className='mb-0 p-1 text-center small'>
-            {prospect.warn}
-          </Alert>
+            {prospect?.warn && (
+              <Alert variant='warning' className='mb-0 p-1 text-center small'>
+                {prospect.warn}
+              </Alert>
+            )}
+          </>
         )}
       </div>
-
       <div>
-        {isLoading ? (
-          <LoadingDiv />
-        ) : !categoriesIds?.length ? (
+        {isLoading ? null : !categoriesIds?.length ? (
           <div className='text-center fst-italic'>
             No categories created yet.
             <br />
