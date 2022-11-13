@@ -22,6 +22,7 @@ import {
 } from 'utils';
 
 import { AddUserToDBModal } from './AddUserToDBModal';
+import { DatabaseLoading } from './DatabaseLoading';
 
 export const Database = ({ id, ...props }) => {
   const dispatch = useDispatch();
@@ -133,7 +134,9 @@ export const Database = ({ id, ...props }) => {
   return (
     <div className='d-flex align-items-stretch'>
       <div className='flex-grow-1'>
-        {isEditing ? (
+        {isLoading ? (
+          <DatabaseLoading />
+        ) : isEditing ? (
           <div>
             <div className='d-flex align-items-center py-1'>
               <div style={{ width: 50 }}>Name</div>
@@ -173,7 +176,7 @@ export const Database = ({ id, ...props }) => {
       </div>
       <div>
         <AutoBlurTransparentButton
-          disabled={isFetchingEditDB}
+          disabled={isFetchingEditDB || isLoading}
           onClick={() => setShowAddUserModal(true)}
         >
           <InlineIcon icon={personAdd16} />

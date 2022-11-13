@@ -7,7 +7,8 @@ import {
 } from 'api/cashApiSlice';
 import { FormControl } from 'react-bootstrap';
 
-import { FunctionalitiesMenu, LoadingDiv, parseFloat } from 'utils';
+import { FunctionalitiesMenu, parseFloat } from 'utils';
+import { CashLoading } from './CashLoading';
 
 const Income = ({ id, ...props }) => {
   const { data: income, isLoading } = useGetCashQuery({ id });
@@ -63,7 +64,7 @@ const Income = ({ id, ...props }) => {
   return (
     <div className='ps-2 my-1'>
       {isLoading ? (
-        <LoadingDiv maxWidth={30} />
+        <CashLoading />
       ) : (
         <div className='d-flex align-items-center'>
           <div className='flex-grow-1'>
