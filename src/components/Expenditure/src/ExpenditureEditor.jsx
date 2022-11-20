@@ -34,7 +34,7 @@ const toFloat = (v) => {
   if (!isNaN(float)) {
     return float;
   }
-  return undefined;
+  return v;
 };
 
 const getUpdatedValue = (e) => {
@@ -232,8 +232,7 @@ export const ExpenditureEditor = ({
     }
   };
 
-  const getTitle = () =>
-    `Add new ${instance.is_expected ? 'expected' : 'actual'} expenditure`;
+  const getTitle = () => `Edit expenditure #${id}`;
 
   useEffect(() => {
     if (show) {
@@ -282,7 +281,11 @@ export const ExpenditureEditor = ({
             <div className='flex-grow-1'>
               <Form.Control
                 name='value'
-                value={instance.value || expenditure?.value}
+                value={
+                  instance.value !== undefined
+                    ? instance.value
+                    : expenditure?.value
+                }
                 placeholder='€'
                 type='number'
                 step={0.01}
@@ -364,7 +367,7 @@ export const ExpenditureEditor = ({
             </div>
           ))}
 
-          {!instance.is_expected && (
+          {!expenditure.is_expected && (
             <div>
               <div className='d-flex align-items-baseline py-2'>
                 <div className='pe-2'>Expected expenditure</div>

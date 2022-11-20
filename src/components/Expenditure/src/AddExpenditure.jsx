@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useSelector } from 'react-redux';
 
 import Form from 'react-bootstrap/Form';
 import Offcanvas from 'react-bootstrap/Offcanvas';
@@ -9,6 +10,7 @@ import {
   useGetExpenditureQuery,
   useNewExpenditureMutation,
 } from 'api/expenditureApiSlice';
+import { selectPanel } from 'rdx/params';
 import { LoadingImg, dateToLocaleISOString, AutoBlurButton } from 'utils';
 
 const emptyExpenditure = {
@@ -126,6 +128,15 @@ export const AddExpenditure = ({
   if (!instance.expected_expenditure) {
     expectedExpenditure = null;
   }
+
+  const panel = useSelector(selectPanel);
+
+  useEffect(() => {
+    setInstance((i) => ({
+      ...i,
+      is_expected: panel === 'expected_expenditures',
+    }));
+  }, [panel]);
 
   useEffect(() => {
     if (!isFetching) {
