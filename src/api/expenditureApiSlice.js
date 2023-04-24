@@ -237,13 +237,12 @@ export const useAutomaticSearchExpendituresDebouncedQuery = (
     [searchParamsButQueryString]
   );
 
+  const invalidQueryStrings = !queryString || String(queryString).length <= 3;
+
   return useSearchExpendituresQuery(
     { ...searchParams },
     {
-      skip:
-        skip ||
-        !queryString ||
-        (String(queryString).length < 4 && numberOfParams < 3),
+      skip: skip || (invalidQueryStrings && numberOfParams < 2),
     }
   );
 };
