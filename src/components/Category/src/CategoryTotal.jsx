@@ -1,17 +1,29 @@
+import clsx from 'clsx';
+
 import { useAutomaticGetCategoryQuery } from 'api/categoryApiSlice';
 
-import { LoadingDiv } from 'utils';
+import {
+  getTextColorClassForDelta,
+  getTextForPercentage,
+  LoadingDiv,
+} from 'utils';
 
 const CategoryTotal = ({ id, expected, ...props }) => {
   const { data: category, isLoading } = useAutomaticGetCategoryQuery({ id });
+
+  const prospect = category?.prospect;
 
   const numberOfExpenditures = expected
     ? category?.expected_expenditures.length
     : category?.actual_expenditures.length;
 
   const totalCostOfExpenditures = expected
-    ? category?.prospect.expected_expenditure
-    : category?.prospect.actual_expenditure;
+    ? prospect?.expected_expenditure
+    : prospect?.actual_expenditure;
+  const percentageOfExpected = getTextForPercentage(
+    prospect?.actual_expenditure,
+    prospect?.expected_expenditure
+  );
 
   if (isLoading) return <LoadingDiv />;
   return (
@@ -26,6 +38,16 @@ const CategoryTotal = ({ id, expected, ...props }) => {
           </div>
           <div>
             <span>{totalCostOfExpenditures}</span>
+            {!expected && percentageOfExpected && (
+              <span
+                className={clsx(
+                  'ps-1',
+                  getTextColorClassForDelta(prospect?.delta)
+                )}
+              >
+                ({percentageOfExpected})
+              </span>
+            )}
             <span className='ms-1'>€</span>
           </div>
         </div>

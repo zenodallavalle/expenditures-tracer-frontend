@@ -8,6 +8,7 @@ import { PanelProspect } from 'components/Prospect';
 import { PanelExpenditures } from 'components/Expenditure';
 import { PanelMonths } from 'components/Month';
 import { Search } from 'components/Search';
+import { PanelCharts } from 'components/Charts';
 
 export const MainView = () => {
   const dispatch = useDispatch();
@@ -24,6 +25,7 @@ export const MainView = () => {
         'expected_expenditures',
         'prospect',
         'search',
+        'charts',
       ].includes(panel)
     ) {
       dispatch(changedPanel('prospect'));
@@ -41,6 +43,8 @@ export const MainView = () => {
       return <PanelExpenditures expected />;
     case 'search':
       return <Search />;
+    case 'charts':
+      return <PanelCharts />;
     default:
       return <PanelProspect />;
   }

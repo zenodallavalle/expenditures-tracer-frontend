@@ -121,7 +121,7 @@ const Category = ({ id, children = null, readOnly = false, ...props }) => {
           'px-1',
           'border',
           'rounded',
-          `border-${getColorFor({ type: 'category', id })}`,
+          `border-${getColorFor({ type: `category_${category?.db}`, id })}`,
         ])}
       >
         {isLoading ? (

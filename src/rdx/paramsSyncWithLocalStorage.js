@@ -3,6 +3,9 @@ export const syncedWithLocalSessionParams = [
   'workingDBId',
   'categoriesViewStatus',
   'categoriesViewOrder',
+  'balanceChartPeriod',
+  'balanceChartType',
+  'selectBalanceChartPercentage',
 ];
 
 const safeJSONParse = (serialized) => {
@@ -18,6 +21,9 @@ const defaultValues = {
   workingDBId: null,
   categoriesViewStatus: {},
   categoriesViewOrder: {},
+  balanceChartPeriod: '1Y',
+  balanceChartType: 'complex',
+  selectBalanceChartPercentage: false,
 };
 
 const parameterValueOrDefault = (cachedV, defaultV) =>

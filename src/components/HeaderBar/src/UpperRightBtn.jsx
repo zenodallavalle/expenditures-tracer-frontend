@@ -1,10 +1,10 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { InlineIcon } from '@iconify/react';
+import graph16 from '@iconify/icons-octicon/graph-16';
 import plusCircle16 from '@iconify/icons-octicon/plus-circle-16';
-import calendar16 from '@iconify/icons-octicon/calendar-16';
 
-import { changedPanel, selectPanel, updatedWorkingMonth } from 'rdx/params';
-import { AutoBlurButton, getCurrentMonth } from 'utils';
+import { changedPanel, selectPanel } from 'rdx/params';
+import { AutoBlurButton } from 'utils';
 import { useAutomaticUserTokenAuthQuery } from 'api/userApiSlice';
 
 export const UpperRightBtn = ({ onAdd = () => {}, props }) => {
@@ -12,9 +12,8 @@ export const UpperRightBtn = ({ onAdd = () => {}, props }) => {
   const panel = useSelector(selectPanel);
   const { isLoading, isSuccess } = useAutomaticUserTokenAuthQuery();
 
-  const resetWorkingMonth = () => {
-    dispatch(updatedWorkingMonth(getCurrentMonth()));
-    dispatch(changedPanel('prospect'));
+  const showCharts = () => {
+    dispatch(changedPanel('charts'));
   };
 
   return (
@@ -22,9 +21,9 @@ export const UpperRightBtn = ({ onAdd = () => {}, props }) => {
       <AutoBlurButton
         variant='outline-primary'
         disabled={isLoading || !isSuccess}
-        onClick={(e) => (panel === 'months' ? resetWorkingMonth(e) : onAdd(e))}
+        onClick={(e) => (panel === 'months' ? showCharts(e) : onAdd(e))}
       >
-        <InlineIcon icon={panel === 'months' ? calendar16 : plusCircle16} />
+        <InlineIcon icon={panel === 'months' ? graph16 : plusCircle16} />
       </AutoBlurButton>
     )
   );

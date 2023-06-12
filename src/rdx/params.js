@@ -83,6 +83,30 @@ export const paramsSlice = createSlice({
     changedUserSearchParams: (state, { payload: patch }) => {
       state.userSearchParams = Object.assign(state.userSearchParams, patch);
     },
+
+    changedBalanceChartPeriod: (state, { payload: period }) => {
+      state.balanceChartPeriod = period;
+    },
+
+    resetBalanceChartPeriod: (state, action) => {
+      state.balanceChartPeriod = '1Y';
+    },
+
+    changedBalanceChartType: (state, { payload: type }) => {
+      state.balanceChartType = type;
+    },
+
+    resetBalanceChartType: (state, action) => {
+      state.balanceChartType = 'complex';
+    },
+
+    changedBalanceChartPercentage: (state, { payload: value }) => {
+      state.selectBalanceChartPercentage = value;
+    },
+
+    resetBalanceChartPercentage: (state, action) => {
+      state.selectBalanceChartPercentage = false;
+    },
   },
 });
 
@@ -115,6 +139,14 @@ export const selectSearchParams = (state) => state.params.searchParams;
 
 export const selectUserSearchParams = (state) => state.params.userSearchParams;
 
+export const selectBalanceChartPeriod = (state) =>
+  state.params.balanceChartPeriod;
+
+export const selectBalanceChartType = (state) => state.params.balanceChartType;
+
+export const selectBalanceChartPercentage = (state) =>
+  state.params.selectBalanceChartPercentage;
+
 const readFromURLParamsSelectors = readFromURLParams.map(
   (k) => (state) => state.params[k]
 );
@@ -140,6 +172,12 @@ export const {
   changedSearchParams,
   resetSearchParamsButQueryString,
   changedUserSearchParams,
+  changedBalanceChartPeriod,
+  resetBalanceChartPeriod,
+  changedBalanceChartType,
+  resetBalanceChartType,
+  changedBalanceChartPercentage,
+  resetBalanceChartPercentage,
 } = paramsSlice.actions;
 
 export default paramsSlice.reducer;
