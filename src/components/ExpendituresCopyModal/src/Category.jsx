@@ -42,7 +42,11 @@ export const Category = ({ id, context, ...props }) => {
         </div>
         <div className='fw-bold me-1'>{category?.name}</div>
         {!isLoading && (
-          <Badge as='div' pill bg={getColorFor({ type: 'category', id })}>
+          <Badge
+            as='div'
+            pill
+            bg={getColorFor({ type: `category_${category?.db}`, id })}
+          >
             {category?.expected_expenditures?.length}
           </Badge>
         )}

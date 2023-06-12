@@ -13,6 +13,7 @@ import { AutoBlurButton, getColumnWidth } from 'utils';
 
 import { DatabaseProspect } from './DatabaseProspect';
 import { DatabaseProspectLoading } from './DatabaseProspectLoading';
+import { ChartsCarousel } from 'components/Charts';
 
 export const PanelProspect = (props) => {
   const { data: fullDB, isSuccess, isLoading } = useAutomaticGetFullDBQuery();
@@ -71,6 +72,7 @@ export const PanelProspect = (props) => {
           </div>
         ) : (
           <div>
+            <ChartsCarousel />
             {categoriesIds?.map((id) => (
               <Category id={id} key={'category_prospect' + id} readOnly>
                 <CategoryProspect id={id} />

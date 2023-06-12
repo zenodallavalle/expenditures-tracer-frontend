@@ -13,7 +13,7 @@ import {
 import { formatMonth } from 'utils';
 
 export const Month = ({
-  month: { month: name, current_money, income, warn },
+  month: { month: name, current_money, expenditure, income, warn },
   ...props
 }) => {
   const dispatch = useDispatch();
@@ -46,8 +46,9 @@ export const Month = ({
           </Button>
         </td>
         <td>{formatMonth(name)}</td>
-        <td>{income}</td>
-        <td>{current_money}</td>
+        <td>{Math.round(income)}</td>
+        <td>{Math.round(expenditure)}</td>
+        <td>{Math.round(current_money)}</td>
       </tr>
       <tr>
         <td className='p-0' colSpan={4}>

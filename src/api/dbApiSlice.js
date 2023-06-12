@@ -22,7 +22,16 @@ export const dbApiSlice = userApiSlice.injectEndpoints({
     getLigthDB: builder.query({
       queryFn: api.queryFn,
       providesTags: (result, error, { id, ...arg }) => [
-        { type: 'db', id: `light_${id}` },
+        { type: 'db', id: `db_light_${id}` },
+      ],
+    }),
+
+    getDataForGraphs: builder.query({
+      query: ({ id, ...args }) => ({
+        url: `/dbs/${id}/graph/`,
+      }),
+      providesTags: (result, error, { id, ...arg }) => [
+        { type: 'db', id: `db_graphs_${id}` },
       ],
     }),
 
@@ -42,7 +51,7 @@ export const dbApiSlice = userApiSlice.injectEndpoints({
         body: patch,
       }),
       invalidatesTags: (result, error, { id, ...arg }) => [
-        { type: 'db', id: `light_${id}` },
+        { type: 'db', id: `db_light_${id}` },
       ],
     }),
 
@@ -59,6 +68,7 @@ export const dbApiSlice = userApiSlice.injectEndpoints({
 export const {
   useGetFullDBQuery,
   useGetLigthDBQuery,
+  useGetDataForGraphsQuery,
   useNewDBMutation,
   useEditDBMutation,
   useDeleteDBMutation,
@@ -72,6 +82,22 @@ export const useAutomaticGetFullDBQuery = (
   const month = useSelector(selectWorkingMonth);
 
   return useGetFullDBQuery(
+    {
+      id,
+      month,
+    },
+    { skip: skip || !id }
+  );
+};
+
+export const useAutomaticGetDBForGraphsQuery = (
+  { ...args } = {},
+  { skip, ...props } = {}
+) => {
+  const id = useSelector(selectWorkingDBId);
+  const month = useSelector(selectWorkingMonth);
+
+  return useGetDataForGraphsQuery(
     {
       id,
       month,

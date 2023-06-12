@@ -74,12 +74,12 @@ export const getLastDateForMonth = (date) => {
   return new Date(year, month, day);
 };
 
-export const formatMonth = (month) => {
+export const formatMonthCustomFormat = (month, format) => {
   const date = getDateTimeFromMonthString(month);
-  const format = 'yyyy - mmm';
-  const ret = dateFormat(date, format);
-  return ret;
+  return dateFormat(date, format);
 };
+
+export const formatMonth = (month) => formatMonthCustomFormat(month, 'mmmm');
 
 export const formatDateTime = (date) => {
   if (!date) return '';
