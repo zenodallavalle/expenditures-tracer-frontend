@@ -10,11 +10,6 @@ export {
 } from './src/BalanceMultipleChart';
 
 export {
-  CategoriesExpendituresChartWrapper as CategoriesExpendituresChart,
-  CategoriesExpendituresChartCore,
-} from './src/CategoriesExpendituresChart';
-
-export {
   MoneyCandlestickChartWrapper as MoneyCandlestickChart,
   MoneyCandlestickChartCore,
 } from './src/MoneyCandlestickChart';
@@ -22,3 +17,8 @@ export {
 export { default as PanelCharts } from './src/PanelCharts';
 
 export { default as ChartsCarousel } from './src/ChartsCarousel';
+export { default as BalanceChart } from './src/BalanceChart';
+export {
+  CategoriesExpendituresChartWrapper as CategoriesExpendituresChart,
+  CategoriesExpendituresChartCore,
+} from './src/CategoriesExpendituresChart';
