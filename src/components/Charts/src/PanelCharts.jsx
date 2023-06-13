@@ -1,15 +1,25 @@
-import { useSelector } from 'react-redux';
-import { selectBalanceChartType } from 'rdx/params';
+import { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 
 import { BalanceMultipleChartWrapper } from './BalanceMultipleChart';
 import { MoneyCandlestickChartWrapper } from './MoneyCandlestickChart';
 import { CategoriesExpendituresChartWrapper } from './CategoriesExpendituresChart';
+import { resetBalanceChartType, selectBalanceChartType } from 'rdx/params';
 import { getColumnWidth } from 'utils';
 
-export const balanceChartTypes = ['complex', 'candlestick'];
+import { balanceChartTypes } from './ChartTypeSelector';
 
 const PanelCharts = ({ ...props }) => {
+  const dispatch = useDispatch();
   const balanceChartType = useSelector(selectBalanceChartType);
+
+  useEffect(() => {
+    if (!balanceChartTypes.includes(balanceChartType)) {
+      dispatch(resetBalanceChartType());
+    }
+  }, [balanceChartType, dispatch]);
+
+  console.log('PanelCharts', balanceChartType);
 
   return (
     <div

@@ -97,7 +97,7 @@ export const paramsSlice = createSlice({
     },
 
     resetBalanceChartType: (state, action) => {
-      state.balanceChartType = 'complex';
+      state.balanceChartType = 'multiple';
     },
 
     changedBalanceChartPercentage: (state, { payload: value }) => {

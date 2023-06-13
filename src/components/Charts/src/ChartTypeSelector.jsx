@@ -1,11 +1,6 @@
-import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
-import {
-  changedBalanceChartType,
-  resetBalanceChartType,
-  selectBalanceChartType,
-} from 'rdx/params';
+import { changedBalanceChartType, selectBalanceChartType } from 'rdx/params';
 import { AutoBlurButton } from 'utils';
 
 export const balanceChartTypes = ['multiple', 'candlestick'];
@@ -16,12 +11,6 @@ export const ChartTypeSelector = ({ ...props }) => {
   const onChangeBalanceChartType = (type) => {
     dispatch(changedBalanceChartType(type));
   };
-
-  useEffect(() => {
-    if (!balanceChartTypes.includes(balanceChartType)) {
-      dispatch(resetBalanceChartType());
-    }
-  }, [balanceChartType, dispatch]);
 
   return (
     <div className='text-center'>
