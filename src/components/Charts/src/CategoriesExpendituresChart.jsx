@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 import { useAutomaticGetDBForGraphsQuery } from 'api/dbApiSlice';
 import { selectCategoriesViewStatus } from 'rdx/params';
-import { LoadingDiv, getColorFor } from 'utils';
+import { getColorFor } from 'utils';
 
 import {
   Chart as ChartJS,
@@ -14,6 +14,7 @@ import {
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
 import { convertBootstrapColorToRGBA } from 'utils/src/cycleColors';
+import ChartWrapper from './ChartWrapper';
 
 ChartJS.register(
   CategoryScale,
@@ -135,10 +136,15 @@ export const CategoriesExpendituresChartWrapper = ({ ...props }) => {
       },
     },
   };
-  if (isLoading) return <LoadingDiv />;
   return (
-    <div className='w-100'>
-      <CategoriesExpendituresChartCore options={options} />
-    </div>
+    <ChartWrapper
+      isLoading={isLoading}
+      ChildrenRenderer={({ options: _options, ...childrenProps }) => (
+        <CategoriesExpendituresChartCore
+          options={{ ...options, ..._options }}
+          {...childrenProps}
+        />
+      )}
+    ></ChartWrapper>
   );
 };

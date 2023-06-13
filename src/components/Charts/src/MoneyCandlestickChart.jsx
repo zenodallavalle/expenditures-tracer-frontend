@@ -1,6 +1,5 @@
 import { useAutomaticGetFullDBQuery } from 'api/dbApiSlice';
 import {
-  LoadingDiv,
   convertBootstrapColorToRGBA,
   filterDataForBalanceChart,
   formatMonthCustomFormat,
@@ -31,6 +30,7 @@ import BalanceChartPeriod from './BalanceChartPeriod';
 import { ChartTypeSelector } from './ChartTypeSelector';
 import { ChartPercentageSelector } from './ChartPercentageSelector';
 import { useMemo } from 'react';
+import ChartWrapper from './ChartWrapper';
 
 ChartJS.register(
   LinearScale,
@@ -220,21 +220,24 @@ export const MoneyCandlestickChartWrapper = ({ ...props }) => {
     },
   };
 
-  if (isLoading) return <LoadingDiv />;
-
   return (
-    <div className='w-100'>
+    <ChartWrapper
+      isLoading={isLoading}
+      ChildrenRenderer={({ options: _options, ...childrenProps }) => (
+        <MoneyCandlestickChartCore
+          balanceChartPeriod={balanceChartPeriod}
+          balanceChartPercentage={balanceChartPercentage}
+          options={{ ...options, ..._options }}
+          {...childrenProps}
+        />
+      )}
+    >
       <div className='d-md-flex justify-content-between align-items-end'>
         <ChartTypeSelector />
         <ChartPercentageSelector />
         <BalanceChartPeriod />
       </div>
-      <MoneyCandlestickChartCore
-        balanceChartPeriod={balanceChartPeriod}
-        balanceChartPercentage={balanceChartPercentage}
-        options={options}
-      />
-    </div>
+    </ChartWrapper>
   );
 };
 

@@ -22,7 +22,7 @@ const defaultValues = {
   categoriesViewStatus: {},
   categoriesViewOrder: {},
   balanceChartPeriod: '1Y',
-  balanceChartType: 'complex',
+  balanceChartType: 'multiple',
   selectBalanceChartPercentage: false,
 };
 

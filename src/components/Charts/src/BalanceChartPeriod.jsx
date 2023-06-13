@@ -26,7 +26,7 @@ const BalanceChartPeriod = ({ ...props }) => {
   return (
     <div className='text-center'>
       <div className='text-center pb-1'>Chart Period</div>
-      <ButtonGroup>
+      <ButtonGroup size='sm'>
         {balanceChartPeriods.map((period) => (
           <AutoBlurButton
             key={period}

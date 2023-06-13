@@ -8,7 +8,7 @@ import {
 } from 'rdx/params';
 import { AutoBlurButton } from 'utils';
 
-export const balanceChartTypes = ['complex', 'candlestick'];
+export const balanceChartTypes = ['multiple', 'candlestick'];
 
 export const ChartTypeSelector = ({ ...props }) => {
   const dispatch = useDispatch();
@@ -26,7 +26,7 @@ export const ChartTypeSelector = ({ ...props }) => {
   return (
     <div className='text-center'>
       <div className='text-center pb-1'>Chart type</div>
-      <ButtonGroup>
+      <ButtonGroup size='sm'>
         {balanceChartTypes.map((type) => (
           <AutoBlurButton
             key={`panel_charts_1_${type}`}

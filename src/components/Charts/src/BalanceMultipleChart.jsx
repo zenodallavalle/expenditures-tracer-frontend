@@ -1,6 +1,5 @@
 import { useAutomaticGetFullDBQuery } from 'api/dbApiSlice';
 import {
-  LoadingDiv,
   convertBootstrapColorToRGBA,
   filterDataForBalanceChart,
   formatMonthCustomFormat,
@@ -31,6 +30,7 @@ import BalanceChartPeriod from './BalanceChartPeriod';
 import { ChartTypeSelector } from './ChartTypeSelector';
 import { ChartPercentageSelector } from './ChartPercentageSelector';
 import { useMemo } from 'react';
+import ChartWrapper from './ChartWrapper';
 
 ChartJS.register(
   LinearScale,
@@ -149,7 +149,7 @@ const preparePercentageData = (filteredMonths, percentageBaseRefIndex) => {
   };
 };
 
-export const BalanceComplexChartCore = ({
+export const BalanceMultipleChartCore = ({
   balanceChartPeriod,
   balanceChartPercentage,
   hideLine,
@@ -218,7 +218,7 @@ export const BalanceComplexChartCore = ({
   );
 };
 
-export const BalanceComplexChartWrapper = ({ ...props }) => {
+export const BalanceMultipleChartWrapper = ({ ...props }) => {
   const { isLoading } = useAutomaticGetFullDBQuery();
 
   const balanceChartPeriod = useSelector(selectBalanceChartPeriod);
@@ -234,23 +234,25 @@ export const BalanceComplexChartWrapper = ({ ...props }) => {
     },
   };
 
-  if (isLoading) return <LoadingDiv />;
-
   return (
-    <div className='w-100'>
+    <ChartWrapper
+      isLoading={isLoading}
+      ChildrenRenderer={({ options: _options, ...childrenProps }) => (
+        <BalanceMultipleChartCore
+          balanceChartPeriod={balanceChartPeriod}
+          balanceChartPercentage={balanceChartPercentage}
+          options={{ ...options, ..._options }}
+          {...childrenProps}
+        />
+      )}
+    >
       <div className='d-md-flex justify-content-between align-items-end'>
         <ChartTypeSelector />
         <ChartPercentageSelector />
         <BalanceChartPeriod />
       </div>
-
-      <BalanceComplexChartCore
-        balanceChartPeriod={balanceChartPeriod}
-        balanceChartPercentage={balanceChartPercentage}
-        options={options}
-      />
-    </div>
+    </ChartWrapper>
   );
 };
 
-export default BalanceComplexChartWrapper;
+export default BalanceMultipleChartWrapper;

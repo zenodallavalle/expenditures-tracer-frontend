@@ -7,6 +7,7 @@ export { default as getTextColorClassForDelta } from './src/getTextColorClassFor
 export { default as capitalize } from './src/capitalize';
 export { filterDataForBalanceChart } from './src/filterDataForBalanceChart';
 export { default as getCurrentPanel } from './src/getCurrentPanel';
+export { getGraphHeight } from './src/getGraphHeight';
 export { default as getTextForPercentage } from './src/getTextForPercentage';
 export {
   colors as availableColors,

@@ -5,9 +5,9 @@ export {
 export { ChartTypeSelector } from './src/ChartTypeSelector';
 
 export {
-  BalanceComplexChartWrapper as BalanceComplexChart,
-  BalanceComplexChartCore,
-} from './src/BalanceComplexChart';
+  BalanceMultipleChartWrapper as BalanceMultipleChart,
+  BalanceMultipleChartCore,
+} from './src/BalanceMultipleChart';
 
 export {
   CategoriesExpendituresChartWrapper as CategoriesExpendituresChart,

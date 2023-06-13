@@ -1,6 +1,6 @@
 import Carousel from 'react-bootstrap/Carousel';
 import { CategoriesExpendituresChartCore } from './CategoriesExpendituresChart';
-import { BalanceComplexChartCore } from './BalanceComplexChart';
+import { BalanceMultipleChartCore } from './BalanceMultipleChart';
 import { MoneyCandlestickChartCore } from './MoneyCandlestickChart';
 import { useDispatch } from 'react-redux';
 import { changedPanel } from 'rdx/params';
@@ -21,13 +21,28 @@ export const ChartsCarousel = ({ ...props }) => {
       </div>
       <Carousel interval={5000} touch variant='dark' indicators={false}>
         <Carousel.Item>
-          <CategoriesExpendituresChartCore />
+          <div className='w-100' style={{ height: 250 }}>
+            <CategoriesExpendituresChartCore
+              options={{ maintainAspectRatio: false }}
+            />
+          </div>
         </Carousel.Item>
         <Carousel.Item>
-          <BalanceComplexChartCore balanceChartPeriod={'1Y'} hideLine />
+          <div className='w-100' style={{ height: 250 }}>
+            <BalanceMultipleChartCore
+              balanceChartPeriod={'1Y'}
+              hideLine
+              options={{ maintainAspectRatio: false }}
+            />
+          </div>
         </Carousel.Item>
         <Carousel.Item>
-          <MoneyCandlestickChartCore balanceChartPeriod={'1Y'} />
+          <div className='w-100' style={{ height: 250 }}>
+            <MoneyCandlestickChartCore
+              balanceChartPeriod={'1Y'}
+              options={{ maintainAspectRatio: false }}
+            />
+          </div>
         </Carousel.Item>
       </Carousel>
     </div>
