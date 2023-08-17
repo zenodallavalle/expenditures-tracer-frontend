@@ -25,7 +25,7 @@ ChartJS.register(
   Legend
 );
 
-export const CategoriesExpendituresChartCore = ({ ...props }) => {
+export const CategoriesBarChartCore = ({ ...props }) => {
   const { data: fullDB } = useAutomaticGetDBForGraphsQuery();
   const categoriesViewStatus = useSelector(selectCategoriesViewStatus);
 
@@ -125,7 +125,7 @@ export const CategoriesExpendituresChartCore = ({ ...props }) => {
   return <Bar data={data} options={options} />;
 };
 
-export const CategoriesExpendituresChartWrapper = ({ ...props }) => {
+export const CategoriesBarChartWrapper = ({ ...props }) => {
   const { isLoading } = useAutomaticGetDBForGraphsQuery();
   const options = {
     plugins: {
@@ -140,7 +140,7 @@ export const CategoriesExpendituresChartWrapper = ({ ...props }) => {
     <ChartWrapper
       isLoading={isLoading}
       ChildrenRenderer={({ options: _options, ...childrenProps }) => (
-        <CategoriesExpendituresChartCore
+        <CategoriesBarChartCore
           options={{ ...options, ..._options }}
           {...childrenProps}
         />

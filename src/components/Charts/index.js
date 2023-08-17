@@ -19,6 +19,6 @@ export { default as PanelCharts } from './src/PanelCharts';
 export { default as ChartsCarousel } from './src/ChartsCarousel';
 export { default as BalanceChart } from './src/BalanceChart';
 export {
-  CategoriesExpendituresChartWrapper as CategoriesExpendituresChart,
-  CategoriesExpendituresChartCore,
-} from './src/CategoriesExpendituresChart';
+  CategoriesBarChartWrapper as CategoriesBarChart,
+  CategoriesBarChartCore,
+} from './src/CategoriesBarChart';

@@ -1,4 +1,4 @@
-import { CategoriesExpendituresChartWrapper } from './CategoriesExpendituresChart';
+import { CategoriesBarChartWrapper } from './CategoriesBarChart';
 import { getColumnWidth } from 'utils';
 
 import BalanceChart from './BalanceChart';
@@ -13,7 +13,7 @@ const PanelCharts = ({ ...props }) => {
         <BalanceChart />
       </div>
       <div className='mb-3'>
-        <CategoriesExpendituresChartWrapper />
+        <CategoriesBarChartWrapper />
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 import Carousel from 'react-bootstrap/Carousel';
-import { CategoriesExpendituresChartCore } from './CategoriesExpendituresChart';
+import { CategoriesBarChartCore } from './CategoriesBarChart';
 import { BalanceMultipleChartCore } from './BalanceMultipleChart';
 import { MoneyCandlestickChartCore } from './MoneyCandlestickChart';
 import { useDispatch } from 'react-redux';
@@ -22,9 +22,7 @@ export const ChartsCarousel = ({ ...props }) => {
       <Carousel interval={5000} touch variant='dark' indicators={false}>
         <Carousel.Item>
           <div className='w-100' style={{ height: 250 }}>
-            <CategoriesExpendituresChartCore
-              options={{ maintainAspectRatio: false }}
-            />
+            <CategoriesBarChartCore options={{ maintainAspectRatio: false }} />
           </div>
         </Carousel.Item>
         <Carousel.Item>
