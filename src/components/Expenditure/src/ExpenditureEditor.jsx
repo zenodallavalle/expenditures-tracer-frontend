@@ -42,7 +42,7 @@ const getUpdatedValue = (e) => {
     case 'value':
       return e.target.value === '' ? '' : toFloat(e.target.value);
     case 'category':
-      return toPKRelated(e.target.value);
+      return toPKRelated(e.target.value) || undefined;
     case 'expected_expenditure':
       return toPKRelated(e.target.value);
     default:
@@ -340,11 +340,20 @@ export const ExpenditureEditor = ({
             <div className='flex-grow-1'>
               <Form.Select
                 name='category'
-                value={instance.category || expenditure.category || 0}
+                value={
+                  instance.category !== undefined
+                    ? instance.category
+                    : expenditure.category || 0
+                }
                 onChange={onChange}
                 onKeyDown={onKeyDown}
                 ref={refCategory}
-                disabled={isLoading || instance.expected_expenditure}
+                disabled={
+                  isLoading ||
+                  (instance.expected_expenditure !== undefined
+                    ? instance.expected_expenditure
+                    : expenditure.expected_expenditure)
+                }
               >
                 <option key={'category_default_0'} value={0}>
                   -----
