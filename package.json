@@ -1,6 +1,6 @@
 {
   "name": "expenditures-tracer-frontend",
-  "version": "7.1.2",
+  "version": "7.1.3",
   "private": true,
   "dependencies": {
     "@iconify/icons-octicon": "^1.2.5",
