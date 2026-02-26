@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom/client';
 
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import reportWebVitals from './reportWebVitals';
@@ -11,16 +11,15 @@ import store from 'rdx/store';
 import App from './App';
 import Build from './Build';
 
-ReactDOM.render(
+ReactDOM.createRoot(document.getElementById('root')).render(
   <Provider store={store}>
     <Router>
       <Routes>
-        <Route path='/build' element={<Build />} />
-        <Route path='/' element={<App />} />
+        <Route path="/build" element={<Build />} />
+        <Route path="/" element={<App />} />
       </Routes>
     </Router>
   </Provider>,
-  document.getElementById('root')
 );
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
