@@ -4,10 +4,10 @@ import {
   useDeleteCashMutation,
   useEditCashMutation,
   useGetCashQuery,
-} from 'api/cashApiSlice';
+} from '/src/api/cashApiSlice';
 import { FormControl } from 'react-bootstrap';
 
-import { FunctionalitiesMenu, parseFloat } from 'utils';
+import { FunctionalitiesMenu, parseFloat } from '/src/utils';
 import { CashLoading } from './CashLoading';
 
 const Income = ({ id, ...props }) => {
@@ -62,18 +62,18 @@ const Income = ({ id, ...props }) => {
   };
 
   return (
-    <div className='ps-2 my-1'>
+    <div className="ps-2 my-1">
       {isLoading ? (
         <CashLoading />
       ) : (
-        <div className='d-flex align-items-center'>
-          <div className='flex-grow-1'>
+        <div className="d-flex align-items-center">
+          <div className="flex-grow-1">
             {isEditing ? (
-              <div className='d-flex align-items-baseline'>
-                <div className='me-1'>Name</div>
+              <div className="d-flex align-items-baseline">
+                <div className="me-1">Name</div>
                 <FormControl
-                  className='my-1'
-                  name='name'
+                  className="my-1"
+                  name="name"
                   onChange={onChange}
                   value={patch.name !== undefined ? patch.name : income.name}
                   disabled={editCashIsLoading}
@@ -81,22 +81,22 @@ const Income = ({ id, ...props }) => {
                 {editCashError?.name?.map((msg, idx) => (
                   <div
                     key={`income_edit_name_error_${idx}`}
-                    className='text-danger'
+                    className="text-danger"
                   >
                     {msg}
                   </div>
                 ))}
               </div>
             ) : (
-              <div className='text-muted fst-italic'>{income?.name}</div>
+              <div className="text-muted fst-italic">{income?.name}</div>
             )}
 
             {isEditing ? (
-              <div className='d-flex align-items-baseline'>
-                <div className='me-1'>Value</div>
+              <div className="d-flex align-items-baseline">
+                <div className="me-1">Value</div>
                 <FormControl
-                  className='my-1'
-                  name='value'
+                  className="my-1"
+                  name="value"
                   onChange={onChange}
                   value={patch.value !== undefined ? patch.value : income.value}
                   disabled={editCashIsLoading}
@@ -104,14 +104,14 @@ const Income = ({ id, ...props }) => {
                 {editCashError?.value?.map((msg, idx) => (
                   <div
                     key={`income_edit_value_error_${idx}`}
-                    className='text-danger'
+                    className="text-danger"
                   >
                     {msg}
                   </div>
                 ))}
               </div>
             ) : (
-              <div className=''>{`${parseFloat(income?.value)} €`}</div>
+              <div className="">{`${parseFloat(income?.value)} €`}</div>
             )}
           </div>
           <FunctionalitiesMenu

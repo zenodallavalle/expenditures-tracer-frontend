@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
-import { useNewCashMutation } from 'api/cashApiSlice';
-import { AutoBlurButton, parseFloat } from 'utils';
+import { useNewCashMutation } from '/src/api/cashApiSlice';
+import { AutoBlurButton, parseFloat } from '/src/utils';
 import { FormControl } from 'react-bootstrap';
 import { useEffect } from 'react';
 
@@ -43,50 +43,50 @@ const AddIncome = ({ ...props }) => {
     <div>
       {isAdding ? (
         <div>
-          <div className='d-flex align-items-baseline my-1'>
-            <div className='me-2'>Name:</div>
+          <div className="d-flex align-items-baseline my-1">
+            <div className="me-2">Name:</div>
             <FormControl
               value={instance.name}
               onChange={onChange}
-              name='name'
-              className='w-100'
+              name="name"
+              className="w-100"
               disabled={addIncomeIsLoading}
             />
           </div>
           {addIncomeError?.data?.name?.map((msg, idx) => (
-            <div key={`add_income_name_error_${idx}`} className='text-danger'>
+            <div key={`add_income_name_error_${idx}`} className="text-danger">
               {msg}
             </div>
           ))}
 
-          <div className='d-flex align-items-baseline my-1'>
-            <div className='me-2'>Value:</div>
+          <div className="d-flex align-items-baseline my-1">
+            <div className="me-2">Value:</div>
             <FormControl
               value={instance.value}
               onChange={onChange}
-              name='value'
-              className='w-100'
+              name="value"
+              className="w-100"
               disabled={addIncomeIsLoading}
             />
           </div>
           {addIncomeError?.data?.value?.map((msg, idx) => (
-            <div key={`add_income_name_error_${idx}`} className='text-danger'>
+            <div key={`add_income_name_error_${idx}`} className="text-danger">
               {msg}
             </div>
           ))}
 
-          <div className='d-flex'>
+          <div className="d-flex">
             <AutoBlurButton
-              className='flex-grow-1 m-1'
-              variant='danger'
+              className="flex-grow-1 m-1"
+              variant="danger"
               onClick={onCancel}
               disabled={addIncomeIsLoading}
             >
               Cancel
             </AutoBlurButton>
             <AutoBlurButton
-              className='flex-grow-1 m-1'
-              variant='success'
+              className="flex-grow-1 m-1"
+              variant="success"
               onClick={onAdded}
               disabled={addIncomeIsLoading}
             >
@@ -95,7 +95,7 @@ const AddIncome = ({ ...props }) => {
           </div>
         </div>
       ) : (
-        <AutoBlurButton variant='success' className='w-100' onClick={onAdd}>
+        <AutoBlurButton variant="success" className="w-100" onClick={onAdd}>
           Register new income
         </AutoBlurButton>
       )}

@@ -6,14 +6,14 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import Container from 'react-bootstrap/Container';
 
-import { useAutomaticUserTokenAuthQuery } from 'api/userApiSlice';
-import { Alerts } from 'components/Alerts';
-import { HeaderBar } from 'components/HeaderBar';
-import { BottomBar } from 'components/BottomBar';
-import { MainView } from 'components/MainView';
-import { AddExpenditure } from 'components/Expenditure';
-import { changedPanel, selectAuthToken } from 'rdx/params';
-import { useSaveParamsInURL } from 'rdx/useSaveParamsInURL';
+import { useAutomaticUserTokenAuthQuery } from '/src/api/userApiSlice';
+import { Alerts } from '/src/components/Alerts';
+import { HeaderBar } from '/src/components/HeaderBar';
+import { BottomBar } from '/src/components/BottomBar';
+import { MainView } from '/src/components/MainView';
+import { AddExpenditure } from '/src/components/Expenditure';
+import { changedPanel, selectAuthToken } from '/src/rdx/params';
+import { useSaveParamsInURL } from '/src/rdx/useSaveParamsInURL';
 
 const App = ({ ...props }) => {
   useSaveParamsInURL();
@@ -45,10 +45,10 @@ const App = ({ ...props }) => {
     <div>
       <HeaderBar onAdd={onAdd} />
       <Alerts />
-      <div className='py-1'>
-        <div className='safe-down'>
+      <div className="py-1">
+        <div className="safe-down">
           <Container fluid>
-            <div className='mx-auto'>
+            <div className="mx-auto">
               <MainView />
             </div>
           </Container>

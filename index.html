@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
@@ -8,10 +8,11 @@
       name="description"
       content="Simple web-app to trace your expenditures."
     />
-    <meta
+    <!-- <meta
       name="viewport"
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover"
-    />
+    /> -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <link
       rel="apple-touch-icon"
@@ -74,8 +75,6 @@
     <div class="safe-fixed-x safe-fixed-top safe-fixed-bottom">
       <div id="root" class="safe-top"></div>
     </div>
+    <script type="module" src="/src/main.jsx"></script>
   </body>
-  <script type="text/javascript">
-    const root = document.getElementById('root');
-  </script>
 </html>

@@ -1,9 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
 import FormControl from 'react-bootstrap/FormControl';
 
-import { useNewCategoryMutation } from 'api/categoryApiSlice';
-import { useAutomaticGetFullDBQuery } from 'api/dbApiSlice';
-import { AutoBlurButton, LoadingImg } from 'utils';
+import { useNewCategoryMutation } from '/src/api/categoryApiSlice';
+import { useAutomaticGetFullDBQuery } from '/src/api/dbApiSlice';
+import { AutoBlurButton, LoadingImg } from '/src/utils';
 
 export const AddCategory = ({ ...props }) => {
   const [isAdding, setIsAdding] = useState();
@@ -67,12 +67,12 @@ export const AddCategory = ({ ...props }) => {
     <div>
       {isAdding ? (
         <div>
-          <div className='d-flex align-items-center'>
-            <div className='d-flex flex-grow-1 align-items-baseline'>
+          <div className="d-flex align-items-center">
+            <div className="d-flex flex-grow-1 align-items-baseline">
               <div>Name</div>
-              <div className='flex-grow-1 mx-2'>
+              <div className="flex-grow-1 mx-2">
                 <FormControl
-                  name='name'
+                  name="name"
                   value={instance.name}
                   onChange={onChange}
                   onKeyDown={onKeyDown}
@@ -82,7 +82,7 @@ export const AddCategory = ({ ...props }) => {
                 {messages.name?.map((msg, idx) => (
                   <div
                     key={`NewCategory_name_msg_validation_${idx}`}
-                    className='text-danger'
+                    className="text-danger"
                   >
                     {msg}
                   </div>
@@ -90,7 +90,7 @@ export const AddCategory = ({ ...props }) => {
                 {error?.data?.name?.map((msg, idx) => (
                   <div
                     key={`NewCategory_name_msg_response_${idx}`}
-                    className='text-danger'
+                    className="text-danger"
                   >
                     {msg}
                   </div>
@@ -98,21 +98,21 @@ export const AddCategory = ({ ...props }) => {
               </div>
             </div>
 
-            <div className='d-flex align-items-baseline py-1'>
-              <div className='pe-1 flex-grow-1'>
+            <div className="d-flex align-items-baseline py-1">
+              <div className="pe-1 flex-grow-1">
                 <AutoBlurButton
-                  variant='danger'
-                  className='w-100'
+                  variant="danger"
+                  className="w-100"
                   onClick={onCancel}
                   disabled={isLoading}
                 >
                   Cancel
                 </AutoBlurButton>
               </div>
-              <div className='ps-1 flex-grow-1'>
+              <div className="ps-1 flex-grow-1">
                 <AutoBlurButton
-                  variant='success'
-                  className='w-100'
+                  variant="success"
+                  className="w-100"
                   onClick={onAdded}
                   disabled={categoriesAreFetching || isLoading}
                 >
@@ -123,7 +123,7 @@ export const AddCategory = ({ ...props }) => {
           </div>
         </div>
       ) : (
-        <AutoBlurButton className='w-100' onClick={onAdd} variant='success'>
+        <AutoBlurButton className="w-100" onClick={onAdd} variant="success">
           Add new category
         </AutoBlurButton>
       )}

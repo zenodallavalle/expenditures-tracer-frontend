@@ -1,6 +1,6 @@
-import { LoadingDiv } from 'utils';
+import { LoadingDiv } from '/src/utils';
 
-import { useGetExpenditureQuery } from 'api/expenditureApiSlice';
+import { useGetExpenditureQuery } from '/src/api/expenditureApiSlice';
 
 const right = 'text-end';
 const value = 'p-0';
@@ -13,9 +13,9 @@ export const ComparisonExpenditure = ({ id }) => {
   return (
     <div>
       <span>{expenditure?.name}</span>
-      <span className='me-1'>,</span>
-      <span className='me-1 fw-bold'>{expenditure?.value}</span>
-      <span className='fw-bold'>€</span>
+      <span className="me-1">,</span>
+      <span className="me-1 fw-bold">{expenditure?.value}</span>
+      <span className="fw-bold">€</span>
     </div>
   );
 };
@@ -23,7 +23,7 @@ export const ComparisonExpenditure = ({ id }) => {
 export const ComparisonRow = ({ expectedId }) => {
   const { data: expected, isLoading } = useGetExpenditureQuery(
     { id: expectedId },
-    { skip: !expectedId }
+    { skip: !expectedId },
   );
   const actualIds = expected?.actual_expenditures;
   if (isLoading) return <LoadingDiv />;

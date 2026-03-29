@@ -5,9 +5,9 @@ import { useDispatch } from 'react-redux';
 import {
   useAutomaticUserTokenAuthQuery,
   useLogoutMutation,
-} from 'api/userApiSlice';
-import { Databases } from 'components/Database';
-import { AutoBlurButton, getColumnWidth, LoadingImg } from 'utils';
+} from '/src/api/userApiSlice';
+import { Databases } from '/src/components/Database';
+import { AutoBlurButton, getColumnWidth, LoadingImg } from '/src/utils';
 
 import { Login } from './Login';
 import { Signup } from './Signup';
@@ -37,17 +37,17 @@ export const PanelUser = ({ ...props }) => {
 
   return (
     <div>
-      <div className='mx-auto' style={{ maxWidth: getColumnWidth() }}>
+      <div className="mx-auto" style={{ maxWidth: getColumnWidth() }}>
         {isAuthenticated ? (
           //user logged in
           <div>
-            <h5 className='text-center'>Databases</h5>
+            <h5 className="text-center">Databases</h5>
 
             <Databases />
 
             <AutoBlurButton
-              variant='primary'
-              className='w-100 mt-3'
+              variant="primary"
+              className="w-100 mt-3"
               onClick={onLogout}
               disabled={isFetching}
             >
@@ -59,8 +59,8 @@ export const PanelUser = ({ ...props }) => {
           <div>
             {showLogin ? <Login /> : <Signup />}
             <AutoBlurButton
-              variant='link'
-              className='mt-3 w-100'
+              variant="link"
+              className="mt-3 w-100"
               onClick={onToggleShowLogin}
             >
               {showLogin
@@ -70,8 +70,8 @@ export const PanelUser = ({ ...props }) => {
           </div>
         )}
       </div>
-      <div className='text-center mt-5'>
-        <Link to='/build/'>More info about this version...</Link>
+      <div className="text-center mt-5">
+        <Link to="/build/">More info about this version...</Link>
       </div>
     </div>
   );

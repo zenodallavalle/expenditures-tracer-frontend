@@ -5,13 +5,13 @@ let alertCounter = 1;
 const getDefaultTimeout = (variant) => {
   switch (variant) {
     case 'success':
-      return process.env.REACT_APP_ALERT_DEFAULT_DURATION;
+      return import.meta.env.VITE_ALERT_DEFAULT_DURATION;
     case 'danger':
-      return process.env.REACT_APP_ALERT_ERROR_DURATION;
+      return import.meta.env.VITE_ALERT_ERROR_DURATION;
     case 'warning':
-      return process.env.REACT_APP_ALERT_ERROR_DURATION;
+      return import.meta.env.VITE_ALERT_ERROR_DURATION;
     default:
-      return process.env.REACT_APP_ALERT_DEFAULT_DURATION;
+      return import.meta.env.VITE_ALERT_DEFAULT_DURATION;
   }
 };
 const initialState = { alerts: [] };
@@ -22,7 +22,7 @@ const slice = createSlice({
     dismissed: (state, action) => {
       const { id } = action.payload;
       state.alerts = state.alerts.map((a) =>
-        a.id !== id ? a : { ...a, dismissed: true }
+        a.id !== id ? a : { ...a, dismissed: true },
       );
     },
     added: (state, action) => {

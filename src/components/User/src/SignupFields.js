@@ -2,7 +2,7 @@ import {
   notEmptyValidator,
   validEmailValidator,
   passwordRepeatedCorrectly,
-} from 'utils/validators';
+} from '/src/utils/validators';
 
 export const signupFields = [
   {

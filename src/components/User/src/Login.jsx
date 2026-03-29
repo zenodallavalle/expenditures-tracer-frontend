@@ -4,14 +4,14 @@ import FormControl from 'react-bootstrap/FormControl';
 import {
   useAutomaticUserTokenAuthQuery,
   useLoginMutation,
-} from 'api/userApiSlice';
-import { changedPanel, updatedWorkingDBId } from 'rdx/params';
+} from '/src/api/userApiSlice';
+import { changedPanel, updatedWorkingDBId } from '/src/rdx/params';
 import {
   AutoBlurButton,
   capitalize,
   LoadingImg,
   useCreateFormFields,
-} from 'utils';
+} from '/src/utils';
 
 import { loginFields } from './loginFields';
 
@@ -54,13 +54,13 @@ export const Login = ({ ...props }) => {
 
   return (
     <div>
-      <h5 className='text-center'>Login</h5>
+      <h5 className="text-center">Login</h5>
 
       {preparedFields.map(({ label, name, ...props }) => (
         <div key={`signup_parent_field_${name}`}>
-          <div className='d-flex align-items-baseline py-1'>
-            <div className='me-1'>{capitalize(label)}</div>
-            <div className='flex-grow-1'>
+          <div className="d-flex align-items-baseline py-1">
+            <div className="me-1">{capitalize(label)}</div>
+            <div className="flex-grow-1">
               <FormControl
                 key={`signup_field_${name}`}
                 disabled={disabledFields}
@@ -71,7 +71,7 @@ export const Login = ({ ...props }) => {
           </div>
           {validationMessages[name].map((msg, idx) => (
             <div
-              className='text-danger'
+              className="text-danger"
               key={`msg_login_validation_${name}_${idx}`}
             >
               {msg}
@@ -79,7 +79,7 @@ export const Login = ({ ...props }) => {
           ))}
           {loginError?.data?.[name]?.map((msg, idx) => (
             <div
-              className='text-danger'
+              className="text-danger"
               key={`msg_login_response_${name}_${idx}`}
             >
               {msg}
@@ -89,8 +89,8 @@ export const Login = ({ ...props }) => {
       ))}
 
       <AutoBlurButton
-        variant='success'
-        className='w-100 mt-3'
+        variant="success"
+        className="w-100 mt-3"
         onClick={onSubmit}
         disabled={disabledFields}
       >

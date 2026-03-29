@@ -1,5 +1,6 @@
-import { alertsSelectors } from 'rdx/alerts';
 import { useSelector } from 'react-redux';
+
+import { alertsSelectors } from '/src/rdx/alerts';
 
 import { Alert } from './Alert';
 

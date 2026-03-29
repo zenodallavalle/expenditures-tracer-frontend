@@ -3,23 +3,22 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import FormControl from 'react-bootstrap/FormControl';
 import { InlineIcon } from '@iconify/react';
-import personAdd16 from '@iconify/icons-octicon/person-add-16';
 
 import {
   useDeleteDBMutation,
   useEditDBMutation,
   useGetLigthDBQuery,
-} from 'api/dbApiSlice';
+} from '/src/api/dbApiSlice';
 import {
   changedPanel,
   selectWorkingDBId,
   updatedWorkingDBId,
-} from 'rdx/params';
+} from '/src/rdx/params';
 import {
   AutoBlurButton,
   FunctionalitiesMenu,
   AutoBlurTransparentButton,
-} from 'utils';
+} from '/src/utils';
 
 import { AddUserToDBModal } from './AddUserToDBModal';
 import { DatabaseLoading } from './DatabaseLoading';
@@ -132,17 +131,17 @@ export const Database = ({ id, ...props }) => {
   };
 
   return (
-    <div className='d-flex align-items-stretch'>
-      <div className='flex-grow-1'>
+    <div className="d-flex align-items-stretch">
+      <div className="flex-grow-1">
         {isLoading ? (
           <DatabaseLoading />
         ) : isEditing ? (
           <div>
-            <div className='d-flex align-items-center py-1'>
+            <div className="d-flex align-items-center py-1">
               <div style={{ width: 50 }}>Name</div>
-              <div className='flex-grow-1'>
+              <div className="flex-grow-1">
                 <FormControl
-                  name='name'
+                  name="name"
                   value={instance.name || database?.name || ''}
                   onChange={onChange}
                   onKeyDown={onKeyDown}
@@ -152,23 +151,23 @@ export const Database = ({ id, ...props }) => {
               </div>
             </div>
             {messages?.name && (
-              <div className='text-danger'>{messages.name} </div>
+              <div className="text-danger">{messages.name} </div>
             )}
           </div>
         ) : (
-          <div className='d-flex align-items-center py-1'>
+          <div className="d-flex align-items-center py-1">
             <div>
               <AutoBlurButton
                 style={{ width: 80 }}
                 variant={isWorkingDB ? 'primary' : 'success'}
-                size='sm'
+                size="sm"
                 disabled={isWorkingDB}
                 onClick={onSetWorkingDB}
               >
                 {isWorkingDB ? 'selected' : 'select'}
               </AutoBlurButton>
             </div>
-            <div className='flex-grow-1 ps-2'>
+            <div className="flex-grow-1 ps-2">
               {database?.name || `db with id=${id}`}
             </div>
           </div>
@@ -179,7 +178,7 @@ export const Database = ({ id, ...props }) => {
           disabled={isFetchingEditDB || isLoading}
           onClick={() => setShowAddUserModal(true)}
         >
-          <InlineIcon icon={personAdd16} />
+          <InlineIcon icon="octicon:person-add-16" />
         </AutoBlurTransparentButton>
       </div>
       <FunctionalitiesMenu

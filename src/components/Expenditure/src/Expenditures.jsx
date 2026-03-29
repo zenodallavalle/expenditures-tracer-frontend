@@ -1,5 +1,5 @@
-import { useAutomaticGetCategoryQuery } from 'api/categoryApiSlice';
-import { Category, CategoryTotal } from 'components/Category';
+import { useAutomaticGetCategoryQuery } from '/src/api/categoryApiSlice';
+import { Category, CategoryTotal } from '/src/components/Category';
 
 import { Expenditure } from './Expenditure';
 
@@ -14,7 +14,7 @@ export const Expenditures = ({ catId, expected, ...props }) => {
   return (
     <Category id={catId}>
       {isSuccess && !expenditures?.length ? (
-        <div className='fst-italic text-center mb-2'>
+        <div className="fst-italic text-center mb-2">
           No expenditures registered so far.
         </div>
       ) : (

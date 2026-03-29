@@ -1,11 +1,12 @@
-const { useEffect } = require('react');
-const { useSelector } = require('react-redux');
-const { useNavigate } = require('react-router-dom');
-const { selectParamsToSaveInURL } = require('./params');
-const {
+import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+
+import { selectParamsToSaveInURL } from './params';
+import {
   readFromURLParams,
   readFromURLParamsDefault,
-} = require('./paramsReadFromURL');
+} from './paramsReadFromURL';
 
 export const useSaveParamsInURL = () => {
   const navigate = useNavigate();

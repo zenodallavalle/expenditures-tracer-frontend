@@ -3,15 +3,14 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import Form from 'react-bootstrap/Form';
 import { InlineIcon } from '@iconify/react';
-import xCircle16 from '@iconify/icons-octicon/x-circle-16';
 
-import { AutoBlurButton, AutoBlurTransparentButton } from 'utils';
+import { AutoBlurButton, AutoBlurTransparentButton } from '/src/utils';
 import {
   changedSearchParams,
   initialSearchParams,
   resetSearchParamsButQueryString,
   selectSearchParams,
-} from 'rdx/params';
+} from '/src/rdx/params';
 
 const extractValue = (e) => {
   const {
@@ -53,144 +52,144 @@ export const SearchFilters = ({ ...props }) => {
 
   const onReset = (parameter) => (e) =>
     dispatch(
-      changedSearchParams({ [parameter]: initialSearchParams[parameter] })
+      changedSearchParams({ [parameter]: initialSearchParams[parameter] }),
     );
 
   return (
     <div>
       {!show ? (
-        <div className='text-center'>
-          <AutoBlurButton variant='link' onClick={toggleShow}>
+        <div className="text-center">
+          <AutoBlurButton variant="link" onClick={toggleShow}>
             Need advanced search tools?
           </AutoBlurButton>
         </div>
       ) : (
         <div>
-          <div className='fst-italic text-center small'>
+          <div className="fst-italic text-center small">
             Use space " " to combine words with AND operator.
           </div>
-          <div className='fst-italic text-center small mb-2'>
+          <div className="fst-italic text-center small mb-2">
             Use comma "," to combine words with OR operator.
           </div>
-          <div className='d-md-flex'>
-            <div className='flex-grow-1 mb-2'>
+          <div className="d-md-flex">
+            <div className="flex-grow-1 mb-2">
               <div>From</div>
-              <div className='d-flex text-center'>
+              <div className="d-flex text-center">
                 <Form.Control
-                  name='from'
-                  type='datetime-local'
+                  name="from"
+                  type="datetime-local"
                   value={from}
                   onChange={onChange('from')}
-                  className='me-1'
+                  className="me-1"
                 />
                 <AutoBlurTransparentButton onClick={onReset('from')}>
-                  <InlineIcon icon={xCircle16} />
+                  <InlineIcon icon="octicon:x-circle-16" />
                 </AutoBlurTransparentButton>
               </div>
             </div>
-            <div className='flex-grow-1 mb-2'>
+            <div className="flex-grow-1 mb-2">
               <div>To</div>
-              <div className='d-flex text-center'>
+              <div className="d-flex text-center">
                 <Form.Control
-                  name='to'
-                  type='datetime-local'
+                  name="to"
+                  type="datetime-local"
                   value={to}
                   onChange={onChange('to')}
-                  className='me-1'
+                  className="me-1"
                 />
                 <AutoBlurTransparentButton onClick={onReset('to')}>
-                  <InlineIcon icon={xCircle16} />
+                  <InlineIcon icon="octicon:x-circle-16" />
                 </AutoBlurTransparentButton>
               </div>
             </div>
           </div>
-          <div className='d-md-flex'>
-            <div className='flex-grow-1 mb-2'>
+          <div className="d-md-flex">
+            <div className="flex-grow-1 mb-2">
               <div>Lower price range</div>
-              <div className='d-flex text-center'>
+              <div className="d-flex text-center">
                 <Form.Control
-                  name='lowerPrice'
-                  type='number'
+                  name="lowerPrice"
+                  type="number"
                   step={0.01}
                   min={0}
                   value={lowerPrice}
                   onChange={onChange('lowerPrice')}
-                  className='me-1'
+                  className="me-1"
                 />
                 <AutoBlurTransparentButton onClick={onReset('lowerPrice')}>
-                  <InlineIcon icon={xCircle16} />
+                  <InlineIcon icon="octicon:x-circle-16" />
                 </AutoBlurTransparentButton>
               </div>
             </div>
-            <div className='flex-grow-1 mb-2'>
+            <div className="flex-grow-1 mb-2">
               <div>Upper price range</div>
-              <div className='d-flex text-center'>
+              <div className="d-flex text-center">
                 <Form.Control
-                  name='upperPrice'
-                  type='number'
+                  name="upperPrice"
+                  type="number"
                   step={0.01}
                   min={0}
                   value={upperPrice}
                   onChange={onChange('upperPrice')}
-                  className='me-1'
+                  className="me-1"
                 />
                 <AutoBlurTransparentButton onClick={onReset('upperPrice')}>
-                  <InlineIcon icon={xCircle16} />
+                  <InlineIcon icon="octicon:x-circle-16" />
                 </AutoBlurTransparentButton>
               </div>
             </div>
           </div>
-          <div className='mb-2'>
+          <div className="mb-2">
             <div>Which kind of expenditures are you looking for?</div>
-            <Form.Select name='type' value={type} onChange={onChange('type')}>
-              <option value='both'>Actual and expected</option>
-              <option value='actual'>Actual only</option>
-              <option value='expected'>Expected only</option>
+            <Form.Select name="type" value={type} onChange={onChange('type')}>
+              <option value="both">Actual and expected</option>
+              <option value="actual">Actual only</option>
+              <option value="expected">Expected only</option>
             </Form.Select>
           </div>
-          <div className='mb-2 d-flex'>
-            <div className='w-100'>
+          <div className="mb-2 d-flex">
+            <div className="w-100">
               <Form.Check
                 disabled
-                label='Search only in current month'
-                type='radio'
-                name='months'
+                label="Search only in current month"
+                type="radio"
+                name="months"
                 id={'radio-current-month'}
               />
             </div>
-            <div className='w-100'>
+            <div className="w-100">
               <Form.Check
-                label='Search in all months'
+                label="Search in all months"
                 defaultChecked
-                type='radio'
-                name='months'
+                type="radio"
+                name="months"
                 id={'radio-all-months'}
               />
             </div>
           </div>
-          <div className='mb-2 d-flex'>
-            <div className='w-100'>
+          <div className="mb-2 d-flex">
+            <div className="w-100">
               <Form.Check
                 defaultChecked
-                label='Search in current database'
-                type='radio'
-                name='database'
+                label="Search in current database"
+                type="radio"
+                name="database"
                 id={'radio-current-db'}
               />
             </div>
-            <div className='w-100'>
+            <div className="w-100">
               <Form.Check
-                label='Search in all databases'
-                type='radio'
-                name='database'
+                label="Search in all databases"
+                type="radio"
+                name="database"
                 id={'radio-all-dbs'}
                 disabled
               />
             </div>
           </div>
 
-          <div className='text-center'>
-            <AutoBlurButton onClick={toggleShow} variant='link'>
+          <div className="text-center">
+            <AutoBlurButton onClick={toggleShow} variant="link">
               Hide advanced search tools
             </AutoBlurButton>
           </div>

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { getGraphHeight, LoadingDiv } from 'utils';
+import { getGraphHeight, LoadingDiv } from '/src/utils';
 
 export const ChartWrapper = ({
   isLoading,
@@ -29,9 +29,9 @@ export const ChartWrapper = ({
 
   if (isLoading) return <LoadingDiv />;
   return (
-    <div className='w-100'>
+    <div className="w-100">
       {props.children || null}
-      <div className='w-100' style={divStyle}>
+      <div className="w-100" style={divStyle}>
         <ChildrenRenderer options={{ maintainAspectRatio: !graphHeight }} />
       </div>
     </div>

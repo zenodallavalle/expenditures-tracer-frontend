@@ -1,7 +1,17 @@
 {
   "compilerOptions": {
-    "baseUrl": "src",
-    "paths": {}
+    "jsx": "react-jsx",
+    "jsxImportSource": "react",
+    "baseUrl": ".",
+    "paths": {
+      "/src/*": ["./src/*"],
+      "/*": ["./*"]
+    },
+    "allowJs": true,
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "bundler"
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["node_modules"]
 }

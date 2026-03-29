@@ -1,9 +1,9 @@
 import { useDispatch, useSelector } from 'react-redux';
 
-import { useAutomaticGetFullDBQuery } from 'api/dbApiSlice';
-import { useAutomaticUserTokenAuthQuery } from 'api/userApiSlice';
-import { changedPanel, selectPanel, selectWorkingDBId } from 'rdx/params';
-import { AutoBlurButton } from 'utils';
+import { useAutomaticGetFullDBQuery } from '/src/api/dbApiSlice';
+import { useAutomaticUserTokenAuthQuery } from '/src/api/userApiSlice';
+import { changedPanel, selectPanel, selectWorkingDBId } from '/src/rdx/params';
+import { AutoBlurButton } from '/src/utils';
 
 const buttons = [
   {
@@ -31,7 +31,7 @@ export const BottomBar = (props) => {
     useAutomaticUserTokenAuthQuery();
   const { isLoading: isLoadingDB } = useAutomaticGetFullDBQuery(
     {},
-    { skip: !isSuccessUser }
+    { skip: !isSuccessUser },
   );
   const isLoading = isLoadingDB || isLoadingUser;
   const workingDBId = useSelector(selectWorkingDBId);
@@ -39,14 +39,14 @@ export const BottomBar = (props) => {
   const onChangePanel = (to) => dispatch(changedPanel(to));
 
   return (
-    <footer className='footer fixed-bottom bg-white safe-fixed-x safe-fixed-bottom'>
-      <div className='d-flex flex-row pt-1'>
+    <footer className="footer fixed-bottom bg-white safe-fixed-x safe-fixed-bottom">
+      <div className="d-flex flex-row pt-1">
         {buttons.map(({ name, displayedName }) => (
-          <div key={`bottom_button_${name}`} className='flex-grow-1'>
+          <div key={`bottom_button_${name}`} className="flex-grow-1">
             <AutoBlurButton
               variant={panel === name ? 'secondary' : 'outline-secondary'}
-              size='sm'
-              className='w-100'
+              size="sm"
+              className="w-100"
               onClick={() => onChangePanel(name)}
               disabled={isLoading || !workingDBId}
             >

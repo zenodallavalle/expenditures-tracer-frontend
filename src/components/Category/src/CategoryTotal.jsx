@@ -1,12 +1,12 @@
 import clsx from 'clsx';
 
-import { useAutomaticGetCategoryQuery } from 'api/categoryApiSlice';
+import { useAutomaticGetCategoryQuery } from '/src/api/categoryApiSlice';
 
 import {
   getTextColorClassForDelta,
   getTextForPercentage,
   LoadingDiv,
-} from 'utils';
+} from '/src/utils';
 
 const CategoryTotal = ({ id, expected, ...props }) => {
   const { data: category, isLoading } = useAutomaticGetCategoryQuery({ id });
@@ -22,17 +22,17 @@ const CategoryTotal = ({ id, expected, ...props }) => {
     : prospect?.actual_expenditure;
   const percentageOfExpected = getTextForPercentage(
     prospect?.actual_expenditure,
-    prospect?.expected_expenditure
+    prospect?.expected_expenditure,
   );
 
   if (isLoading) return <LoadingDiv />;
   return (
     <div>
       {numberOfExpenditures ? (
-        <div className='d-flex p-1'>
-          <div className='flex-grow-1'>
+        <div className="d-flex p-1">
+          <div className="flex-grow-1">
             <span>{numberOfExpenditures}</span>
-            <span className='ms-1'>
+            <span className="ms-1">
               {numberOfExpenditures === 1 ? 'entry' : 'entries'}
             </span>
           </div>
@@ -42,13 +42,13 @@ const CategoryTotal = ({ id, expected, ...props }) => {
               <span
                 className={clsx(
                   'ps-1',
-                  getTextColorClassForDelta(prospect?.delta)
+                  getTextColorClassForDelta(prospect?.delta),
                 )}
               >
                 ({percentageOfExpected})
               </span>
             )}
-            <span className='ms-1'>€</span>
+            <span className="ms-1">€</span>
           </div>
         </div>
       ) : null}

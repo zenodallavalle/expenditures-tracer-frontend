@@ -2,13 +2,9 @@ import { Fragment, useEffect, useState } from 'react';
 
 import Table from 'react-bootstrap/Table';
 import { InlineIcon } from '@iconify/react';
-import calendar16 from '@iconify/icons-octicon/calendar-16';
-import package16 from '@iconify/icons-octicon/package-16';
-import packageDependencies16 from '@iconify/icons-octicon/package-dependencies-16';
-import packageDependents16 from '@iconify/icons-octicon/package-dependents-16';
 
-import { useAutomaticGetFullDBQuery } from 'api/dbApiSlice';
-import { AutoBlurButton, getColumnWidth, LoadingDiv } from 'utils';
+import { useAutomaticGetFullDBQuery } from '/src/api/dbApiSlice';
+import { AutoBlurButton, getColumnWidth, LoadingDiv } from '/src/utils';
 
 import { Month } from './Month';
 
@@ -54,26 +50,26 @@ export const Months = ({ ...props }) => {
   };
 
   if (isLoading)
-    return <LoadingDiv className='text-center w-100' maxWidth={100} />;
+    return <LoadingDiv className="text-center w-100" maxWidth={100} />;
   else if (months?.length)
     return (
       <div>
         {
-          <Table className='text-center'>
+          <Table className="text-center">
             <thead>
               <tr>
                 <th></th>
                 <th>
-                  <InlineIcon icon={calendar16} />
+                  <InlineIcon icon="octicon:calendar-16" />
                 </th>
                 <th>
-                  <InlineIcon icon={packageDependencies16} />
+                  <InlineIcon icon="octicon:package-dependencies-16" />
                 </th>
                 <th>
-                  <InlineIcon icon={packageDependents16} />
+                  <InlineIcon icon="octicon:package-dependents-16" />
                 </th>
                 <th>
-                  <InlineIcon icon={package16} />
+                  <InlineIcon icon="octicon:package-16" />
                 </th>
               </tr>
             </thead>
@@ -87,7 +83,7 @@ export const Months = ({ ...props }) => {
                     <tr>
                       <td colSpan={5}>
                         <AutoBlurButton
-                          variant='link'
+                          variant="link"
                           onClick={onShowMoreThanTwelve}
                         >
                           Show older months
@@ -101,14 +97,14 @@ export const Months = ({ ...props }) => {
           </Table>
         }
 
-        <div className='text-center'>
+        <div className="text-center">
           {showExplanation && (
-            <div className='fst-italic'>
+            <div className="fst-italic">
               Months will appear here if they have at least one expenditure or
               an income registered.
             </div>
           )}
-          <AutoBlurButton variant='link' onClick={onToggleExplain}>
+          <AutoBlurButton variant="link" onClick={onToggleExplain}>
             {showExplanation ? 'Hide explaination' : 'How do I add months?'}
           </AutoBlurButton>
         </div>
@@ -116,7 +112,7 @@ export const Months = ({ ...props }) => {
     );
   else
     return (
-      <div className='mx-auto' style={{ maxWidth: getColumnWidth() }}>
+      <div className="mx-auto" style={{ maxWidth: getColumnWidth() }}>
         No months with registered money or expenditures yet.
       </div>
     );

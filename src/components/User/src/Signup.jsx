@@ -4,14 +4,14 @@ import FormControl from 'react-bootstrap/FormControl';
 import {
   useAutomaticUserTokenAuthQuery,
   useSignupMutation,
-} from 'api/userApiSlice';
+} from '/src/api/userApiSlice';
 
 import {
   AutoBlurButton,
   capitalize,
   LoadingImg,
   useCreateFormFields,
-} from 'utils';
+} from '/src/utils';
 
 import { signupFields } from './SignupFields';
 
@@ -45,12 +45,12 @@ export const Signup = ({ ...props }) => {
 
   return (
     <div>
-      <h5 className='text-center'>Signup</h5>
+      <h5 className="text-center">Signup</h5>
       {preparedFields.map(({ label, name, ...props }, idx) => (
         <div key={`signup_parent_field_${name}`}>
-          <div className='d-flex align-items-baseline py-1'>
-            <div className='me-1'>{capitalize(label)}</div>
-            <div className='flex-grow-1'>
+          <div className="d-flex align-items-baseline py-1">
+            <div className="me-1">{capitalize(label)}</div>
+            <div className="flex-grow-1">
               <FormControl
                 key={`signup_field_${name}`}
                 disabled={disabledFields}
@@ -61,7 +61,7 @@ export const Signup = ({ ...props }) => {
           </div>
           {validationMessages[name].map((msg, idx) => (
             <div
-              className='text-danger'
+              className="text-danger"
               key={`msg_signup_validation_${name}_${idx}`}
             >
               {msg}
@@ -69,7 +69,7 @@ export const Signup = ({ ...props }) => {
           ))}
           {signupError?.data?.[name]?.map((msg, idx) => (
             <div
-              className='text-danger'
+              className="text-danger"
               key={`msg_signup_response_${name}_${idx}`}
             >
               {msg}
@@ -79,8 +79,8 @@ export const Signup = ({ ...props }) => {
       ))}
 
       <AutoBlurButton
-        variant='success'
-        className='w-100 mt-3'
+        variant="success"
+        className="w-100 mt-3"
         onClick={onSubmit}
         disabled={disabledFields}
       >

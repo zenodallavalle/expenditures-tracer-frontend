@@ -1,15 +1,18 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { useAutomaticSearchUsersDebouncedQuery } from 'api/userApiSlice';
+import { useAutomaticSearchUsersDebouncedQuery } from '/src/api/userApiSlice';
 
 import Modal from 'react-bootstrap/Modal';
 import Dropdown from 'react-bootstrap/Dropdown';
 import ListGroup from 'react-bootstrap/ListGroup';
 
-import { LoadingDiv } from 'utils';
-import { changedUserSearchParams, selectUserSearchParams } from 'rdx/params';
-import { useEditDBMutation, useGetLigthDBQuery } from 'api/dbApiSlice';
+import { LoadingDiv } from '/src/utils';
+import {
+  changedUserSearchParams,
+  selectUserSearchParams,
+} from '/src/rdx/params';
+import { useEditDBMutation, useGetLigthDBQuery } from '/src/api/dbApiSlice';
 
 import { UserElement } from './UserElement';
 
@@ -51,13 +54,13 @@ export const AddUserToDBModal = ({ dbId, show, onHide, ...props }) => {
   return (
     <Modal show={show} onHide={onHide}>
       <Modal.Header closeButton>
-        <span className='me-1'>Manage users related to database</span>
-        <span className='fst-italic fw-bold'>
+        <span className="me-1">Manage users related to database</span>
+        <span className="fst-italic fw-bold">
           {db?.name || `with id=${dbId}`}
         </span>
       </Modal.Header>
       <Modal.Body>
-        <h5 className='small'>Edit users</h5>
+        <h5 className="small">Edit users</h5>
         <ListGroup>
           {db?.users.map((userId) => (
             <UserElement
@@ -67,33 +70,33 @@ export const AddUserToDBModal = ({ dbId, show, onHide, ...props }) => {
             />
           ))}
         </ListGroup>
-        <h5 className='small mt-4'>Select users to add to database</h5>
+        <h5 className="small mt-4">Select users to add to database</h5>
 
         <Dropdown
-          className='m-1'
+          className="m-1"
           onToggle={setShowDropdown}
           show={showDropdown}
           onSelect={onAddUser}
         >
           <Dropdown.Toggle
-            as='input'
-            type='search'
-            placeholder='Type something to search'
+            as="input"
+            type="search"
+            placeholder="Type something to search"
             value={queryString || ''}
             onChange={onChange}
-            className='form-control'
-            name='username_search'
+            className="form-control"
+            name="username_search"
             disabled={dbIsLoading || editDBIsLoading}
           />
           {!isUninitialized && (
-            <Dropdown.Menu className='w-100'>
+            <Dropdown.Menu className="w-100">
               {isLoading ? (
-                <Dropdown.Item disabled key='search_is_loading'>
+                <Dropdown.Item disabled key="search_is_loading">
                   <LoadingDiv />
                 </Dropdown.Item>
               ) : !searchResults.length ? (
-                <Dropdown.Item disabled key='search_no_results'>
-                  <div className='flex-grow-1 fst-italic text-center'>
+                <Dropdown.Item disabled key="search_no_results">
+                  <div className="flex-grow-1 fst-italic text-center">
                     <small>No users found</small>
                   </div>
                 </Dropdown.Item>
@@ -106,12 +109,12 @@ export const AddUserToDBModal = ({ dbId, show, onHide, ...props }) => {
                       disabled={dbIsLoading || editDBIsLoading || inDB}
                       eventKey={user.id}
                     >
-                      <div className='d-flex'>
-                        <div className='flex-grow-1'>
+                      <div className="d-flex">
+                        <div className="flex-grow-1">
                           {user.username || `username with id=${user.id}`}
                         </div>
                         {inDB && (
-                          <div className='text-nowrap fst-italic'>
+                          <div className="text-nowrap fst-italic">
                             <small>This user is alredy in DB</small>
                           </div>
                         )}
@@ -121,8 +124,8 @@ export const AddUserToDBModal = ({ dbId, show, onHide, ...props }) => {
                 })
               )}
               {searchResults?.next && (
-                <Dropdown.Item disabled key='search_has_more'>
-                  <div className='flex-grow-1 fst-italic text-center'>
+                <Dropdown.Item disabled key="search_has_more">
+                  <div className="flex-grow-1 fst-italic text-center">
                     <small>Search results are partial</small>
                   </div>
                 </Dropdown.Item>

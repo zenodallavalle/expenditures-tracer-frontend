@@ -3,13 +3,13 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import FormControl from 'react-bootstrap/FormControl';
 
-import { useAutomaticUserTokenAuthQuery } from 'api/userApiSlice';
+import { useAutomaticUserTokenAuthQuery } from '/src/api/userApiSlice';
 import {
   changedPanel,
   changedSearchParams,
   selectPanel,
   selectSearchParams,
-} from 'rdx/params';
+} from '/src/rdx/params';
 
 export const SearchBar = ({ ...props }) => {
   const dispatch = useDispatch();
@@ -56,16 +56,16 @@ export const SearchBar = ({ ...props }) => {
   };
 
   return (
-    <div className='me-1'>
+    <div className="me-1">
       <FormControl
         defaultValue={queryString}
-        type='search'
-        placeholder='Search'
+        type="search"
+        placeholder="Search"
         ref={ref}
         onChange={onChange}
         onFocus={onFocus}
         disabled={userNotAuthenticated}
-        className='me-1'
+        className="me-1"
       />
     </div>
   );

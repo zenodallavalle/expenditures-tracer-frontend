@@ -1,5 +1,6 @@
 export const getApiVersion = async () => {
-  const result = await fetch(`${process.env.REACT_APP_API_ROOT}version/`);
+  console.log('fetching', `${import.meta.env.VITE_API_ROOT}version/`);
+  const result = await fetch(`${import.meta.env.VITE_API_ROOT}version/`);
   try {
     const json = await result.json();
     return json;

@@ -1,6 +1,6 @@
 import { createSelector, createSlice } from '@reduxjs/toolkit';
 
-import { getCurrentMonth } from 'utils';
+import { getCurrentMonth } from '/src/utils';
 
 import { loadInitialParametersSyncWithLocalStorage } from './paramsSyncWithLocalStorage';
 import {
@@ -58,14 +58,14 @@ export const paramsSlice = createSlice({
 
     updatedCategoryViewStatus: (
       state,
-      { payload: { id, categoryViewStatus } }
+      { payload: { id, categoryViewStatus } },
     ) => {
       state.categoriesViewStatus[id] = categoryViewStatus;
     },
 
     resetCategoryViewStatus: (state, { payload: categoriesToResetIds }) => {
       categoriesToResetIds.forEach(
-        (catId) => delete state.categoriesViewStatus[catId]
+        (catId) => delete state.categoriesViewStatus[catId],
       );
     },
 
@@ -132,7 +132,7 @@ export const selectHiddenCategoriesIds = createSelector(
       .map(([k]) => {
         const parsedK = parseInt(k);
         return isNaN(parsedK) ? k : parsedK;
-      })
+      }),
 );
 
 export const selectSearchParams = (state) => state.params.searchParams;
@@ -148,15 +148,15 @@ export const selectBalanceChartPercentage = (state) =>
   state.params.selectBalanceChartPercentage;
 
 const readFromURLParamsSelectors = readFromURLParams.map(
-  (k) => (state) => state.params[k]
+  (k) => (state) => state.params[k],
 );
 
 export const selectParamsToSaveInURL = createSelector(
   readFromURLParamsSelectors,
   (...values) =>
     Object.fromEntries(
-      values.map((value, index) => [readFromURLParams[index], value])
-    )
+      values.map((value, index) => [readFromURLParams[index], value]),
+    ),
 );
 
 export const {

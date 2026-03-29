@@ -1,11 +1,13 @@
 import { useDispatch } from 'react-redux';
 
 import { InlineIcon } from '@iconify/react';
-import sync16 from '@iconify/icons-octicon/sync-16';
 
-import { userApiSlice, useAutomaticUserTokenAuthQuery } from 'api/userApiSlice';
-import { useAutomaticGetFullDBQuery } from 'api/dbApiSlice';
-import { AutoBlurButton } from 'utils';
+import {
+  userApiSlice,
+  useAutomaticUserTokenAuthQuery,
+} from '/src/api/userApiSlice';
+import { useAutomaticGetFullDBQuery } from '/src/api/dbApiSlice';
+import { AutoBlurButton } from '/src/utils';
 
 export const RefreshBtn = ({ ...props }) => {
   const dispatch = useDispatch();
@@ -13,7 +15,7 @@ export const RefreshBtn = ({ ...props }) => {
     useAutomaticUserTokenAuthQuery();
   const { isFetching: isFetchingDB } = useAutomaticGetFullDBQuery(
     {},
-    { skip: !isSuccessUser }
+    { skip: !isSuccessUser },
   );
 
   const isFetching = isFetchingUser || isFetchingDB;
@@ -22,12 +24,12 @@ export const RefreshBtn = ({ ...props }) => {
 
   return (
     <AutoBlurButton
-      variant='outline-primary'
-      className='mirror'
+      variant="outline-primary"
+      className="mirror"
       onClick={onRefreshData}
       disabled={isFetching}
     >
-      <InlineIcon icon={sync16} className={isFetching ? 'spin' : ''} />
+      <InlineIcon icon="octicon:sync-16" className={isFetching ? 'spin' : ''} />
     </AutoBlurButton>
   );
 };

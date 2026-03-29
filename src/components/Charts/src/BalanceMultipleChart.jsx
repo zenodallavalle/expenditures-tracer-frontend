@@ -1,15 +1,15 @@
-import { useAutomaticGetFullDBQuery } from 'api/dbApiSlice';
+import { useAutomaticGetFullDBQuery } from '/src/api/dbApiSlice';
 import {
   convertBootstrapColorToRGBA,
   filterDataForBalanceChart,
   formatMonthCustomFormat,
-} from 'utils';
+} from '/src/utils';
 
 import { useSelector } from 'react-redux';
 import {
   selectBalanceChartPercentage,
   selectBalanceChartPeriod,
-} from 'rdx/params';
+} from '/src/rdx/params';
 
 import {
   Chart as ChartJS,
@@ -42,7 +42,7 @@ ChartJS.register(
   Title,
   Tooltip,
   LineController,
-  BarController
+  BarController,
 );
 
 const filterAndSortData = (months, balanceChartPeriod) => {
@@ -63,7 +63,7 @@ const prepareData = (filteredMonths, hideLine) => {
   return {
     labels:
       filteredMonths?.map(({ month }) =>
-        formatMonthCustomFormat(month, 'mmm-yy')
+        formatMonthCustomFormat(month, 'mmm-yy'),
       ) || [],
     datasets: [
       {
@@ -110,7 +110,7 @@ const preparePercentageData = (filteredMonths, percentageBaseRefIndex) => {
   return {
     labels:
       filteredMonths?.map(({ month }) =>
-        formatMonthCustomFormat(month, 'mmm-yy')
+        formatMonthCustomFormat(month, 'mmm-yy'),
       ) || [],
     datasets: [
       {
@@ -139,7 +139,7 @@ const preparePercentageData = (filteredMonths, percentageBaseRefIndex) => {
         data: filteredMonths?.map(({ current_money }, index) =>
           index < percentageBaseRefIndex
             ? undefined
-            : Math.round((current_money / percentageBaseRef) * 100)
+            : Math.round((current_money / percentageBaseRef) * 100),
         ),
         backgroundColor: convertBootstrapColorToRGBA('primary', 1),
         borderColor: convertBootstrapColorToRGBA('primary', 0.75),
@@ -160,13 +160,13 @@ export const BalanceMultipleChartCore = ({
 
   const filteredMonths = useMemo(
     () => filterAndSortData(months, balanceChartPeriod),
-    [months, balanceChartPeriod]
+    [months, balanceChartPeriod],
   );
   const data = prepareData(filteredMonths, hideLine);
 
   const percentageBaseRefIndex = useMemo(
     () => (hideLine ? null : getIndexForPercentageBaseRef(filteredMonths)),
-    [filteredMonths, hideLine]
+    [filteredMonths, hideLine],
   );
 
   const percentageData = useMemo(
@@ -174,7 +174,7 @@ export const BalanceMultipleChartCore = ({
       hideLine
         ? null
         : preparePercentageData(filteredMonths, percentageBaseRefIndex),
-    [filteredMonths, percentageBaseRefIndex, hideLine]
+    [filteredMonths, percentageBaseRefIndex, hideLine],
   );
 
   const options = {
@@ -246,7 +246,7 @@ export const BalanceMultipleChartWrapper = ({ ...props }) => {
         />
       )}
     >
-      <div className='d-md-flex justify-content-between align-items-end'>
+      <div className="d-md-flex justify-content-between align-items-end">
         <ChartTypeSelector />
         <ChartPercentageSelector />
         <BalanceChartPeriod />

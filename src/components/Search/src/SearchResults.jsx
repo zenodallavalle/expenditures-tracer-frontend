@@ -1,10 +1,10 @@
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 
-import { useAutomaticSearchExpendituresDebouncedQuery } from 'api/expenditureApiSlice';
-import { getColumnWidth, LoadingDiv } from 'utils';
+import { useAutomaticSearchExpendituresDebouncedQuery } from '/src/api/expenditureApiSlice';
+import { getColumnWidth, LoadingDiv } from '/src/utils';
 
-import { Expenditure } from 'components/Expenditure';
+import { Expenditure } from '/src/components/Expenditure';
 
 export const SearchResults = ({ ...props }) => {
   const {
@@ -18,18 +18,18 @@ export const SearchResults = ({ ...props }) => {
   return (
     <div>
       {isFetching ? (
-        <LoadingDiv divClassName='text-center' />
+        <LoadingDiv divClassName="text-center" />
       ) : isUninitialized ? (
-        <div className='text-center'>
+        <div className="text-center">
           Type something in search bar or edit advanced search filters to look
           for expenditures.
         </div>
       ) : !searchResults.length ? (
-        <div className='text-center fst-italic'>
+        <div className="text-center fst-italic">
           The search did not produce any result.
         </div>
       ) : isError ? (
-        <div className='text-center'>
+        <div className="text-center">
           <div>Error occurred, try again later.</div>
           <div>{JSON.stringify(error)}</div>
         </div>
@@ -42,7 +42,7 @@ export const SearchResults = ({ ...props }) => {
                 expenditure={expenditure}
                 showType
                 showCategory
-                className='pb-1 mx-auto'
+                className="pb-1 mx-auto"
                 style={{
                   maxWidth: getColumnWidth(),
                   minWidth: getColumnWidth() * 0.7,

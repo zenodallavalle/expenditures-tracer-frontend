@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { selectSearchParams } from 'rdx/params';
-import { parseFloat, RequestsGrouper } from 'utils';
+import { selectSearchParams } from '/src/rdx/params';
+import { parseFloat, RequestsGrouper } from '/src/utils';
 
 import { categoryApiSlice } from './categoryApiSlice';
 
@@ -110,7 +110,7 @@ export const expenditureApiSlice = userApiSliceWithDBTags.injectEndpoints({
             expected_expenditure,
             is_expected,
             category,
-          })
+          }),
         );
         return {
           url: `/expenditures/`,
@@ -124,7 +124,7 @@ export const expenditureApiSlice = userApiSliceWithDBTags.injectEndpoints({
         Array.from(new Set(args.map(({ category }) => category))).forEach(
           (id) => {
             invalidatedTags.push({ type: 'category', id });
-          }
+          },
         );
 
         Array.from(new Set(results.map(({ db }) => db))).forEach((id) => {
@@ -133,8 +133,8 @@ export const expenditureApiSlice = userApiSliceWithDBTags.injectEndpoints({
 
         Array.from(
           new Set(
-            results.map(({ expected_expenditure }) => expected_expenditure)
-          )
+            results.map(({ expected_expenditure }) => expected_expenditure),
+          ),
         ).forEach((expected_expenditure) => {
           if (expected_expenditure)
             invalidatedTags.push({
@@ -156,7 +156,7 @@ export const expenditureApiSlice = userApiSliceWithDBTags.injectEndpoints({
       invalidatesTags: (
         result,
         error,
-        { id, value, category, expected_expenditure, ...arg }
+        { id, value, category, expected_expenditure, ...arg },
       ) => {
         const invalidatedTags = [{ type: 'expenditure', id: id }];
         if (value) {
@@ -203,7 +203,7 @@ export const {
 
 export const useAutomaticSearchExpendituresDebouncedQuery = (
   { ...args } = {},
-  { skip, debounceTimeMs = 300, ...api } = {}
+  { skip, debounceTimeMs = 300, ...api } = {},
 ) => {
   const selectedSearchParams = useSelector(selectSearchParams);
   const [searchParams, setSearchParams] = useState(selectedSearchParams);
@@ -217,7 +217,7 @@ export const useAutomaticSearchExpendituresDebouncedQuery = (
         setSearchParams({ ...params });
       }, debounceTimeMs);
     },
-    [debounceTimeMs]
+    [debounceTimeMs],
   );
 
   useEffect(() => {
@@ -232,9 +232,9 @@ export const useAutomaticSearchExpendituresDebouncedQuery = (
       Object.values(searchParamsButQueryString).reduce(
         (counter, value) =>
           value !== undefined && value !== null ? counter + 1 : counter,
-        0
+        0,
       ),
-    [searchParamsButQueryString]
+    [searchParamsButQueryString],
   );
 
   const invalidQueryStrings = !queryString || String(queryString).length <= 3;
@@ -243,6 +243,6 @@ export const useAutomaticSearchExpendituresDebouncedQuery = (
     { ...searchParams },
     {
       skip: skip || (invalidQueryStrings && numberOfParams < 2),
-    }
+    },
   );
 };

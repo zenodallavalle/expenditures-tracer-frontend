@@ -1,6 +1,6 @@
-import { useAutomaticGetFullDBQuery } from 'api/dbApiSlice';
+import { useAutomaticGetFullDBQuery } from '/src/api/dbApiSlice';
 import Offcanvas from 'react-bootstrap/Offcanvas';
-import { LoadingDiv } from 'utils';
+import { LoadingDiv } from '/src/utils';
 
 import CurrentMoney from './CurrentMoney';
 import EmptyCurrentMoney from './EmptyCurrentMoney';
@@ -11,18 +11,18 @@ export const CurrentMoneyIncomesOffcanvas = ({ show, onHide, ...props }) => {
   const currentMoneyId = fullDB?.actual_money;
 
   return (
-    <Offcanvas show={show} onHide={onHide} placement='end'>
+    <Offcanvas show={show} onHide={onHide} placement="end">
       <Offcanvas.Header closeButton>
         <h5>Current money and incomes</h5>
       </Offcanvas.Header>
 
-      <div className='px-2'>
-        <div className='mb-3'>
+      <div className="px-2">
+        <div className="mb-3">
           {isLoading ? (
             <LoadingDiv />
           ) : (
             <div>
-              <h5 className='text-center'>Current money</h5>
+              <h5 className="text-center">Current money</h5>
               {currentMoneyId ? (
                 <CurrentMoney id={currentMoneyId} />
               ) : (

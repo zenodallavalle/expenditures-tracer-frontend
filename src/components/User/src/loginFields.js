@@ -1,4 +1,4 @@
-import { notEmptyValidator } from 'utils/validators';
+import { notEmptyValidator } from '/src/utils/validators';
 
 export const loginFields = [
   {
