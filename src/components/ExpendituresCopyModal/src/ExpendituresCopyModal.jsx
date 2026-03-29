@@ -3,11 +3,11 @@ import { useEffect, useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 
-import { AutoBlurButton, getFirstDateForPreviousMonth } from 'utils';
-import { useAutomaticGetFullDBQuery } from 'api/dbApiSlice';
+import { AutoBlurButton, getFirstDateForPreviousMonth } from '/src/utils';
+import { useAutomaticGetFullDBQuery } from '/src/api/dbApiSlice';
 import { createContext } from 'react';
 import { Category } from './Category';
-import { useNewExpendituresMutation } from 'api/expenditureApiSlice';
+import { useNewExpendituresMutation } from '/src/api/expenditureApiSlice';
 
 export const ExpendituresCopyModal = ({
   show,
@@ -53,16 +53,16 @@ export const ExpendituresCopyModal = ({
 
   return (
     <div>
-      <Modal size='lg' show={show} onHide={onHide}>
+      <Modal size="lg" show={show} onHide={onHide}>
         <Modal.Header closeButton>
-          <div className='fw-bold'>
+          <div className="fw-bold">
             {`Expected expenditures from ${monthSource}`}
           </div>
         </Modal.Header>
 
         <Modal.Body>
-          <div className='d-flex align-items-baseline'>
-            <div className='me-1'>Select source month</div>
+          <div className="d-flex align-items-baseline">
+            <div className="me-1">Select source month</div>
             <Form.Select disabled={isLoading} onChange={onSelectMonth}>
               {months?.map(({ month, isWorking }) => (
                 <option
@@ -94,9 +94,9 @@ export const ExpendituresCopyModal = ({
         </Modal.Body>
 
         <Modal.Footer>
-          <div className='d-flex justify-content-between w-100'>
+          <div className="d-flex justify-content-between w-100">
             <div>
-              <AutoBlurButton onClick={onHide} variant='danger'>
+              <AutoBlurButton onClick={onHide} variant="danger">
                 Cancel
               </AutoBlurButton>
             </div>

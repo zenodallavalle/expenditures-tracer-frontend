@@ -1,4 +1,4 @@
-import { getCurrentMonth } from 'utils';
+import { getCurrentMonth } from '/src/utils';
 
 export const readFromURLParams = ['workingMonth', 'panel'];
 
@@ -19,12 +19,12 @@ const parameterValueOrDefault = (value, defaultValue) =>
 
 export const loadInitialParametersReadFromURL = () => {
   const initialParams = Object.fromEntries(
-    readFromURLParams.map((param) => [param, readValueFromQueryString(param)])
+    readFromURLParams.map((param) => [param, readValueFromQueryString(param)]),
   );
   return Object.fromEntries(
     readFromURLParams.map((k) => [
       k,
       parameterValueOrDefault(initialParams[k], readFromURLParamsDefault[k]),
-    ])
+    ]),
   );
 };

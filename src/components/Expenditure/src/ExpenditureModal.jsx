@@ -8,13 +8,13 @@ import {
   formatDateTime,
   LoadingImg,
   AutoBlurButton,
-} from 'utils';
+} from '/src/utils';
 
-import { useGetExpenditureQuery } from 'api/expenditureApiSlice';
+import { useGetExpenditureQuery } from '/src/api/expenditureApiSlice';
 import {
   useGetUserQuery,
   useAutomaticUserTokenAuthQuery,
-} from 'api/userApiSlice';
+} from '/src/api/userApiSlice';
 
 import { ComparisonRow } from './Comparison';
 
@@ -56,7 +56,7 @@ const ExpenditureModal = ({
     {
       skip:
         isLoading || mainuUserIsLoading || expenditure?.user === mainUser.id,
-    }
+    },
   );
 
   const creator = expenditure?.user === mainUser.id ? mainUser : user;
@@ -81,11 +81,11 @@ const ExpenditureModal = ({
       }}
     >
       <Modal.Header closeButton>
-        <h5 className='me-2'>
+        <h5 className="me-2">
           {isLoading ? <LoadingImg width={20} /> : capitalize(expenditure.name)}
         </h5>
         {isSuccess && (
-          <Badge variant='primary'>
+          <Badge variant="primary">
             {expenditure?.is_expected ? 'expected' : 'actual'}
           </Badge>
         )}
@@ -93,13 +93,13 @@ const ExpenditureModal = ({
       <Modal.Body>
         <div>
           <div>
-            <span className='me-1'>Value</span>
+            <span className="me-1">Value</span>
             <span>{expenditure?.value}</span>
-            <span className='ms-1'>€</span>
+            <span className="ms-1">€</span>
           </div>
-          <div className='fst-italic small'>
-            <span className='me-1'>Registered by:</span>
-            <span className='fw-bold me-1'>
+          <div className="fst-italic small">
+            <span className="me-1">Registered by:</span>
+            <span className="fw-bold me-1">
               {creatorIsLoading ? <LoadingImg width={20} /> : creator?.username}
             </span>
             <span>{formatDateTime(expenditure?.date)}</span>
@@ -107,7 +107,7 @@ const ExpenditureModal = ({
         </div>
         <hr />
         {hasRelated ? (
-          <Table borderless size='sm'>
+          <Table borderless size="sm">
             <tbody>
               <ComparisonRow expectedId={expectedId} />
               <tr>
@@ -124,7 +124,7 @@ const ExpenditureModal = ({
                   className={
                     centerProspect +
                     ` ${getTextColorClassForDelta(
-                      expenditure?.prospect?.delta
+                      expenditure?.prospect?.delta,
                     )}`
                   }
                 >
@@ -150,7 +150,7 @@ const ExpenditureModal = ({
               setShowEditExpenditure(true);
               setShow(false);
             }}
-            className='w-100'
+            className="w-100"
           >
             Edit
           </AutoBlurButton>

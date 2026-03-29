@@ -5,7 +5,7 @@ import {
   changedBalanceChartPercentage,
   resetBalanceChartPercentage,
   selectBalanceChartPercentage,
-} from 'rdx/params';
+} from '/src/rdx/params';
 
 export const ChartPercentageSelector = ({ ...props }) => {
   const dispatch = useDispatch();
@@ -21,11 +21,11 @@ export const ChartPercentageSelector = ({ ...props }) => {
   }, [balanceChartPercentage, dispatch]);
 
   return (
-    <div className='text-center'>
+    <div className="text-center">
       <Form.Check
-        type='switch'
-        className='d-inline-block'
-        id='balance-chart-percentage-switch'
+        type="switch"
+        className="d-inline-block"
+        id="balance-chart-percentage-switch"
         checked={balanceChartPercentage}
         onChange={() => onChangeBalanceChartPercentage(!balanceChartPercentage)}
       />

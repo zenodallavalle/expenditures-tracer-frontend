@@ -1,14 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 import FormControl from 'react-bootstrap/FormControl';
 
-import { useEditCashMutation, useGetCashQuery } from 'api/cashApiSlice';
+import { useEditCashMutation, useGetCashQuery } from '/src/api/cashApiSlice';
 
 import {
   formatDateTime,
   formatFloat,
   FunctionalitiesMenu,
   parseFloat,
-} from 'utils';
+} from '/src/utils';
 
 import { CashLoading } from './CashLoading';
 
@@ -41,31 +41,31 @@ const CurrentMoney = ({ id, ...props }) => {
   }, [isEditing]);
 
   return (
-    <div className='ms-2'>
-      <div className='d-flex'>
+    <div className="ms-2">
+      <div className="d-flex">
         {isLoading ? (
           <CashLoading />
         ) : isEditing ? (
-          <div className='flex-grow-1'>
+          <div className="flex-grow-1">
             <FormControl
               ref={ref}
-              name='value'
+              name="value"
               defaultValue={currentMoney?.value || ''}
               disabled={editCashIsLoading}
             />
             {editCashError?.data?.value?.map((msg, idx) => (
               <div
                 key={`edit_current_money_value_error_${idx}`}
-                className='text-danger'
+                className="text-danger"
               >
                 {msg}
               </div>
             ))}
           </div>
         ) : (
-          <div className='flex-grow-1'>
+          <div className="flex-grow-1">
             <div>{`${formatFloat(currentMoney?.value)} €`}</div>
-            <div className='text-muted fst-italic'>
+            <div className="text-muted fst-italic">
               {`@ ${formatDateTime(currentMoney?.date)}`}
             </div>
           </div>

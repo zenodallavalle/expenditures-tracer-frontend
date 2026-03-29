@@ -1,7 +1,7 @@
 import Table from 'react-bootstrap/Table';
 
-import { useAutomaticGetFullDBQuery } from 'api/dbApiSlice';
-import { getTextColorClassForDelta, LoadingImg } from 'utils';
+import { useAutomaticGetFullDBQuery } from '/src/api/dbApiSlice';
+import { getTextColorClassForDelta, LoadingImg } from '/src/utils';
 
 const right = 'text-end';
 const center = 'text-center';
@@ -21,7 +21,7 @@ export const DatabaseProspect = ({ ...props }) => {
 
   return (
     <div>
-      <Table borderless size='sm'>
+      <Table borderless size="sm">
         <tbody>
           <tr>
             <th className={legend}>Income</th>

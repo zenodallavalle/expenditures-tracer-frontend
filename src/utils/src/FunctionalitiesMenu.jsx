@@ -2,13 +2,8 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import Collapse from 'react-bootstrap/Collapse';
 
 import { InlineIcon } from '@iconify/react';
-import pencil16 from '@iconify/icons-octicon/pencil-16';
-import check16 from '@iconify/icons-octicon/check-16';
-import trashcan16 from '@iconify/icons-octicon/trashcan-16';
-import kebabHorizontal16 from '@iconify/icons-octicon/kebab-horizontal-16';
-import chevronRight16 from '@iconify/icons-octicon/chevron-right-16';
 
-import { LoadingDiv, AutoBlurTransparentButton } from 'utils';
+import { LoadingDiv, AutoBlurTransparentButton } from '/src/utils';
 
 const FunctionalitiesMenu = ({
   isExtended: passedIsExtended,
@@ -110,7 +105,7 @@ const FunctionalitiesMenu = ({
         onEdited(
           e,
           () => setIsExtended(false) || setIsApplyingEdit(false),
-          () => setIsApplyingEdit(false)
+          () => setIsApplyingEdit(false),
         );
       }
     } else {
@@ -121,7 +116,7 @@ const FunctionalitiesMenu = ({
         onEdit(
           e,
           () => setIsExtended(false) || setIsApplyingEdit(false),
-          () => setIsApplyingEdit(false)
+          () => setIsApplyingEdit(false),
         );
       }
     }
@@ -134,7 +129,7 @@ const FunctionalitiesMenu = ({
         onDelete(
           e,
           () => setIsExtended(false) || setIsApplyingDelete(false),
-          () => setIsApplyingDelete(false)
+          () => setIsApplyingDelete(false),
         );
       }
     } else {
@@ -147,7 +142,7 @@ const FunctionalitiesMenu = ({
           onDelete(
             e,
             () => setIsExtended(false) || setIsApplyingDelete(false),
-            () => setIsApplyingDelete(false)
+            () => setIsApplyingDelete(false),
           );
         }
       }
@@ -155,14 +150,14 @@ const FunctionalitiesMenu = ({
   };
 
   return (
-    <div className='d-flex flex-row align-items-center'>
+    <div className="d-flex flex-row align-items-center">
       {showExpander && !hideExpander && (
         <div>
           <AutoBlurTransparentButton
             onClick={toggleExpand}
             disabled={!clickable}
           >
-            <InlineIcon icon={kebabHorizontal16} />
+            <InlineIcon icon="octicon:kebab-horizontal-16" />
           </AutoBlurTransparentButton>
         </div>
       )}
@@ -170,17 +165,17 @@ const FunctionalitiesMenu = ({
         in={isExtended}
         onExited={() => setShowExpander(true)}
         onEnter={() => setShowExpander(false)}
-        dimension='width'
+        dimension="width"
       >
         <div>
-          <div className='d-flex flex-row'>
+          <div className="d-flex flex-row">
             {!hideCollapser && (
               <div>
                 <AutoBlurTransparentButton
                   onClick={toggleExpand}
                   disabled={!clickable || isEditing}
                 >
-                  <InlineIcon icon={chevronRight16} />
+                  <InlineIcon icon="octicon:chevron-right-16" />
                 </AutoBlurTransparentButton>
               </div>
             )}
@@ -193,7 +188,11 @@ const FunctionalitiesMenu = ({
                   {isApplyingEdit ? (
                     <LoadingDiv maxWidth={15} />
                   ) : (
-                    <InlineIcon icon={isEditing ? check16 : pencil16} />
+                    <InlineIcon
+                      icon={
+                        isEditing ? 'octicon:check-16' : 'octicon:pencil-16'
+                      }
+                    />
                   )}
                 </AutoBlurTransparentButton>
               </div>
@@ -212,7 +211,7 @@ const FunctionalitiesMenu = ({
                   {isApplyingDelete ? (
                     <LoadingDiv maxWidth={15} />
                   ) : (
-                    <InlineIcon icon={trashcan16} />
+                    <InlineIcon icon="octicon:trashcan-16" />
                   )}
                 </AutoBlurTransparentButton>
               </div>

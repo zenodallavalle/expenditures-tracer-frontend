@@ -7,16 +7,16 @@ import {
   selectAuthToken,
   selectUserSearchParams,
   updatedAuthToken,
-} from 'rdx/params';
+} from '/src/rdx/params';
 
-import { RequestsGrouper } from 'utils';
+import { RequestsGrouper } from '/src/utils';
 
 import prepareHeaders from './prepareHeaders';
 
 const userQueryFnBase = async (
   extraOptions,
   { signal, dispatch, getState },
-  baseQuery
+  baseQuery,
 ) => {
   const result = await baseQuery(extraOptions, { signal, dispatch, getState });
   if (result.meta?.response?.ok) {
@@ -35,7 +35,7 @@ const userTokenAuthQueryFn = (
   { authToken, ...args } = {},
   api,
   extraOptions,
-  baseQuery
+  baseQuery,
 ) =>
   userQueryFnBase(
     {
@@ -43,7 +43,7 @@ const userTokenAuthQueryFn = (
       url: `/api-token-auth/`,
     },
     api,
-    baseQuery
+    baseQuery,
   );
 
 const loginQueryFn = ({ username, password }, api, extraOptions, baseQuery) =>
@@ -55,7 +55,7 @@ const loginQueryFn = ({ username, password }, api, extraOptions, baseQuery) =>
       url: `/api-token-auth/`,
     },
     api,
-    baseQuery
+    baseQuery,
   );
 
 const signupQueryFn = (payload, api, extraOptions, baseQuery) =>
@@ -67,7 +67,7 @@ const signupQueryFn = (payload, api, extraOptions, baseQuery) =>
       url: `/users/`,
     },
     api,
-    baseQuery
+    baseQuery,
   );
 
 const api = new RequestsGrouper({ endpoint: '/users/' });
@@ -75,7 +75,7 @@ const api = new RequestsGrouper({ endpoint: '/users/' });
 export const userApiSlice = createApi({
   reducerPath: 'api',
   baseQuery: fetchBaseQuery({
-    baseUrl: process.env.REACT_APP_API_ROOT,
+    baseUrl: import.meta.env.VITE_API_ROOT,
     prepareHeaders,
   }),
   tagTypes: ['user', 'db'],
@@ -119,7 +119,7 @@ export const userApiSlice = createApi({
       queryFn: async (
         extraOptions,
         { signal, dispatch, getState },
-        baseQuery
+        baseQuery,
       ) => {
         dispatch(deletedAuthToken());
         dispatch(deletedWorkingDBId());
@@ -141,7 +141,7 @@ export const {
 
 export const useAutomaticUserTokenAuthQuery = (
   { ...args } = {},
-  { skip, ...props } = {}
+  { skip, ...props } = {},
 ) => {
   const authToken = useSelector(selectAuthToken);
   return useUserTokenAuthQuery({ authToken }, { skip: !authToken || skip });
@@ -149,7 +149,7 @@ export const useAutomaticUserTokenAuthQuery = (
 
 export const useAutomaticSearchUsersDebouncedQuery = (
   { ...args } = {},
-  { skip, debounceTimeMs = 300, ...api } = {}
+  { skip, debounceTimeMs = 300, ...api } = {},
 ) => {
   const selectedUserSerachParams = useSelector(selectUserSearchParams);
   const [searchParams, setSearchParams] = useState(selectedUserSerachParams);
@@ -163,7 +163,7 @@ export const useAutomaticSearchUsersDebouncedQuery = (
         setSearchParams({ ...params });
       }, debounceTimeMs);
     },
-    [debounceTimeMs]
+    [debounceTimeMs],
   );
 
   useEffect(() => {
@@ -177,6 +177,6 @@ export const useAutomaticSearchUsersDebouncedQuery = (
     { queryString: String(queryString).trim() },
     {
       skip: skip || !queryString || !String(queryString).trim(),
-    }
+    },
   );
 };

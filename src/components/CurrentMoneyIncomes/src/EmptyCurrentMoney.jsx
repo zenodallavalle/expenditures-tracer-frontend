@@ -2,16 +2,14 @@ import { useRef, useState } from 'react';
 
 import FormControl from 'react-bootstrap/FormControl';
 import { InlineIcon } from '@iconify/react';
-import x16 from '@iconify/icons-octicon/x-16';
-import check16 from '@iconify/icons-octicon/check-16';
 
-import { useNewCashMutation } from 'api/cashApiSlice';
+import { useNewCashMutation } from '/src/api/cashApiSlice';
 import {
   AutoBlurButton,
   AutoBlurTransparentButton,
   LoadingImg,
   parseFloat,
-} from 'utils';
+} from '/src/utils';
 
 const EmptyCurrentMoney = ({ ...props }) => {
   const [isAdding, setIsAdding] = useState();
@@ -33,21 +31,21 @@ const EmptyCurrentMoney = ({ ...props }) => {
   const onCancel = () => setIsAdding();
 
   return (
-    <div className='ms-2'>
+    <div className="ms-2">
       {isAdding ? (
-        <div className='d-flex'>
-          <div className='flex-grow-1'>
+        <div className="d-flex">
+          <div className="flex-grow-1">
             <FormControl
               ref={ref}
               disabled={addCurrentMoneyIsLoading}
-              type='number'
-              name='value'
+              type="number"
+              name="value"
               step={0.01}
             />
             {addCurrentMoneyError?.data?.value?.map((msg, idx) => (
               <div
                 key={`add_current_money_value_error_${idx}`}
-                className='text-danger'
+                className="text-danger"
               >
                 {msg}
               </div>
@@ -58,7 +56,7 @@ const EmptyCurrentMoney = ({ ...props }) => {
               onClick={onCancel}
               disabled={addCurrentMoneyIsLoading}
             >
-              <InlineIcon icon={x16} />
+              <InlineIcon icon="octicon:x-16" />
             </AutoBlurTransparentButton>
             <AutoBlurTransparentButton
               onClick={onAdded}
@@ -67,17 +65,17 @@ const EmptyCurrentMoney = ({ ...props }) => {
               {addCurrentMoneyIsLoading ? (
                 <LoadingImg maxWidth={28} />
               ) : (
-                <InlineIcon icon={check16} />
+                <InlineIcon icon="octicon:check-16" />
               )}
             </AutoBlurTransparentButton>
           </div>
         </div>
       ) : (
-        <div className='text-center'>
-          <div className='fst-italic'>
+        <div className="text-center">
+          <div className="fst-italic">
             Current money not registered for this month.
           </div>
-          <AutoBlurButton variant='link' onClick={onAdd}>
+          <AutoBlurButton variant="link" onClick={onAdd}>
             Register current money now!
           </AutoBlurButton>
         </div>

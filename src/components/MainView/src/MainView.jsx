@@ -1,14 +1,14 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { changedPanel, selectPanel } from 'rdx/params';
+import { changedPanel, selectPanel } from '/src/rdx/params';
 
-import { PanelUser } from 'components/User';
-import { PanelProspect } from 'components/Prospect';
-import { PanelExpenditures } from 'components/Expenditure';
-import { PanelMonths } from 'components/Month';
-import { Search } from 'components/Search';
-import { PanelCharts } from 'components/Charts';
+import { PanelUser } from '/src/components/User';
+import { PanelProspect } from '/src/components/Prospect';
+import { PanelExpenditures } from '/src/components/Expenditure';
+import { Months } from '/src/components/Month';
+import { SearchFilters, SearchResults } from '/src/components/Search';
+import { PanelCharts } from '/src/components/Charts';
 
 export const MainView = () => {
   const dispatch = useDispatch();
@@ -36,13 +36,18 @@ export const MainView = () => {
     case 'user':
       return <PanelUser />;
     case 'months':
-      return <PanelMonths />;
+      return <Months />;
     case 'actual_expenditures':
       return <PanelExpenditures />;
     case 'expected_expenditures':
       return <PanelExpenditures expected />;
     case 'search':
-      return <Search />;
+      return (
+        <>
+          <SearchFilters />
+          <SearchResults />
+        </>
+      );
     case 'charts':
       return <PanelCharts />;
     default:

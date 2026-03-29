@@ -1,14 +1,14 @@
 import ListGroupItem from 'react-bootstrap/ListGroupItem';
 import FormControl from 'react-bootstrap/FormControl';
 
-import { useGetExpenditureQuery } from 'api/expenditureApiSlice';
+import { useGetExpenditureQuery } from '/src/api/expenditureApiSlice';
 import {
   CheckButton,
   dateToLocaleISOString,
   adaptDateForMonth,
   formatDateTime,
   getCurrentMonth,
-} from 'utils';
+} from '/src/utils';
 
 import { useCallback, useContext } from 'react';
 
@@ -25,15 +25,15 @@ export const Expenditure = ({ id, context, ...props }) => {
       date: adaptDateForMonth(new Date(date), getCurrentMonth()),
       previousMonthId: id,
     }),
-    [id]
+    [id],
   );
   const { data: expenditure, isLoading } = useGetExpenditureQuery(
     { id },
-    { skip: !id }
+    { skip: !id },
   );
 
   const instance = selected.find(
-    ({ previousMonthId }) => previousMonthId === id
+    ({ previousMonthId }) => previousMonthId === id,
   );
 
   const checked = instance !== undefined;
@@ -41,7 +41,7 @@ export const Expenditure = ({ id, context, ...props }) => {
   const onToggleSelect = () => {
     if (checked) {
       setSelected((s) =>
-        s.filter(({ previousMonthId }) => previousMonthId !== id)
+        s.filter(({ previousMonthId }) => previousMonthId !== id),
       );
     } else {
       setSelected((s) => [...s, generateExpenditure(expenditure)]);
@@ -53,7 +53,7 @@ export const Expenditure = ({ id, context, ...props }) => {
       const ret = s.map(({ previousMonthId, ...expenditure }) =>
         previousMonthId === id
           ? { ...expenditure, previousMonthId, [e.target.name]: e.target.value }
-          : { ...expenditure, previousMonthId }
+          : { ...expenditure, previousMonthId },
       );
       return ret;
     });
@@ -62,19 +62,19 @@ export const Expenditure = ({ id, context, ...props }) => {
   if (isLoading) return null;
   return (
     <ListGroupItem>
-      <div className='d-flex'>
+      <div className="d-flex">
         <CheckButton
           id={id}
           checked={checked}
           onChange={onToggleSelect}
           disabled={isLoading || newExpendituresAreLoading}
         />
-        <div className='w-100'>
-          <div className='pb-1'>
+        <div className="w-100">
+          <div className="pb-1">
             {checked ? (
               <FormControl
                 value={instance?.name || ''}
-                name='name'
+                name="name"
                 onChange={onChange}
                 disabled={newExpendituresAreLoading}
               />
@@ -82,13 +82,13 @@ export const Expenditure = ({ id, context, ...props }) => {
               expenditure?.name || ''
             )}
           </div>
-          <div className='pb-1'>
+          <div className="pb-1">
             {checked ? (
               <FormControl
-                type='number'
+                type="number"
                 step={1}
                 value={instance?.value || 0}
-                name='value'
+                name="value"
                 onChange={onChange}
                 disabled={newExpendituresAreLoading}
               />
@@ -96,13 +96,13 @@ export const Expenditure = ({ id, context, ...props }) => {
               expenditure?.value || ''
             )}
           </div>
-          <div className='pb-1'>
+          <div className="pb-1">
             {checked ? (
               <FormControl
-                type='datetime-local'
+                type="datetime-local"
                 step={1}
                 value={dateToLocaleISOString(new Date(instance?.date))}
-                name='date'
+                name="date"
                 onChange={onChange}
                 disabled={newExpendituresAreLoading}
               />

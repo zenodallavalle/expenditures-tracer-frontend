@@ -1,13 +1,11 @@
 import { useDispatch, useSelector } from 'react-redux';
 
 import { InlineIcon } from '@iconify/react';
-import person16 from '@iconify/icons-octicon/person-16';
-import package16 from '@iconify/icons-octicon/package-16';
 
-import { useAutomaticUserTokenAuthQuery } from 'api/userApiSlice';
-import { useAutomaticGetFullDBQuery } from 'api/dbApiSlice';
-import { changedPanel, selectPanel } from 'rdx/params';
-import { AutoBlurButton } from 'utils';
+import { useAutomaticUserTokenAuthQuery } from '/src/api/userApiSlice';
+import { useAutomaticGetFullDBQuery } from '/src/api/dbApiSlice';
+import { changedPanel, selectPanel } from '/src/rdx/params';
+import { AutoBlurButton } from '/src/utils';
 
 export const UserBtn = ({ ...props }) => {
   const dispatch = useDispatch();
@@ -46,27 +44,28 @@ export const UserBtn = ({ ...props }) => {
   return (
     <AutoBlurButton
       variant={btnVariant}
-      className='px-1 mx-1'
+      className="px-1 mx-1"
       onClick={onClick}
+      title={short ? '' : 'User'}
       disabled={isFetching || panel === 'user'}
     >
-      <div className='d-flex flex-row'>
-        <div className='mx-1'>
-          <InlineIcon icon={person16} />
+      <div className="d-flex flex-row">
+        <div className="mx-1">
+          <InlineIcon icon="octicon:person-16" />
         </div>
         {!short && (
-          <div className='mx-1'>
+          <div className="mx-1">
             {isSuccessUser ? user.username : 'Please login'}
           </div>
         )}
 
         {isSuccessUser && (
-          <div className='mx-1'>
-            <InlineIcon icon={package16} />
+          <div className="mx-1">
+            <InlineIcon icon="octicon:package-16" />
           </div>
         )}
         {isSuccessUser && !short && (
-          <div className='mx-1'>{fullDB?.name || 'Choose DB'}</div>
+          <div className="mx-1">{fullDB?.name || 'Choose DB'}</div>
         )}
       </div>
     </AutoBlurButton>

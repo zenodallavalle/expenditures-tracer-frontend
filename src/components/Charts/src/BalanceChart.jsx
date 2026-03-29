@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import { BalanceMultipleChartWrapper } from './BalanceMultipleChart';
 import { MoneyCandlestickChartWrapper } from './MoneyCandlestickChart';
-import { resetBalanceChartType, selectBalanceChartType } from 'rdx/params';
+import { resetBalanceChartType, selectBalanceChartType } from '/src/rdx/params';
 
 import { balanceChartTypes } from './ChartTypeSelector';
 

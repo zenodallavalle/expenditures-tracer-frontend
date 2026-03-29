@@ -1,18 +1,18 @@
 import { CategoriesExpendituresChartWrapper } from './CategoriesExpendituresChart';
-import { getColumnWidth } from 'utils';
+import { getColumnWidth } from '/src/utils';
 
 import BalanceChart from './BalanceChart';
 
 const PanelCharts = ({ ...props }) => {
   return (
     <div
-      className='mt-1 mb-3 mx-auto w-100'
+      className="mt-1 mb-3 mx-auto w-100"
       style={{ maxWidth: getColumnWidth() * 2 }}
     >
-      <div className='mb-3'>
+      <div className="mb-3">
         <BalanceChart />
       </div>
-      <div className='mb-3'>
+      <div className="mb-3">
         <CategoriesExpendituresChartWrapper />
       </div>
     </div>

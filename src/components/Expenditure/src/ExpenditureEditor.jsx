@@ -4,22 +4,22 @@ import { useDispatch } from 'react-redux';
 import Form from 'react-bootstrap/Form';
 import Offcanvas from 'react-bootstrap/Offcanvas';
 
-import { useAutomaticGetFullDBQuery } from 'api/dbApiSlice';
+import { useAutomaticGetFullDBQuery } from '/src/api/dbApiSlice';
 import {
   categoryApiSlice,
   useAutomaticGetCategoryQuery,
-} from 'api/categoryApiSlice';
+} from '/src/api/categoryApiSlice';
 import {
   expenditureApiSlice,
   useEditExpenditureMutation,
   useGetExpenditureQuery,
-} from 'api/expenditureApiSlice';
+} from '/src/api/expenditureApiSlice';
 import {
   LoadingImg,
   dateToLocaleISOString,
   AutoBlurButton,
   LoadingDiv,
-} from 'utils';
+} from '/src/utils';
 
 const toPKRelated = (v) => {
   const int = parseInt(v.trim());
@@ -120,7 +120,7 @@ export const ExpenditureEditor = ({
 
   const { data: expectedExpenditure, isFetching } = useGetExpenditureQuery(
     { id: instance.expected_expenditure },
-    { skip: !instance.expected_expenditure }
+    { skip: !instance.expected_expenditure },
   );
 
   useEffect(() => {
@@ -213,7 +213,7 @@ export const ExpenditureEditor = ({
         dispatch(
           categoryApiSlice.util.invalidateTags([
             { type: 'category', id: expenditure.category },
-          ])
+          ]),
         );
       }
 
@@ -224,7 +224,7 @@ export const ExpenditureEditor = ({
         dispatch(
           expenditureApiSlice.util.invalidateTags([
             { type: 'expenditure', id: expenditure.expected_expenditure },
-          ])
+          ]),
         );
       }
       clear();
@@ -246,7 +246,7 @@ export const ExpenditureEditor = ({
     <Offcanvas
       show={show}
       onHide={onHide}
-      placement='end'
+      placement="end"
       style={{ width: '100%', maxWidth: 500 }}
     >
       <Offcanvas.Header closeButton>
@@ -254,11 +254,11 @@ export const ExpenditureEditor = ({
       </Offcanvas.Header>
       <Offcanvas.Body>
         <div>
-          <div className='d-flex align-items-baseline py-2'>
-            <div className='pe-2'>Description</div>
-            <div className='flex-grow-1'>
+          <div className="d-flex align-items-baseline py-2">
+            <div className="pe-2">Description</div>
+            <div className="flex-grow-1">
               <Form.Control
-                name='name'
+                name="name"
                 value={instance.name || expenditure?.name}
                 onChange={onChange}
                 onKeyDown={onKeyDown}
@@ -270,24 +270,24 @@ export const ExpenditureEditor = ({
           {messages.name?.map((m, idx) => (
             <div
               key={`msg_expenditure_name_val_${idx}`}
-              className='text-danger'
+              className="text-danger"
             >
               {m}
             </div>
           ))}
 
-          <div className='d-flex align-items-baseline py-2'>
-            <div className='pe-2'>Value</div>
-            <div className='flex-grow-1'>
+          <div className="d-flex align-items-baseline py-2">
+            <div className="pe-2">Value</div>
+            <div className="flex-grow-1">
               <Form.Control
-                name='value'
+                name="value"
                 value={
                   instance.value !== undefined
                     ? instance.value
                     : expenditure?.value
                 }
-                placeholder='€'
-                type='number'
+                placeholder="€"
+                type="number"
                 step={0.01}
                 onChange={onChange}
                 onKeyDown={onKeyDown}
@@ -299,24 +299,24 @@ export const ExpenditureEditor = ({
           {messages.value?.map((m, idx) => (
             <div
               key={`msg_expenditure_name_val_${idx}`}
-              className='text-danger'
+              className="text-danger"
             >
               {m}
             </div>
           ))}
 
-          <div className='d-flex align-items-baseline py-2'>
-            <div className='pe-2'>Date</div>
-            <div className='flex-grow-1'>
+          <div className="d-flex align-items-baseline py-2">
+            <div className="pe-2">Date</div>
+            <div className="flex-grow-1">
               <Form.Control
-                name='date'
-                type='datetime-local'
+                name="date"
+                type="datetime-local"
                 value={
                   instance.date
                     ? dateToLocaleISOString(new Date(instance.date))
                     : expenditure?.date
-                    ? dateToLocaleISOString(new Date(expenditure.date))
-                    : 'Loading'
+                      ? dateToLocaleISOString(new Date(expenditure.date))
+                      : 'Loading'
                 }
                 onChange={onChange}
                 onKeyDown={onKeyDown}
@@ -329,17 +329,17 @@ export const ExpenditureEditor = ({
           {messages.date?.map((m, idx) => (
             <div
               key={`msg_expenditure_name_val_${idx}`}
-              className='text-danger'
+              className="text-danger"
             >
               {m}
             </div>
           ))}
 
-          <div className='d-flex align-items-baseline py-2'>
-            <div className='pe-2'>Category</div>
-            <div className='flex-grow-1'>
+          <div className="d-flex align-items-baseline py-2">
+            <div className="pe-2">Category</div>
+            <div className="flex-grow-1">
               <Form.Select
-                name='category'
+                name="category"
                 value={
                   instance.category !== undefined
                     ? instance.category
@@ -370,7 +370,7 @@ export const ExpenditureEditor = ({
           {messages.category?.map((m, idx) => (
             <div
               key={`msg_expenditure_name_val_${idx}`}
-              className='text-danger'
+              className="text-danger"
             >
               {m}
             </div>
@@ -378,11 +378,11 @@ export const ExpenditureEditor = ({
 
           {!expenditure.is_expected && (
             <div>
-              <div className='d-flex align-items-baseline py-2'>
-                <div className='pe-2'>Expected expenditure</div>
-                <div className='flex-grow-1'>
+              <div className="d-flex align-items-baseline py-2">
+                <div className="pe-2">Expected expenditure</div>
+                <div className="flex-grow-1">
                   <Form.Select
-                    name='expected_expenditure'
+                    name="expected_expenditure"
                     value={
                       instance.expected_expenditure ||
                       expenditure.expected_expenditure ||
@@ -408,7 +408,7 @@ export const ExpenditureEditor = ({
               {messages.expected_expenditure?.map((m, idx) => (
                 <div
                   key={`msg_expenditure_name_val_${idx}`}
-                  className='text-danger'
+                  className="text-danger"
                 >
                   {m}
                 </div>
@@ -416,10 +416,10 @@ export const ExpenditureEditor = ({
             </div>
           )}
 
-          <div className='ps-1 flex-grow-1 pt-4'>
+          <div className="ps-1 flex-grow-1 pt-4">
             <AutoBlurButton
-              variant='success'
-              className='w-100'
+              variant="success"
+              className="w-100"
               onClick={onSave}
               disabled={isLoading}
             >

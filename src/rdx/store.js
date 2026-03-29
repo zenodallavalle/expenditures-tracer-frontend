@@ -2,10 +2,10 @@ import { configureStore } from '@reduxjs/toolkit';
 
 import equal from 'deep-equal';
 
-import { default as paramsReducer } from './params';
-import { alertsReducer } from './alerts';
-import { userApiSlice } from 'api/userApiSlice';
+import { userApiSlice } from '/src/api/userApiSlice';
 
+import { alertsReducer } from './alerts';
+import { default as paramsReducer } from './params';
 import {
   saveParamsInLocalStorage,
   syncedWithLocalSessionParams,
@@ -18,10 +18,10 @@ const paramsSyncWithLocalStorageMiddleware = (store) => (next) => (action) => {
 
   if (/params\//.test(action.type)) {
     const syncedPrevParams = Object.fromEntries(
-      syncedWithLocalSessionParams.map((k) => [k, prevParams[k]])
+      syncedWithLocalSessionParams.map((k) => [k, prevParams[k]]),
     );
     const syncedCurrentParams = Object.fromEntries(
-      syncedWithLocalSessionParams.map((k) => [k, currentParams[k]])
+      syncedWithLocalSessionParams.map((k) => [k, currentParams[k]]),
     );
     if (!equal(syncedPrevParams, syncedCurrentParams)) {
       saveParamsInLocalStorage(syncedCurrentParams);
@@ -38,7 +38,7 @@ const newStore = () =>
       alerts: alertsReducer,
       api: userApiSlice.reducer,
     },
-    devTools: process.env.NODE_ENV !== 'production',
+    devTools: import.meta.env.DEV,
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware()
         .concat(userApiSlice.middleware)

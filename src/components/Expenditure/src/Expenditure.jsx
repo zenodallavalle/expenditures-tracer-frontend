@@ -3,19 +3,18 @@ import { useSwipeable } from 'react-swipeable';
 
 import Badge from 'react-bootstrap/Badge';
 import { InlineIcon } from '@iconify/react';
-import workflow16 from '@iconify/icons-octicon/workflow-16';
 
 import {
   useDeleteExpenditureMutation,
   useGetExpenditureQuery,
-} from 'api/expenditureApiSlice';
-import { useAutomaticGetCategoryQuery } from 'api/categoryApiSlice';
+} from '/src/api/expenditureApiSlice';
+import { useAutomaticGetCategoryQuery } from '/src/api/categoryApiSlice';
 import {
   formatDateTime,
   FunctionalitiesMenu,
   getColorFor,
   LoadingImg,
-} from 'utils';
+} from '/src/utils';
 
 import { ExpenditureEditor } from './ExpenditureEditor';
 
@@ -49,7 +48,7 @@ export const Expenditure = ({
 
   const { data: cachedExpenditure, isLoading } = useGetExpenditureQuery(
     { id },
-    { skip: _expenditure }
+    { skip: _expenditure },
   );
 
   const expenditure = _expenditure || cachedExpenditure;
@@ -59,7 +58,7 @@ export const Expenditure = ({
   const { data: category, isFetching: categoryIsFetching } =
     useAutomaticGetCategoryQuery(
       { id: expenditure?.category },
-      { skip: !showCategory }
+      { skip: !showCategory },
     );
 
   const categoryBg = getColorFor(expenditure?.category);
@@ -83,10 +82,10 @@ export const Expenditure = ({
       <div
         {...(hasMouse || !editable ? null : handlers)}
         onClick={onToggleDetails}
-        className='bg-light border border-secondary rounded ms-2 my-1 ps-2 py-1'
+        className="bg-light border border-secondary rounded ms-2 my-1 ps-2 py-1"
       >
-        <div className='d-flex align-items-stretch'>
-          <div className='flex-grow-1'>
+        <div className="d-flex align-items-stretch">
+          <div className="flex-grow-1">
             {showCategory && (
               <Badge bg={categoryBg}>
                 {categoryIsFetching ? (
@@ -97,12 +96,12 @@ export const Expenditure = ({
               </Badge>
             )}
             <div>{expenditure?.name}</div>
-            <div className='text-muted fst-italic small'>
+            <div className="text-muted fst-italic small">
               {formatDateTime(expenditure?.date)}
             </div>
             <div>
               <span>{expenditure?.value}</span>
-              <span className='ms-1'>€</span>
+              <span className="ms-1">€</span>
             </div>
             {showType && (
               <Badge bg={expenditure?.is_expected ? 'secondary' : 'primary'}>
@@ -113,7 +112,7 @@ export const Expenditure = ({
           {editable && (
             <div>
               <div
-                className='d-flex flex-column h-100 justify-content-between'
+                className="d-flex flex-column h-100 justify-content-between"
                 onClick={(e) => e.stopPropagation()}
               >
                 <FunctionalitiesMenu
@@ -129,9 +128,9 @@ export const Expenditure = ({
                 {(expenditure?.expected_expenditure ||
                   (expenditure?.is_expected &&
                     expenditure?.actual_expenditures.length > 0)) && (
-                  <div className='ms-auto'>
-                    <div className='py-1 px-2' onClick={onToggleDetails}>
-                      <InlineIcon icon={workflow16} rotate={135} />
+                  <div className="ms-auto">
+                    <div className="py-1 px-2" onClick={onToggleDetails}>
+                      <InlineIcon icon="octicon:workflow-16" rotate={135} />
                     </div>
                   </div>
                 )}

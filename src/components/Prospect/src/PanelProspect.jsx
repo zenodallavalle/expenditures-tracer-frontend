@@ -3,17 +3,16 @@ import { useSelector } from 'react-redux';
 
 import Alert from 'react-bootstrap/Alert';
 import { InlineIcon } from '@iconify/react';
-import pencil16 from '@iconify/icons-octicon/pencil-16';
 
-import { useAutomaticGetFullDBQuery } from 'api/dbApiSlice';
-import { Category, CategoryProspect } from 'components/Category';
-import { CurrentMoneyIncomesOffcanvas } from 'components/CurrentMoneyIncomes';
-import { selectHiddenCategoriesIds } from 'rdx/params';
-import { AutoBlurButton, getColumnWidth } from 'utils';
+import { useAutomaticGetFullDBQuery } from '/src/api/dbApiSlice';
+import { Category, CategoryProspect } from '/src/components/Category';
+import { CurrentMoneyIncomesOffcanvas } from '/src/components/CurrentMoneyIncomes';
+import { selectHiddenCategoriesIds } from '/src/rdx/params';
+import { AutoBlurButton, getColumnWidth } from '/src/utils';
 
 import { DatabaseProspect } from './DatabaseProspect';
 import { DatabaseProspectLoading } from './DatabaseProspectLoading';
-import { ChartsCarousel } from 'components/Charts';
+import { ChartsCarousel } from '/src/components/Charts';
 
 export const PanelProspect = (props) => {
   const { data: fullDB, isSuccess, isLoading } = useAutomaticGetFullDBQuery();
@@ -24,7 +23,7 @@ export const PanelProspect = (props) => {
 
   const hiddenCategoriesIds = useMemo(() => {
     hiddenCategoriesIdsForAllDB?.filter((id) =>
-      fullDB?.categories.includes(id)
+      fullDB?.categories.includes(id),
     );
   }, [hiddenCategoriesIdsForAllDB, fullDB?.categories]);
 
@@ -32,22 +31,22 @@ export const PanelProspect = (props) => {
     useState();
 
   return (
-    <div className='mx-auto' style={{ maxWidth: getColumnWidth() }}>
-      <div className='border rounded border-primary p-1 mt-1 mb-3'>
+    <div className="mx-auto" style={{ maxWidth: getColumnWidth() }}>
+      <div className="border rounded border-primary p-1 mt-1 mb-3">
         {isLoading ? (
           <DatabaseProspectLoading />
         ) : (
           <>
-            <div className='pb-1'>
-              <div className='d-flex rounded bg-primary text-light'>
-                <div className='flex-grow-1 px-1'>Overall prosepct</div>
+            <div className="pb-1">
+              <div className="d-flex rounded bg-primary text-light">
+                <div className="flex-grow-1 px-1">Overall prosepct</div>
                 <div>
                   <AutoBlurButton
                     onClick={() => setShowEditMoneyIncomeOffcavas(true)}
-                    className='py-0'
+                    className="py-0"
                     disabled={!isSuccess}
                   >
-                    <InlineIcon icon={pencil16} />
+                    <InlineIcon icon="octicon:pencil-16" />
                   </AutoBlurButton>
                 </div>
               </div>
@@ -56,7 +55,7 @@ export const PanelProspect = (props) => {
             <DatabaseProspect />
 
             {prospect?.warn && (
-              <Alert variant='warning' className='mb-0 p-1 text-center small'>
+              <Alert variant="warning" className="mb-0 p-1 text-center small">
                 {prospect.warn}
               </Alert>
             )}
@@ -65,7 +64,7 @@ export const PanelProspect = (props) => {
       </div>
       <div>
         {isLoading ? null : !categoriesIds?.length ? (
-          <div className='text-center fst-italic'>
+          <div className="text-center fst-italic">
             No categories created yet.
             <br />
             Please, go to actual or expected expenditure panel and create one.
@@ -79,7 +78,7 @@ export const PanelProspect = (props) => {
               </Category>
             ))}
             {hiddenCategoriesIds?.length > 0 && (
-              <div className='text-center fst-italic small'>
+              <div className="text-center fst-italic small">
                 <div>
                   {hiddenCategoriesIds?.length === 1
                     ? 'There is one hidden category.'

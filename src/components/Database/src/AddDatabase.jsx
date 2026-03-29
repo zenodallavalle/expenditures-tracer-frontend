@@ -4,15 +4,15 @@ import { useNavigate } from 'react-router-dom';
 
 import FormControl from 'react-bootstrap/FormControl';
 
-import { useNewDBMutation } from 'api/dbApiSlice';
-import { useAutomaticUserTokenAuthQuery } from 'api/userApiSlice';
-import { updatedWorkingDBId } from 'rdx/params';
+import { useNewDBMutation } from '/src/api/dbApiSlice';
+import { useAutomaticUserTokenAuthQuery } from '/src/api/userApiSlice';
+import { updatedWorkingDBId } from '/src/rdx/params';
 import {
   capitalize,
   LoadingImg,
   AutoBlurButton,
   useCreateFormFields,
-} from 'utils';
+} from '/src/utils';
 
 import { databaseFields } from './databaseFields';
 
@@ -79,16 +79,16 @@ export const AddDatabase = ({ ...props }) => {
   }, [isAdding, firstFieldRef]);
 
   return (
-    <div className='py-1'>
+    <div className="py-1">
       {isAdding ? (
         <div>
-          <h5 className='text-center'>Create new database</h5>
+          <h5 className="text-center">Create new database</h5>
 
           {preparedFields.map(({ label, name, ...props }) => (
             <div key={`signup_parent_field_${name}`}>
-              <div className='d-flex align-items-baseline py-1'>
-                <div className='me-1'>{capitalize(label)}</div>
-                <div className='flex-grow-1'>
+              <div className="d-flex align-items-baseline py-1">
+                <div className="me-1">{capitalize(label)}</div>
+                <div className="flex-grow-1">
                   <FormControl
                     key={`signup_field_${name}`}
                     disabled={newDBIsLoading}
@@ -99,7 +99,7 @@ export const AddDatabase = ({ ...props }) => {
               </div>
               {validationMessages[name].map((msg, idx) => (
                 <div
-                  className='text-danger'
+                  className="text-danger"
                   key={`msg_login_validation_${name}_${idx}`}
                 >
                   {msg}
@@ -107,7 +107,7 @@ export const AddDatabase = ({ ...props }) => {
               ))}
               {newDBError?.data?.[name]?.map((msg, idx) => (
                 <div
-                  className='text-danger'
+                  className="text-danger"
                   key={`msg_login_response_${name}_${idx}`}
                 >
                   {msg}
@@ -116,21 +116,21 @@ export const AddDatabase = ({ ...props }) => {
             </div>
           ))}
 
-          <div className='d-flex align-items-baseline py-1'>
-            <div className='pe-1 flex-grow-1'>
+          <div className="d-flex align-items-baseline py-1">
+            <div className="pe-1 flex-grow-1">
               <AutoBlurButton
-                variant='danger'
-                className='w-100'
+                variant="danger"
+                className="w-100"
                 onClick={onCancel}
                 disabled={isFetching}
               >
                 Cancel
               </AutoBlurButton>
             </div>
-            <div className='ps-1 flex-grow-1'>
+            <div className="ps-1 flex-grow-1">
               <AutoBlurButton
-                variant='success'
-                className='w-100'
+                variant="success"
+                className="w-100"
                 onClick={onSubmit}
                 disabled={isFetching}
               >
@@ -140,7 +140,7 @@ export const AddDatabase = ({ ...props }) => {
           </div>
         </div>
       ) : (
-        <AutoBlurButton className='w-100' onClick={onAdd} variant='success'>
+        <AutoBlurButton className="w-100" onClick={onAdd} variant="success">
           Create new database
         </AutoBlurButton>
       )}

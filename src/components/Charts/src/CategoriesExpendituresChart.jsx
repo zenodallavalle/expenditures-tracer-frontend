@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
-import { useAutomaticGetDBForGraphsQuery } from 'api/dbApiSlice';
-import { selectCategoriesViewStatus } from 'rdx/params';
-import { getColorFor } from 'utils';
+import { useAutomaticGetDBForGraphsQuery } from '/src/api/dbApiSlice';
+import { selectCategoriesViewStatus } from '/src/rdx/params';
+import { getColorFor } from '/src/utils';
 
 import {
   Chart as ChartJS,
@@ -13,7 +13,7 @@ import {
   Legend,
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
-import { convertBootstrapColorToRGBA } from 'utils/src/cycleColors';
+import { convertBootstrapColorToRGBA } from '/src/utils/src/cycleColors';
 import ChartWrapper from './ChartWrapper';
 
 ChartJS.register(
@@ -22,7 +22,7 @@ ChartJS.register(
   BarElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
 );
 
 export const CategoriesExpendituresChartCore = ({ ...props }) => {
@@ -46,19 +46,19 @@ export const CategoriesExpendituresChartCore = ({ ...props }) => {
       {
         label: 'Actual expenditure',
         data: notHiddenCategories.map(
-          ({ prospect }) => prospect.actual_expenditure
+          ({ prospect }) => prospect.actual_expenditure,
         ),
         backgroundColor: notHiddenCategories.map(({ id, db }) =>
           convertBootstrapColorToRGBA(
             getColorFor({ type: `category_${db}`, id }),
-            1
-          )
+            1,
+          ),
         ),
         borderColor: notHiddenCategories.map(({ id, db }) =>
           convertBootstrapColorToRGBA(
             getColorFor({ type: `category_${db}`, id }),
-            1
-          )
+            1,
+          ),
         ),
         borderWidth: 1,
         borderRadius: 5,
@@ -66,19 +66,19 @@ export const CategoriesExpendituresChartCore = ({ ...props }) => {
       {
         label: 'Expected expenditure',
         data: notHiddenCategories.map(
-          ({ prospect }) => prospect.expected_expenditure
+          ({ prospect }) => prospect.expected_expenditure,
         ),
         backgroundColor: notHiddenCategories.map(({ id, db }) =>
           convertBootstrapColorToRGBA(
             getColorFor({ type: `category_${db}`, id }),
-            0.5
-          )
+            0.5,
+          ),
         ),
         borderColor: notHiddenCategories.map(({ id, db }) =>
           convertBootstrapColorToRGBA(
             getColorFor({ type: `category_${db}`, id }),
-            1
-          )
+            1,
+          ),
         ),
         borderWidth: 1,
         borderRadius: 5,
@@ -88,11 +88,11 @@ export const CategoriesExpendituresChartCore = ({ ...props }) => {
 
   const hiddenCategoriesExpenditure = hiddenCategories.reduce(
     (acc, { prospect }) => acc + prospect.actual_expenditure,
-    0
+    0,
   );
   const hiddenCateogriesExpectedExpenditure = hiddenCategories.reduce(
     (acc, { prospect }) => acc + prospect.expected_expenditure,
-    0
+    0,
   );
 
   if (
@@ -103,18 +103,18 @@ export const CategoriesExpendituresChartCore = ({ ...props }) => {
 
     data.datasets[0].data.push(hiddenCategoriesExpenditure);
     data.datasets[0].backgroundColor.push(
-      convertBootstrapColorToRGBA('secondary', 1)
+      convertBootstrapColorToRGBA('secondary', 1),
     );
     data.datasets[0].borderColor.push(
-      convertBootstrapColorToRGBA('secondary', 1)
+      convertBootstrapColorToRGBA('secondary', 1),
     );
 
     data.datasets[1].data.push(hiddenCateogriesExpectedExpenditure);
     data.datasets[1].backgroundColor.push(
-      convertBootstrapColorToRGBA('secondary', 0.5)
+      convertBootstrapColorToRGBA('secondary', 0.5),
     );
     data.datasets[1].borderColor.push(
-      convertBootstrapColorToRGBA('secondary', 1)
+      convertBootstrapColorToRGBA('secondary', 1),
     );
   }
 

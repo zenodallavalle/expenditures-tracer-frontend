@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
-import { selectWorkingMonth } from 'rdx/params';
-import { RequestsGrouper } from 'utils';
+import { selectWorkingMonth } from '/src/rdx/params';
+import { RequestsGrouper } from '/src/utils';
 
 import { dbApiSlice } from './dbApiSlice';
 
@@ -118,7 +118,7 @@ export const {
 
 export const useAutomaticGetCategoryQuery = (
   { id, ...args } = {},
-  { skip, ...props } = {}
+  { skip, ...props } = {},
 ) => {
   const month = useSelector(selectWorkingMonth);
   return useGetCategoryQuery({ id, month }, { skip: skip });

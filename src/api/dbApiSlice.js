@@ -1,9 +1,9 @@
 import { useSelector } from 'react-redux';
 
-import { selectWorkingDBId, selectWorkingMonth } from 'rdx/params';
+import { selectWorkingDBId, selectWorkingMonth } from '/src/rdx/params';
+import { RequestsGrouper } from '/src/utils';
 
 import { userApiSlice } from './userApiSlice';
-import { RequestsGrouper } from 'utils';
 
 const api = new RequestsGrouper({
   endpoint: '/dbs/',
@@ -76,7 +76,7 @@ export const {
 
 export const useAutomaticGetFullDBQuery = (
   { ...args } = {},
-  { skip, ...props } = {}
+  { skip, ...props } = {},
 ) => {
   const id = useSelector(selectWorkingDBId);
   const month = useSelector(selectWorkingMonth);
@@ -86,13 +86,13 @@ export const useAutomaticGetFullDBQuery = (
       id,
       month,
     },
-    { skip: skip || !id }
+    { skip: skip || !id },
   );
 };
 
 export const useAutomaticGetDBForGraphsQuery = (
   { ...args } = {},
-  { skip, ...props } = {}
+  { skip, ...props } = {},
 ) => {
   const id = useSelector(selectWorkingDBId);
   const month = useSelector(selectWorkingMonth);
@@ -102,6 +102,6 @@ export const useAutomaticGetDBForGraphsQuery = (
       id,
       month,
     },
-    { skip: skip || !id }
+    { skip: skip || !id },
   );
 };

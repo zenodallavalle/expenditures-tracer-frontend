@@ -1,7 +1,10 @@
 import { useDispatch, useSelector } from 'react-redux';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
-import { changedBalanceChartType, selectBalanceChartType } from 'rdx/params';
-import { AutoBlurButton } from 'utils';
+import {
+  changedBalanceChartType,
+  selectBalanceChartType,
+} from '/src/rdx/params';
+import { AutoBlurButton } from '/src/utils';
 
 export const balanceChartTypes = ['multiple', 'candlestick'];
 
@@ -13,9 +16,9 @@ export const ChartTypeSelector = ({ ...props }) => {
   };
 
   return (
-    <div className='text-center'>
-      <div className='text-center pb-1'>Chart type</div>
-      <ButtonGroup size='sm'>
+    <div className="text-center">
+      <div className="text-center pb-1">Chart type</div>
+      <ButtonGroup size="sm">
         {balanceChartTypes.map((type) => (
           <AutoBlurButton
             key={`panel_charts_1_${type}`}

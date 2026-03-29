@@ -5,8 +5,8 @@ import {
   changedBalanceChartPeriod,
   resetBalanceChartPeriod,
   selectBalanceChartPeriod,
-} from 'rdx/params';
-import { AutoBlurButton } from 'utils';
+} from '/src/rdx/params';
+import { AutoBlurButton } from '/src/utils';
 
 export const balanceChartPeriods = ['6M', 'CY', '1Y', '3Y', '5Y', '10Y', 'YTD'];
 
@@ -24,9 +24,9 @@ const BalanceChartPeriod = ({ ...props }) => {
   }, [balanceChartPeriod, dispatch]);
 
   return (
-    <div className='text-center'>
-      <div className='text-center pb-1'>Chart Period</div>
-      <ButtonGroup size='sm'>
+    <div className="text-center">
+      <div className="text-center pb-1">Chart Period</div>
+      <ButtonGroup size="sm">
         {balanceChartPeriods.map((period) => (
           <AutoBlurButton
             key={period}

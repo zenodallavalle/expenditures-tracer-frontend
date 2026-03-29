@@ -1,5 +1,5 @@
-import { useAutomaticUserTokenAuthQuery } from 'api/userApiSlice';
-import { LoadingDiv } from 'utils';
+import { useAutomaticUserTokenAuthQuery } from '/src/api/userApiSlice';
+import { LoadingDiv } from '/src/utils';
 
 import { AddDatabase } from './AddDatabase';
 import { Database } from './Database';
@@ -17,7 +17,7 @@ export const Databases = ({ ...props }) => {
             {user?.dbs.map((DBId) => (
               <Database key={`database_${DBId}`} id={DBId} />
             )) || (
-              <div className='text-center fst-italic'>
+              <div className="text-center fst-italic">
                 No databases created yet.
               </div>
             )}

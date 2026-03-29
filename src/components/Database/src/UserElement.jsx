@@ -1,14 +1,13 @@
 import {
   useAutomaticUserTokenAuthQuery,
   useGetUserQuery,
-} from 'api/userApiSlice';
+} from '/src/api/userApiSlice';
 
 import ListGroupItem from 'react-bootstrap/ListGroupItem';
 
 import { InlineIcon } from '@iconify/react';
-import xCircle16 from '@iconify/icons-octicon/x-circle-16';
 
-import { AutoBlurTransparentButton } from 'utils';
+import { AutoBlurTransparentButton } from '/src/utils';
 import { UserElementLoading } from './UserElementLoading';
 
 export const UserElement = ({ id, onExclude, ...props }) => {
@@ -19,7 +18,7 @@ export const UserElement = ({ id, onExclude, ...props }) => {
 
   const { data: user, isLoading: userIsLoading } = useGetUserQuery(
     { id },
-    { skip: isMainUser }
+    { skip: isMainUser },
   );
 
   return (
@@ -27,13 +26,13 @@ export const UserElement = ({ id, onExclude, ...props }) => {
       {!isMainUser && userIsLoading ? (
         <UserElementLoading />
       ) : (
-        <div className='d-flex align-items-baseline'>
-          <div className='flex-grow-1'>
+        <div className="d-flex align-items-baseline">
+          <div className="flex-grow-1">
             {(isMainUser ? mainUser?.username : user?.username) ||
               `user with id=${id}`}
           </div>
           {isMainUser ? (
-            <div className='text-nowrap small fst-italic'>
+            <div className="text-nowrap small fst-italic">
               You cannot exclude yourself
             </div>
           ) : (
@@ -42,7 +41,7 @@ export const UserElement = ({ id, onExclude, ...props }) => {
                 onClick={() => onExclude(user.id)}
                 disabled={mainUserIsLoading || userIsLoading}
               >
-                <InlineIcon icon={xCircle16} />
+                <InlineIcon icon="octicon:x-circle-16" />
               </AutoBlurTransparentButton>
             </div>
           )}

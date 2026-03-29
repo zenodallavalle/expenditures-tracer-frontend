@@ -2,7 +2,7 @@ import {
   selectAuthToken,
   selectWorkingDBId,
   selectWorkingMonth,
-} from 'rdx/params';
+} from '/src/rdx/params';
 
 const prepareHeaders = async (headers, { getState, ...api } = {}) => {
   headers.set('Content-Type', 'application/json');
